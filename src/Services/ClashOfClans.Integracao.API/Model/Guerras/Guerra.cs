@@ -1,19 +1,33 @@
-﻿namespace ClashOfClans.ETL.ClashOfClans.Model;
+﻿using ClashOfClans.Integracao.API.Core;
 
-public class Guerras
-{
-    public List<Item> Items { get; set; } = [];
-}
+namespace ClashOfClans.Integracao.API.Model.Guerras;
 
-public class Item
+//public class Guerras : Entity, IAggregateRoot
+//{
+//    public List<Item> Items { get; set; } = [];
+//}
+
+public class Guerra : Entity, IAggregateRoot
 {
+
     public string Result { get; set; } = string.Empty;
-    public string EndTime { get; set; } = string.Empty;
+    public DateTime EndTime { get; set; } = new DateTime();
     public int TeamSize { get; set; }
     public int AttacksPerMember { get; set; }
     public string BattleModifier { get; set; } = string.Empty;
     public Clan Clan { get; set; } = new Clan();
     public Opponent Opponent { get; set; } = new Opponent();
+
+    public Guerra(string result, DateTime endTime, int teamSize, int attacksPerMember, string battleModifier, Clan clan, Opponent opponent)
+    {
+        Result = result;
+        EndTime = endTime;
+        TeamSize = teamSize;
+        AttacksPerMember = attacksPerMember;
+        BattleModifier = battleModifier;
+        Clan = clan;
+        Opponent = opponent;
+    }
 }
 
 public class Clan

@@ -1,7 +1,7 @@
 ﻿namespace ClashOfClans.Integracao.API.Core
 {
-    public interface IUnitOfWork
+    public interface IAggregateRoot
     {
-        Task<bool> Commit();
+
     }
 }

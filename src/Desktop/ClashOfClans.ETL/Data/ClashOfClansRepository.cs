@@ -11,7 +11,7 @@ public class ClashOfClansRepository : IClashOfClansRepository
     public ClashOfClansRepository(SincronizadorConfiguration configuration)
     {
         _configuration = configuration;
-        _connectionString = _configuration.DefaultConnection;
+        _connectionString = "Host=localhost;Port=3307;Database=clash_of_clans;Username=root;Password=GH#@Mn47spW!HH$yvv76;";
 
         if (string.IsNullOrEmpty(_connectionString))
             throw new ApplicationException("Os dados de configuração do banco de dados não foram identificados!");

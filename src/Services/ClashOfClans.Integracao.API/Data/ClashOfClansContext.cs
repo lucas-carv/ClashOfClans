@@ -1,5 +1,6 @@
 ﻿using ClashOfClans.Integracao.API.Core;
 using ClashOfClans.Integracao.API.Model;
+using ClashOfClans.Integracao.API.Model.Guerras;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -13,6 +14,7 @@ public class ClashOfClansContext : DbContext, IUnitOfWork
     }
 
     public DbSet<Historico> Historico { get; set; }
+    public DbSet<Guerra> Guerra { get; set; }
     public async Task<bool> Commit()
     {
         return await base.SaveChangesAsync() > 0;
