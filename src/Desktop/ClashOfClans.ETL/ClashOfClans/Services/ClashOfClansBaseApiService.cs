@@ -47,19 +47,7 @@ public class ClashOfClansBaseApiService
             };
         }
     }
-    protected async Task SendRequest(HttpRequestMessage request)
-    {
-        try
-        {
-            var response = await _httpClient.SendAsync(request);
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
-    }
-
-    private async Task<ResponseClashOfClans<T>> ParseReponse<T>(HttpResponseMessage response)
+    private static async Task<ResponseClashOfClans<T>> ParseReponse<T>(HttpResponseMessage response)
     {
         string contentString = await response.Content.ReadAsStringAsync();
 
@@ -114,7 +102,7 @@ public class ClashOfClansBaseApiService
 
     protected HttpRequestMessage CreateRequest<TContent>(TContent content, HttpMethod method, string relativeUri)
     {
-        StringContent requestContent = default;
+        StringContent? requestContent = default;
 
         if (content != null)
         {

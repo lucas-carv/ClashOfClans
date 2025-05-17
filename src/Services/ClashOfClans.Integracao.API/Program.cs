@@ -1,12 +1,24 @@
+using ClashOfClans.Integracao.API.Configurations;
+using ClashOfClans.Integracao.API.Core;
 using ClashOfClans.Integracao.API.Data;
+using ClashOfClans.Integracao.API.Repositories;
+using FluentValidation;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddApiConfiguration();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
+builder.Services.AddScoped<IGuerrasRepository, GuerrasRepository>();
+
+var assembly = AppDomain.CurrentDomain.Load("ClashOfClans.Integracao.API");
+AssemblyScanner.FindValidatorsInAssembly(assembly).ForEach(result => builder.Services.AddScoped(result.InterfaceType, result.ValidatorType));
+builder.Services.AddMediatR(assembly);
 
 builder.Services.AddDbContext<ClashOfClansContext>(options =>
     options.UseMySql(
@@ -24,6 +36,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 
 app.UseAuthorization();
 
