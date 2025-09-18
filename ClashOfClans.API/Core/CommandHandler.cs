@@ -17,7 +17,9 @@ public class CommandHandler
 
     protected async Task<ValidationResult> PersistirDados(IUnitOfWork unitOfWork)
     {
-        if (!await unitOfWork.Commit()) AdicionarErro("Houve um erro ao persistir dados");
+        var result = await unitOfWork.Commit();
+
+        if (!result) AdicionarErro("Houve um erro ao persistir dados");
         return ValidationResult;
     }
 }

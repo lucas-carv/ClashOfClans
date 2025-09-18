@@ -1,7 +1,9 @@
-﻿using ClashOfClans.API.Application.Clans;
+﻿using ClashOfClans.API.Application.Commands.Clans;
 using ClashOfClans.API.Core;
 using ClashOfClans.API.InputModels;
 using ClashOfClans.API.Model;
+using ClashOfClans.API.Repositories;
+using ClashOfClans.API.ViewModels;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -12,21 +14,54 @@ namespace ClashOfClans.API.Controllers;
 public class ClanController : MainController
 {
     private readonly IMediatorHandler _mediator;
+    private readonly IClanRepository _clanRepository;
 
-    public ClanController(IMediatorHandler mediator)
+    public ClanController(IMediatorHandler mediator, IClanRepository clanRepository)
     {
         _mediator = mediator;
+        _clanRepository = clanRepository;
     }
 
-    [HttpPost("adicionar")]
-    public async Task<IActionResult> AdicionarClan(List<ClanInputModel> inputModel)
+    [HttpGet("{tag}")]
+    public async Task<ActionResult<ClanViewModel>> ObterPorTag(string tag)
     {
-        AdicionarClanCommand adicionarClanCommand = new()
+        Clan clan = await _clanRepository.ObterClanPorTag(tag);
+        if (clan is null)
         {
-            MemberList = inputModel.First().MemberList,
-            Tag = inputModel.First().Tag!,
-            Nome = inputModel.First().Name!
+            return RegistroNaoEncontrado($"Clan não encontrado");
+        }
+        ClanViewModel clanViewModel = new()
+        {
+            Name = clan.Nome,
+            Tag = clan.Tag
         };
+
+        clanViewModel.MemberList.AddRange(clan.Membros.Select(m => new MemberViewModel()
+        {
+            Name = m.Nome,
+            Tag = m.Tag
+        }));
+
+        return CustomResponse(clan);
+    }
+
+    [HttpPost("criar")]
+    public async Task<IActionResult> CiarClan([FromBody] ClanInputModel inputModel)
+    {
+        CriarClanCommand adicionarClanCommand = new(inputModel.Tag, inputModel.Nome, inputModel.Membros);
+        var resultado = await _mediator.EnviarComando(adicionarClanCommand);
+        if (!resultado.ValidationResult.IsValid)
+        {
+            return CustomResponse(resultado.ValidationResult);
+        }
+        return NoContent();
+    }
+
+    [HttpPut("atualizar")]
+    public async Task<IActionResult> AtualizarClan([FromBody] ClanInputModel inputModel)
+    {
+        AtualizarClanCommand adicionarClanCommand = new(inputModel.Tag, inputModel.Nome, inputModel.Membros);
+
         var resultado = await _mediator.EnviarComando(adicionarClanCommand);
         if (!resultado.ValidationResult.IsValid)
         {

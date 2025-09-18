@@ -3,8 +3,8 @@
 namespace ClashOfClans.API.Model;
 public class Clan : Entity, IAggregateRoot
 {
-    public string? Tag { get; set; }
-    public string? Nome { get; set; }
+    public string Tag { get; set; } = string.Empty;
+    public string Nome { get; set; } = string.Empty;
     public List<Membro> Membros { get; set; } = [];
 
     public Clan() { }
@@ -14,98 +14,26 @@ public class Clan : Entity, IAggregateRoot
         Nome = nome;
     }
 
-    public void AdicionarMembro(Membro membro)
+    public void AdicionarMembro(string tag, string nome)
     {
-        Membros.Add(membro);
+        Membro membro = Membros.FirstOrDefault(m => m.Tag == tag)!;
+        if (membro is not null)
+        {
+            membro.Nome = nome;
+            membro.Situacao = SituacaoMembro.Ativo;
+            return;
+        }
+
+        Membro novoMembro = new(this.Id, tag, nome);
+        Membros.Add(novoMembro);
+    }
+
+    public void InativarMembro(string membroTag)
+    {
+        var membro = Membros.FirstOrDefault(m => m.Tag == membroTag);
+        if (membro is null)
+            return;
+
+        membro.Situacao = SituacaoMembro.Inativo;
     }
 }
-
-public class Membro : Entity
-{
-    public string? Tag { get; set; }
-    public string? Nome { get; set; }
-}
-
-//public class League : Entity
-//{
-//    public int LeagueId { get; set; }
-//    public string Name { get; set; } = string.Empty;
-//    public IconUrls IconUrls { get; set; } = new();
-//}
-
-//public class IconUrls : Entity
-//{
-//    public string Small { get; set; } = string.Empty;
-//    public string Tiny { get; set; } = string.Empty;
-//    public string Medium { get; set; } = string.Empty;
-//}
-
-//public class PlayerHouse : Entity
-//{
-//    public List<HouseElement> Elements { get; set; } = [];
-//}
-
-//public class HouseElement : Entity
-//{
-//    public string Type { get; set; } = string.Empty;
-//    public int Id { get; set; }
-//}
-
-//public class BuilderBaseLeague : Entity
-//{
-//    public int BuilderBaseLeagueId { get; set; }
-//    public string Name { get; set; } = string.Empty;
-//}
-
-//public class Label : Entity
-//{
-//    public int LabelId { get; set; }
-//    public string Name { get; set; } = string.Empty;
-//    public IconUrls IconUrls { get; set; } = new();
-//}
-
-//public class ClanCapital : Entity
-//{
-//    public int CapitalHallLevel { get; set; }
-//    public List<District> Districts { get; set; } = [];
-//}
-
-//public class District : Entity
-//{
-//    public int DistrictId { get; set; }
-//    public string Name { get; set; } = string.Empty;
-//    public int DistrictHallLevel { get; set; }
-//}
-
-//public class ChatLanguage : Entity
-//{
-//    public int ChatLanguageId { get; set; }
-//    public string Name { get; set; } = string.Empty;
-//    public string LanguageCode { get; set; } = string.Empty;
-//}
-
-//public class Location : Entity
-//{
-//    public int LocationId { get; set; }
-//    public string Name { get; set; } = string.Empty;
-//    public bool IsCountry { get; set; }
-//}
-
-//public class BadgeUrls : Entity
-//{
-//    public string Small { get; set; } = string.Empty;
-//    public string Large { get; set; } = string.Empty;
-//    public string Medium { get; set; } = string.Empty;
-//}
-
-//public class CapitalLeague : Entity
-//{
-//    public int CapitalLeagueId { get; set; }
-//    public string Name { get; set; } = string.Empty;
-//}
-
-//public class WarLeague : Entity
-//{
-//    public int WarLeagueId { get; set; }
-//    public string Name { get; set; } = string.Empty;
-//}

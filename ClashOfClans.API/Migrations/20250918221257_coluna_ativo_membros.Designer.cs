@@ -4,6 +4,7 @@ using ClashOfClans.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClashOfClans.API.Migrations
 {
     [DbContext(typeof(ClashOfClansContext))]
-    partial class ClashOfClansContextModelSnapshot : ModelSnapshot
+    [Migration("20250918221257_coluna_ativo_membros")]
+    partial class coluna_ativo_membros
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,23 +47,17 @@ namespace ClashOfClans.API.Migrations
                         .HasColumnName("foi_removido");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("nome");
 
                     b.Property<string>("Tag")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("longtext")
                         .HasColumnName("tag");
 
                     b.HasKey("Id")
-                        .HasName("pk_clan");
+                        .HasName("pk_clans");
 
-                    b.HasIndex("Tag")
-                        .IsUnique()
-                        .HasDatabaseName("ix_clan_tag");
-
-                    b.ToTable("clan", (string)null);
+                    b.ToTable("clans", (string)null);
                 });
 
             modelBuilder.Entity("ClashOfClans.API.Model.Membro", b =>
@@ -72,7 +69,11 @@ namespace ClashOfClans.API.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClanId")
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("ativo");
+
+                    b.Property<int?>("ClanId")
                         .HasColumnType("int")
                         .HasColumnName("clan_id");
 
@@ -89,17 +90,11 @@ namespace ClashOfClans.API.Migrations
                         .HasColumnName("foi_removido");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("nome");
 
-                    b.Property<int>("Situacao")
-                        .HasColumnType("int")
-                        .HasColumnName("situacao");
-
                     b.Property<string>("Tag")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("longtext")
                         .HasColumnName("tag");
 
                     b.HasKey("Id")
@@ -107,10 +102,6 @@ namespace ClashOfClans.API.Migrations
 
                     b.HasIndex("ClanId")
                         .HasDatabaseName("ix_membro_clan_id");
-
-                    b.HasIndex("Tag")
-                        .IsUnique()
-                        .HasDatabaseName("ix_membro_tag");
 
                     b.ToTable("membro", (string)null);
                 });
@@ -120,8 +111,6 @@ namespace ClashOfClans.API.Migrations
                     b.HasOne("ClashOfClans.API.Model.Clan", null)
                         .WithMany("Membros")
                         .HasForeignKey("ClanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("fk_membro_clans_clan_id");
                 });
 

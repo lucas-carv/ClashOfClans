@@ -1,14 +1,20 @@
-﻿namespace ClashOfClans.API.InputModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ClashOfClans.API.InputModels
 {
     public class ClanInputModel
     {
-        public string? Tag { get; set; }
-        public string? Name { get; set; }
-        public List<MemberInputModel> MemberList { get; set; } = [];
+        [Required(ErrorMessage = "A Tag do clan é obrigatória")]
+        public required string Tag { get; set; }
+        [Required(ErrorMessage = "O nome do clan é obrigatório")]
+        public required string Nome { get; set; }
+        public List<MembroDTO> Membros { get; set; } = [];
     }
-    public class MemberInputModel
+    public class MembroDTO
     {
-        public string? Tag { get; set; }
-        public string? Name { get; set; }
+        [Required(ErrorMessage = "A Tag do membro é obrigatória")]
+        public required string Tag { get; set; }
+        [Required(ErrorMessage = "O nome do membro é obrigatório")]
+        public required string Nome { get; set; }
     }
 }

@@ -4,16 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ClashOfClans.API.Data;
 
-public class ClashOfClansContext : DbContext, IUnitOfWork
+public class ClashOfClansContext(DbContextOptions<ClashOfClansContext> options) : DbContext(options), IUnitOfWork
 {
-    public ClashOfClansContext(DbContextOptions<ClashOfClansContext> options)
-        : base(options)
-    {
-    }
     public DbSet<Clan> Clans { get; set; }
     public async Task<bool> Commit()
     {
-        return await base.SaveChangesAsync() > 0;
+        var result = await base.SaveChangesAsync();
+        return result > 0;
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

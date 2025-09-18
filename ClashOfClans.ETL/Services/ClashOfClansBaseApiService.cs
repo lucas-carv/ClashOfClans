@@ -8,7 +8,6 @@ namespace ClashOfClans.ETL.Services;
 
 public class ClashOfClansBaseApiService
 {
-
     private Uri _baseUri = new("https://api.clashofclans.com/v1/");
     private readonly HttpClient _httpClient;
     public ClashOfClansBaseApiService()
@@ -20,7 +19,7 @@ public class ClashOfClansBaseApiService
     {
         try
         {
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjAzYjJiYmY4LTk1MzYtNDRmMy04ZmQ5LTA0Njk1M2NkNTJjOSIsImlhdCI6MTc0NTQ0MDM4Nywic3ViIjoiZGV2ZWxvcGVyL2YzM2YwYjI5LWM0NGItODk0Yi02MTY4LWI3YjNlNjUyNmI5YyIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjE4OS44My4xOTkuNjQiXSwidHlwZSI6ImNsaWVudCJ9XX0.zkG5LA6HNpFyYK32SRzOHGmvgP-_RPEHdWRHQ2HSk_gjRi8l9s1TcM47XVZbxJFW3gaui0KIY9OnOCMg-SvJ7Q");
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImU0MzkwYWY3LTAzYzAtNDFkNS1hNWFhLTU0NjQ3ZTYxYTQyNCIsImlhdCI6MTc1ODE1Mjg5Mywic3ViIjoiZGV2ZWxvcGVyL2YzM2YwYjI5LWM0NGItODk0Yi02MTY4LWI3YjNlNjUyNmI5YyIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjE4OS43MC4xMTkuMjM2Il0sInR5cGUiOiJjbGllbnQifV19.h35T55ZKG95mL4xCs1iQaGoPYkgiqpGruHcUHy_Edra2-LS56NDLsmnAl_JteWt0VKo1mtLQBCPg4duGhr6jRg");
             var response = await _httpClient.SendAsync(request);
 
             return await ParseReponse<TResponse>(response);

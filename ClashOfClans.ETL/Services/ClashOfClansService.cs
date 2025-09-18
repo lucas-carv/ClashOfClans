@@ -4,12 +4,11 @@ namespace ClashOfClans.ETL.Services;
 
 public class ClashOfClansService : ClashOfClansBaseApiService
 {
-    internal async Task<Clan?> BuscarClan(string tag)
+    internal async Task<Clan> BuscarClan(string tag)
     {
-        string encodedTag = Uri.EscapeDataString(tag);
-        string uri = $"/v1/clans/{encodedTag}";
+        string uri = $"/v1/clans/{tag}";
         var request = CreateRequest<string>(null, HttpMethod.Get, uri);
         var result = await SendRequest<Clan>(request);
-        return result.ResponseData;
+        return result.ResponseData!;
     }
 }
