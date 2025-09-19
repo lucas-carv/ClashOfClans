@@ -5,8 +5,6 @@ namespace ClashOfClans.ETL.Services.Integration;
 
 public class IntegrationService : IntegrationServiceBaseApiService
 {
-
-
     public async Task<bool> CriarClan(ClanInputModel clan)
     {
         string uri = $"{_baseUrl}/clan/criar";
@@ -20,20 +18,24 @@ public class IntegrationService : IntegrationServiceBaseApiService
         return response.IsValid;
     }
     
-
-    public async Task<Clan> ObterClanPorTag(string tag)
+    public async Task<ClanInputModel> ObterClanPorTag(string tag)
     {
         string uri = $"https://localhost:7016/api/v1/clan/{tag}";
-        var response = await Send<Clan>(HttpMethod.Get, uri);
+        var response = await Send<ClanInputModel>(HttpMethod.Get, uri);
         return response.ResponseData;
+    }
+
+    public async Task<bool> EnviarGuerra(GuerraInputModel guerra)
+    {
+        string uri = $"{_baseUrl}/guerra/criar";
+        var response = await Send<bool, GuerraInputModel>(guerra, HttpMethod.Put, uri);
+        return response.IsValid;
     }
 }
 
 public class ResponseIntegrationApi<T>
 {
     public bool IsValid { get; set; }
-
     public T ResponseData { get; set; }
-
     public string[] Erros { get; set; }
 }

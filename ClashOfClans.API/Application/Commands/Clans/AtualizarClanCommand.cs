@@ -3,14 +3,11 @@ using ClashOfClans.API.InputModels;
 using ClashOfClans.API.Model;
 using ClashOfClans.API.Repositories;
 using MediatR;
-using System.ComponentModel.DataAnnotations;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace ClashOfClans.API.Application.Commands.Clans;
 
 public class AtualizarClanCommandHandler(IClanRepository clanRepository) : CommandHandler, IRequestHandler<AtualizarClanCommand, CommandResponse<bool>>
 {
-
     private readonly IClanRepository _clanRepository = clanRepository;
 
     public async Task<CommandResponse<bool>> Handle(AtualizarClanCommand request, CancellationToken cancellationToken)
@@ -45,20 +42,12 @@ public class AtualizarClanCommandHandler(IClanRepository clanRepository) : Comma
 
         var result = new CommandResponse<bool>(ValidationResult);
         return result;
-
     }
 }
 
-public class AtualizarClanCommand : Command<CommandResponse<bool>>
+public class AtualizarClanCommand(string tag, string nome, List<MembroDTO> membros) : Command<CommandResponse<bool>>
 {
-    public string Tag { get; private set; }
-    public string Nome { get; private set; }
-    public List<MembroDTO> Membros { get; set; } = [];
-
-    public AtualizarClanCommand(string tag, string nome, List<MembroDTO> membros)
-    {
-        Tag = tag;
-        Nome = nome;
-        Membros = membros;
-    }
+    public string Tag { get; private set; } = tag;
+    public string Nome { get; private set; } = nome;
+    public List<MembroDTO> Membros { get; private set; } = membros;
 }

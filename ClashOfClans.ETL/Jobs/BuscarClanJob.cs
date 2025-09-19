@@ -5,13 +5,10 @@ using Quartz;
 
 namespace ClashOfClans.ETL.Jobs;
 
-public class BuscarMembrosJob : IJob
+public class BuscarClanJob(ClashOfClansService clashOfClansService) : IJob
 {
-    private readonly ClashOfClansService _clashOfClansService;
-    public BuscarMembrosJob(ClashOfClansService clashOfClansService)
-    {
-        _clashOfClansService = clashOfClansService;
-    }
+    private readonly ClashOfClansService _clashOfClansService = clashOfClansService;
+
     public async Task Execute(IJobExecutionContext context)
     {
         string tag = "#2L0UC9R8P";
@@ -23,19 +20,19 @@ public class BuscarMembrosJob : IJob
         {
             Tag = clan.Tag!,
             Nome = clan.Name!,
-            Membros = clan.MemberList.Select(m => new MembroDTO() { Nome = m.Name, Tag = m.Tag }).ToList()
+            Membros = clan.MemberList.Select(m => new MembroDTO() { Nome = m.Name!, Tag = m.Tag! }).ToList()
         };
 
         var clanIntegracao = await integrationService.ObterClanPorTag(encodedTag);
         if (clanIntegracao == null)
         {
-          
             await integrationService.CriarClan(clanInputModel);
             return;
         }
         await integrationService.AtualizarClan(clanInputModel);
     }
 }
+
 public class ClanInputModel
 {
     public string Tag { get; set; } = string.Empty;
