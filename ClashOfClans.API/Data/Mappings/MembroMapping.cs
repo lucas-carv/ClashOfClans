@@ -13,7 +13,7 @@ public class MembroMapping : IEntityTypeConfiguration<Membro>
         builder.HasKey(c => c.Id);
 
         builder
-        .HasIndex(p => p.Tag)
-        .IsUnique();
+            .HasIndex(p => p.Tag)
+            .IsUnique();
     }
 }

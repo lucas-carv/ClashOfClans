@@ -21,6 +21,7 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService) : IJob
         {
             Clan = new ClanGuerra()
             {
+                Tag = war.Clan.Tag,
                 Membros = war.Clan.Members.Select(m => new MembroGuerraDTO()
                 {
                     Ataques = m.Attacks.Select(a => new AtaquesDTO() { Estrela = a.Stars }).ToList(),
@@ -53,6 +54,7 @@ public class GuerraInputModel
 
 public class ClanGuerra
 {
+    public string Tag { get; set; }
     public List<MembroGuerraDTO> Membros { get; set; } = [];
 }
 

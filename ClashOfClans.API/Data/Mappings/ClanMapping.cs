@@ -13,8 +13,8 @@ public class ClanMapping : IEntityTypeConfiguration<Clan>
         builder.HasKey(c => c.Id);
 
         builder
-        .HasIndex(p => p.Tag)
-        .IsUnique();
+            .HasIndex(p => p.Tag)
+            .IsUnique();
 
         builder.HasMany(g => g.Membros)
             .WithOne()

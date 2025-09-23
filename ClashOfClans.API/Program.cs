@@ -16,6 +16,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
 builder.Services.AddScoped<IClanRepository, ClanRepository>();
+builder.Services.AddScoped<IGuerraRepository, GuerraRepository>();
 
 var assembly = AppDomain.CurrentDomain.Load("ClashOfClans.API");
 AssemblyScanner.FindValidatorsInAssembly(assembly).ForEach(result => builder.Services.AddScoped(result.InterfaceType, result.ValidatorType));

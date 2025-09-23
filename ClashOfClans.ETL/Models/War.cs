@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 
 namespace ClashOfClans.ETL.Models;
@@ -15,7 +16,7 @@ public class War
 
 public class ClanWar
 {
-
+    public string Tag { get; set; } = string.Empty;
     public List<MembersWarDTO> Members { get; set; } = [];
 }
 

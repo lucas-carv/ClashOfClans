@@ -4,6 +4,7 @@ using ClashOfClans.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClashOfClans.API.Migrations
 {
     [DbContext(typeof(ClashOfClansContext))]
-    partial class ClashOfClansContextModelSnapshot : ModelSnapshot
+    [Migration("20250919132956_atualizando_tabela_guerra")]
+    partial class atualizando_tabela_guerra
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -92,8 +95,9 @@ namespace ClashOfClans.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("membro_guerra_id");
 
-                    b.Property<int>("MembroId")
-                        .HasColumnType("int")
+                    b.Property<string>("MembroId")
+                        .IsRequired()
+                        .HasColumnType("longtext")
                         .HasColumnName("membro_id");
 
                     b.HasKey("Id")
@@ -210,7 +214,7 @@ namespace ClashOfClans.API.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("foi_removido");
 
-                    b.Property<int>("GuerraClanId")
+                    b.Property<int?>("GuerraClanId")
                         .HasColumnType("int")
                         .HasColumnName("guerra_clan_id");
 
@@ -307,14 +311,10 @@ namespace ClashOfClans.API.Migrations
 
             modelBuilder.Entity("ClashOfClans.API.Model.Guerras.MembroGuerra", b =>
                 {
-                    b.HasOne("ClashOfClans.API.Model.Guerras.GuerraClan", "GuerraClan")
+                    b.HasOne("ClashOfClans.API.Model.Guerras.GuerraClan", null)
                         .WithMany("Membros")
                         .HasForeignKey("GuerraClanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("fk_guerra_clan_membro_guerra_clan_guerra_clan_id");
-
-                    b.Navigation("GuerraClan");
                 });
 
             modelBuilder.Entity("ClashOfClans.API.Model.Membro", b =>

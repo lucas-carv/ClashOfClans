@@ -1,5 +1,6 @@
 ﻿using ClashOfClans.API.Core;
 using ClashOfClans.API.Model;
+using ClashOfClans.API.Model.Guerras;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClashOfClans.API.Data;
@@ -7,6 +8,7 @@ namespace ClashOfClans.API.Data;
 public class ClashOfClansContext(DbContextOptions<ClashOfClansContext> options) : DbContext(options), IUnitOfWork
 {
     public DbSet<Clan> Clans { get; set; }
+    public DbSet<Guerra> Guerras { get; set; }
     public async Task<bool> Commit()
     {
         var result = await base.SaveChangesAsync();
