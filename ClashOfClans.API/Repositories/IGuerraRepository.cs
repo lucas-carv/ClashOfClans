@@ -1,8 +1,9 @@
 ﻿using ClashOfClans.API.Model.Guerras;
+using CSharpFunctionalExtensions;
 
 namespace ClashOfClans.API.Repositories;
 
 public interface IGuerraRepository : IRepository<Guerra>
 {
-    Task<Guerra> ObterGuerraPorDatas(DateTime inicioGuerra, DateTime fimGuerra);
+    Task<Maybe<Guerra>> ObterGuerraPorDatas(DateTime inicioGuerra, DateTime fimGuerra);
 }

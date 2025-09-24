@@ -3,6 +3,7 @@ using ClashOfClans.API.Core;
 using ClashOfClans.API.InputModels.Guerras;
 using ClashOfClans.API.Model.Guerras;
 using ClashOfClans.API.Repositories;
+using CSharpFunctionalExtensions;
 using MediatR;
 
 namespace ClashOfClans.API.Application.Commands.Guerras;
@@ -23,13 +24,13 @@ public class CriarGuerraCommandHandler(IGuerraRepository guerraRepository, IClan
         }
 
         List<MembroGuerra> participantes = new();
-        GuerraClan guerraClan = new()
+        GuerraClan guerraClan = new();
 
-
-        Guerra guerra = await _guerraRepository.ObterGuerraPorDatas(command.InicioGuerra, command.FimGuerra);
-        if (guerra is null)
+        Maybe<Guerra> guerra = await _guerraRepository.ObterGuerraPorDatas(command.InicioGuerra, command.FimGuerra);
+        Guerra novaGuerra = new();
+        if (guerra.HasNoValue)
         {
-             guerra = new(command.Status, command.InicioGuerra, command.FimGuerra, guerraClan); ;
+            novaGuerra = new(command.Status, command.InicioGuerra, command.FimGuerra, guerraClan); ;
         }
 
         foreach (var membros in command.Clan.Membros)
@@ -42,9 +43,8 @@ public class CriarGuerraCommandHandler(IGuerraRepository guerraRepository, IClan
             guerraClan.AdicionarMembro(membros.Tag, membros.Nome, ataques);
         }
 
-        
 
-        _guerraRepository.Add(guerra);
+        _guerraRepository.Add(novaGuerra);
 
         ValidationResult = await PersistirDados(_guerraRepository.UnitOfWork);
 

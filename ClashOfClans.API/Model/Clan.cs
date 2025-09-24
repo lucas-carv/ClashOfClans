@@ -3,9 +3,9 @@
 namespace ClashOfClans.API.Model;
 public class Clan : Entity, IAggregateRoot
 {
-    public string Tag { get; set; } = string.Empty;
-    public string Nome { get; set; } = string.Empty;
-    public List<Membro> Membros { get; set; } = [];
+    public string Tag { get;  } = string.Empty;
+    public string Nome { get;  } = string.Empty;
+    public List<Membro> Membros { get;  } = [];
 
     public Clan() { }
     public Clan(string tag, string nome)
