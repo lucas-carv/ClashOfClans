@@ -32,6 +32,10 @@ public class CriarGuerraCommandHandler(IGuerraRepository guerraRepository, IClan
         {
             novaGuerra = new(command.Status, command.InicioGuerra, command.FimGuerra, guerraClan); ;
         }
+        else
+        {
+            novaGuerra = guerra.Value;
+        }
 
         foreach (var membros in command.Clan.Membros)
         {
