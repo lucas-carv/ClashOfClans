@@ -11,16 +11,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services
+    .AddEndpointsApiExplorer()
+    .AddSwaggerGen()
+    .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>())
+    .AddScoped<IMediatorHandler, MediatorHandler>()
+    .AddScoped<IClanRepository, ClanRepository>()
+    .AddScoped<IGuerraRepository, GuerraRepository>();
 
-builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
-builder.Services.AddScoped<IClanRepository, ClanRepository>();
-builder.Services.AddScoped<IGuerraRepository, GuerraRepository>();
-
-var assembly = AppDomain.CurrentDomain.Load("ClashOfClans.API");
-AssemblyScanner.FindValidatorsInAssembly(assembly).ForEach(result => builder.Services.AddScoped(result.InterfaceType, result.ValidatorType));
-builder.Services.AddMediatR(assembly);
+//var assembly = AppDomain.CurrentDomain.Load("ClashOfClans.API");
+//AssemblyScanner.FindValidatorsInAssembly(assembly).ForEach(result => builder.Services.AddScoped(result.InterfaceType, result.ValidatorType));
+//builder.Services.AddMediatR(assembly);
 
 builder.Services.AddDbContext<ClashOfClansContext>(options =>
     options.UseMySql(

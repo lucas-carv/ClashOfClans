@@ -1,43 +1,45 @@
-﻿using ClashOfClans.API.Application.Commands.Clans;
-using ClashOfClans.API.Core;
-using ClashOfClans.API.InputModels.Guerras;
+﻿using ClashOfClans.API.Core;
+using ClashOfClans.API.Core.CommandResults;
 using ClashOfClans.API.Model.Guerras;
 using ClashOfClans.API.Repositories;
 using CSharpFunctionalExtensions;
 using MediatR;
+using System.Security.Policy;
 
 namespace ClashOfClans.API.Application.Commands.Guerras;
+public record CriarGuerraRequest(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanGuerra Clan) : IRequest<CommandResult<bool>>;
 
-public class CriarGuerraCommandHandler(IGuerraRepository guerraRepository, IClanRepository clanRepository) : CommandHandler, IRequestHandler<CriarGuerraCommand, CommandResponse<bool>>
+public class CriarGuerraCommandHandler(IGuerraRepository guerraRepository, IClanRepository clanRepository) : CommandHandler, IRequestHandler<CriarGuerraRequest, CommandResult<bool>>
 {
     private readonly IGuerraRepository _guerraRepository = guerraRepository;
     private readonly IClanRepository _clanRepository = clanRepository;
 
-    public async Task<CommandResponse<bool>> Handle(CriarGuerraCommand command, CancellationToken cancellationToken)
+    public async Task<CommandResult<bool>> Handle(CriarGuerraRequest request, CancellationToken cancellationToken)
     {
-        bool existeClan = await _clanRepository.VerificarSeExisteClan(command.Clan.Tag);
-
+        bool existeClan = await _clanRepository.VerificarSeExisteClan(request.Clan.Tag);
         if (!existeClan)
         {
-            AdicionarErro($"O clan informado com tag {command.Clan.Tag} não existe na base de dados");
-            return new CommandResponse<bool>(ValidationResult);
+            var erro = new ErrorMessage("teste", "teste");
+            var erros = new List<ErrorMessage>();
+            erros.Add(erro);
+            return CommandResult<bool>.InvalidInput(erros);
         }
 
         List<MembroGuerra> participantes = new();
         GuerraClan guerraClan = new();
 
-        Maybe<Guerra> guerra = await _guerraRepository.ObterGuerraPorDatas(command.InicioGuerra, command.FimGuerra);
+        Maybe<Guerra> guerra = await _guerraRepository.ObterGuerraPorDatas(request.InicioGuerra, request.FimGuerra);
         Guerra novaGuerra = new();
         if (guerra.HasNoValue)
         {
-            novaGuerra = new(command.Status, command.InicioGuerra, command.FimGuerra, guerraClan); ;
+            novaGuerra = new(request.Status, request.InicioGuerra, request.FimGuerra, guerraClan); ;
         }
         else
         {
             novaGuerra = guerra.Value;
         }
 
-        foreach (var membros in command.Clan.Membros)
+        foreach (var membros in request.Clan.Membros)
         {
             List<Ataque> ataques = membros.Ataques.Select(m => new Ataque()
             {
@@ -53,23 +55,25 @@ public class CriarGuerraCommandHandler(IGuerraRepository guerraRepository, IClan
         ValidationResult = await PersistirDados(_guerraRepository.UnitOfWork);
 
         var result = new CommandResponse<bool>(ValidationResult, ValidationResult.IsValid);
-        return result;
+        return new CommandResult<bool>();
     }
 }
 
 
-public class CriarGuerraCommand : Command<CommandResponse<bool>>
-{
-    public string Status { get; private set; }
-    public DateTime InicioGuerra { get; private set; }
-    public DateTime FimGuerra { get; private set; }
-    public ClanGuerraDTO Clan { get; private set; } = new();
 
-    public CriarGuerraCommand(string status, DateTime inicioGuerra, DateTime fimGuerra, ClanGuerraDTO clan)
-    {
-        Status = status;
-        InicioGuerra = inicioGuerra;
-        FimGuerra = fimGuerra;
-        Clan = clan;
-    }
+public record ClanGuerra
+{
+    public string Tag { get; set; } = string.Empty;
+    public List<ParticipantesGuerra> Membros { get; set; } = [];
+}
+public record ParticipantesGuerra
+{
+    public string Tag { get; set; } = string.Empty;
+    public string Nome { get; set; } = string.Empty;
+    public List<Ataques> Ataques { get; set; } = [];
+
+}
+public class Ataques
+{
+    public int Estrelas { get; set; }
 }

@@ -3,7 +3,7 @@ using MediatR;
 
 namespace ClashOfClans.API.Core;
 
-public abstract class Command<TResponse> : Message, IRequest<TResponse>
+public record Command<TResponse> : Message, IRequest<TResponse>
 {
 
     protected DateTime Timestamp { get; private set; }

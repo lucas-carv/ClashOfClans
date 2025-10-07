@@ -35,7 +35,7 @@ public class CriarClanCommandHandler(IClanRepository clanRepository) : CommandHa
     }
 }
 
-public class CriarClanCommand(string tag, string nome, List<MembroDTO> membros) : Command<CommandResponse<bool>>
+public record CriarClanCommand(string tag, string nome, List<MembroDTO> membros) : Command<CommandResponse<bool>>
 {
     public string Tag { get; private set; } = tag;
     public string Nome { get; private set; } = nome;

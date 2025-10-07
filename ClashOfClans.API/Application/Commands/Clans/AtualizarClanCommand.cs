@@ -45,7 +45,7 @@ public class AtualizarClanCommandHandler(IClanRepository clanRepository) : Comma
     }
 }
 
-public class AtualizarClanCommand(string tag, string nome, List<MembroDTO> membros) : Command<CommandResponse<bool>>
+public record AtualizarClanCommand(string tag, string nome, List<MembroDTO> membros) : Command<CommandResponse<bool>>
 {
     public string Tag { get; private set; } = tag;
     public string Nome { get; private set; } = nome;
