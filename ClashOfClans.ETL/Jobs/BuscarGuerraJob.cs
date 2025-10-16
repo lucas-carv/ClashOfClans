@@ -13,7 +13,10 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService) : IJob
     {
         string tag = "#2L0UC9R8P";
         string encodedTag = Uri.EscapeDataString(tag);
+
         War war = await _clashOfClansService.BuscarGuerra(encodedTag);
+        if (war.State.Equals(StatusGuerra.NotInWar))
+            return;
 
         IntegrationService integrationService = new();
 
@@ -31,7 +34,7 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService) : IJob
             },
             FimGuerra = war.EndTime,
             InicioGuerra = war.StartTime,
-            Status = war.State
+            Status = war.State.ToString()
         };
 
         var clanIntegracao = await integrationService.ObterClanPorTag(encodedTag);

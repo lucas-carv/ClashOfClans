@@ -1,7 +1,6 @@
 ﻿using ClashOfClans.API.Core;
 using ClashOfClans.API.Data;
 using ClashOfClans.API.Model.Guerras;
-using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClashOfClans.API.Repositories;
@@ -25,12 +24,9 @@ public class GuerraRepository : IGuerraRepository
         _context.Dispose();
     }
 
-    public async Task<Maybe<Guerra>> ObterGuerraPorDatas(DateTime inicioGuerra, DateTime fimGuerra)
+    public async Task<Guerra> ObterGuerraPorDatas(DateTime inicioGuerra, DateTime fimGuerra)
     {
         var guerra = await _context.Guerras.FirstOrDefaultAsync(g => g.InicioGuerra == inicioGuerra && g.FimGuerra == fimGuerra);
-        if (guerra is null)
-            return Maybe.None;
-
         return guerra;
     }
 

@@ -12,14 +12,13 @@ public class GuerraController(IMediatorHandler mediator) : MainController
 {
     private readonly IMediatorHandler _mediator = mediator;
     [HttpPost("criar")]
-    public async Task<IActionResult> CriarGuerra([FromServices] IMediator mediator, [FromBody] CriarGuerraRequest request)
+    public async Task<IActionResult> CriarGuerra(
+                [FromServices] IMediator mediator,
+                [FromBody] CriarGuerraRequest request)
     {
         var resultado = await mediator.Send(request);
-        //if (!resultado.ValidationResult.IsValid)
-        //{
-        //    return CustomResponse(resultado.ValidationResult);
-        //}
-        return NoContent();
+
+        return resultado.ToActionResult(this);
     }
 
 }

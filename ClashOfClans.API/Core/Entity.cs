@@ -2,10 +2,10 @@
 
 public abstract class Entity
 {
-    public int Id { get; set; }
-    public DateTime DataAlteracao { get; set; }
-    public DateTime DataCriacao { get; set; }
-    public bool? FoiRemovido { get; set; } = false;
+    public int Id { get; init; }
+    public DateTime DataAlteracao { get; protected set; }
+    public DateTime DataCriacao { get; init; }
+    public bool? FoiRemovido { get; protected set; } = false;
     public override bool Equals(object? obj)
     {
         var compareTo = obj as Entity;

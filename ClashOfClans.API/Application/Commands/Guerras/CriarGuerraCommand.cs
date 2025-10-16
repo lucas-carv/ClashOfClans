@@ -2,19 +2,18 @@
 using ClashOfClans.API.Core.CommandResults;
 using ClashOfClans.API.Model.Guerras;
 using ClashOfClans.API.Repositories;
-using CSharpFunctionalExtensions;
 using MediatR;
 using System.Security.Policy;
 
 namespace ClashOfClans.API.Application.Commands.Guerras;
-public record CriarGuerraRequest(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanGuerra Clan) : IRequest<CommandResult<bool>>;
+public record CriarGuerraRequest(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanGuerra Clan) : IRequest<CommandResult<Guerra>>;
 
-public class CriarGuerraCommandHandler(IGuerraRepository guerraRepository, IClanRepository clanRepository) : CommandHandler, IRequestHandler<CriarGuerraRequest, CommandResult<bool>>
+public class CriarGuerraCommandHandler(IGuerraRepository guerraRepository, IClanRepository clanRepository) : CommandHandler, IRequestHandler<CriarGuerraRequest, CommandResult<Guerra>>
 {
     private readonly IGuerraRepository _guerraRepository = guerraRepository;
     private readonly IClanRepository _clanRepository = clanRepository;
 
-    public async Task<CommandResult<bool>> Handle(CriarGuerraRequest request, CancellationToken cancellationToken)
+    public async Task<CommandResult<Guerra>> Handle(CriarGuerraRequest request, CancellationToken cancellationToken)
     {
         bool existeClan = await _clanRepository.VerificarSeExisteClan(request.Clan.Tag);
         if (!existeClan)
@@ -22,21 +21,21 @@ public class CriarGuerraCommandHandler(IGuerraRepository guerraRepository, IClan
             var erro = new ErrorMessage("teste", "teste");
             var erros = new List<ErrorMessage>();
             erros.Add(erro);
-            return CommandResult<bool>.InvalidInput(erros);
+            return CommandResult<Guerra>.InvalidInput(erros);
         }
 
         List<MembroGuerra> participantes = new();
         GuerraClan guerraClan = new();
 
-        Maybe<Guerra> guerra = await _guerraRepository.ObterGuerraPorDatas(request.InicioGuerra, request.FimGuerra);
+        var guerra = await _guerraRepository.ObterGuerraPorDatas(request.InicioGuerra, request.FimGuerra);
         Guerra novaGuerra = new();
-        if (guerra.HasNoValue)
+        if (guerra is null)
         {
-            novaGuerra = new(request.Status, request.InicioGuerra, request.FimGuerra, guerraClan); ;
+            Result<Guerra> novaGuertra = Guerra.Criar(request.Status, request.InicioGuerra, request.FimGuerra, guerraClan); ;
         }
         else
         {
-            novaGuerra = guerra.Value;
+            novaGuerra = guerra;
         }
 
         foreach (var membros in request.Clan.Membros)
@@ -55,7 +54,7 @@ public class CriarGuerraCommandHandler(IGuerraRepository guerraRepository, IClan
         ValidationResult = await PersistirDados(_guerraRepository.UnitOfWork);
 
         var result = new CommandResponse<bool>(ValidationResult, ValidationResult.IsValid);
-        return new CommandResult<bool>();
+        return novaGuerra;
     }
 }
 

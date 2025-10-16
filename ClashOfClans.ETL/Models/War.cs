@@ -6,12 +6,18 @@ namespace ClashOfClans.ETL.Models;
 
 public class War
 {
-    public string State { get; set; } = string.Empty;
+    public StatusGuerra State { get; set; } 
     [JsonConverter(typeof(CustomDateTimeConverter))]
     public DateTime StartTime { get; set; }
     [JsonConverter(typeof(CustomDateTimeConverter))]
     public DateTime EndTime { get; set; }
     public ClanWar Clan { get; set; } = new();
+}
+
+public enum StatusGuerra
+{
+    NotInWar,
+    InWar
 }
 
 public class ClanWar
