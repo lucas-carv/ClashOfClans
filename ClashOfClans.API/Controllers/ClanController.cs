@@ -40,7 +40,11 @@ public class ClanController(IMediatorHandler mediator, IClanRepository clanRepos
     [HttpPost("criar")]
     public async Task<IActionResult> CriarClan([FromBody] ClanInputModel inputModel)
     {
-        CriarClanCommand adicionarClanCommand = new(inputModel.Tag, inputModel.Nome, inputModel.Membros);
+        CriarClanCommand adicionarClanCommand = new(
+            inputModel.Tag, 
+            inputModel.Nome, 
+            inputModel.Membros);
+
         var resultado = await _mediator.EnviarComando(adicionarClanCommand);
         if (!resultado.ValidationResult.IsValid)
         {
