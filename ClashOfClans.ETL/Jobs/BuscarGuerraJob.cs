@@ -15,9 +15,6 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService) : IJob
         string encodedTag = Uri.EscapeDataString(tag);
 
         War war = await _clashOfClansService.BuscarGuerra(encodedTag);
-        if (war.State.Equals(StatusGuerra.NotInWar))
-            return;
-
         IntegrationService integrationService = new();
 
         GuerraInputModel guerraInputModel = new()
