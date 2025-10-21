@@ -44,7 +44,7 @@ public class ClanController(IMediatorHandler mediator, IClanRepository clanRepos
             inputModel.Tag, 
             inputModel.Nome, 
             inputModel.Membros);
-
+ 
         var resultado = await _mediator.EnviarComando(adicionarClanCommand);
         if (!resultado.ValidationResult.IsValid)
         {

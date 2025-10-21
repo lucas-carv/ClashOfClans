@@ -18,13 +18,15 @@ public class CriarGuerraCommandHandler(IGuerraRepository guerraRepository, IClan
         bool existeClan = await _clanRepository.VerificarSeExisteClan(request.Clan.Tag);
         if (!existeClan)
         {
-            var erro = new ErrorMessage("teste", "teste");
-            var erros = new List<ErrorMessage>();
-            erros.Add(erro);
+            var erro = new ErrorMessage("NAO_EXISTE_CLAN", "Não existe clan");
+            var erros = new List<ErrorMessage>
+            {
+                erro
+            };
             return CommandResult<Guerra>.InvalidInput(erros);
         }
 
-        List<MembroGuerra> participantes = new();
+        List<MembroGuerra> participantes = [];
         GuerraClan guerraClan = new();
 
         var guerra = await _guerraRepository.ObterGuerraPorDatas(request.InicioGuerra, request.FimGuerra);
@@ -57,8 +59,6 @@ public class CriarGuerraCommandHandler(IGuerraRepository guerraRepository, IClan
         return novaGuerra;
     }
 }
-
-
 
 public record ClanGuerra
 {
