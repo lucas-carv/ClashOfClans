@@ -22,12 +22,12 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService) : IJob
             Clan = new ClanGuerra()
             {
                 Tag = war.Clan.Tag,
-                Membros = war.Clan.Members.Select(m => new MembroGuerraDTO()
+                Membros = [.. war.Clan.Members.Select(m => new MembroGuerraDTO()
                 {
                     Ataques = m.Attacks.Select(a => new AtaquesDTO() { Estrela = a.Stars }).ToList(),
                     Nome = m.Name!,
                     Tag = m.Tag!
-                }).ToList(),
+                })],
             },
             FimGuerra = war.EndTime,
             InicioGuerra = war.StartTime,
