@@ -31,9 +31,9 @@ public class GuerraClanMapping : IEntityTypeConfiguration<GuerraClan>
     }
 }
 
-public class MembroGuerraMapping : IEntityTypeConfiguration<MembroGuerra>
+public class MembroGuerraMapping : IEntityTypeConfiguration<MembroEmGuerra>
 {
-    public void Configure(EntityTypeBuilder<MembroGuerra> builder)
+    public void Configure(EntityTypeBuilder<MembroEmGuerra> builder)
     {
         builder.ToTable("guerra_clan_membro");
         builder.HasQueryFilter(p => p.FoiRemovido != null);

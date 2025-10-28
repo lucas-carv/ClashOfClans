@@ -1,7 +1,6 @@
 ﻿using ClashOfClans.API.Core;
 using ClashOfClans.API.Data;
 using ClashOfClans.API.Model;
-using ClashOfClans.API.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 

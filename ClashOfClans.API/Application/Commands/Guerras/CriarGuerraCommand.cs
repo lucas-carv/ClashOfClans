@@ -1,78 +1,72 @@
-﻿using ClashOfClans.API.Core;
-using ClashOfClans.API.Core.CommandResults;
+﻿using ClashOfClans.API.Core.CommandResults;
+using ClashOfClans.API.Data;
 using ClashOfClans.API.Model.Guerras;
-using ClashOfClans.API.Repositories;
 using MediatR;
-using System.Security.Policy;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClashOfClans.API.Application.Commands.Guerras;
-public record CriarGuerraRequest(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanGuerra Clan) : IRequest<CommandResult<Guerra>>;
+public record UpsertGuerraRequest(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanEmGuerraDTO Clan) : IRequest<CommandResult<CriarGuerraResponse>>;
+public record CriarGuerraResponse(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanEmGuerraDTO Clan);
 
-public class CriarGuerraCommandHandler(IGuerraRepository guerraRepository, IClanRepository clanRepository) : CommandHandler, IRequestHandler<CriarGuerraRequest, CommandResult<Guerra>>
+public class CriarGuerraCommandHandler(ClashOfClansContext context) : IRequestHandler<UpsertGuerraRequest, CommandResult<CriarGuerraResponse>>
 {
-    private readonly IGuerraRepository _guerraRepository = guerraRepository;
-    private readonly IClanRepository _clanRepository = clanRepository;
-
-    public async Task<CommandResult<Guerra>> Handle(CriarGuerraRequest request, CancellationToken cancellationToken)
+    public async Task<CommandResult<CriarGuerraResponse>> Handle(UpsertGuerraRequest request, CancellationToken cancellationToken)
     {
-        bool existeClan = await _clanRepository.VerificarSeExisteClan(request.Clan.Tag);
-        if (!existeClan)
+        bool clanExiste = await context.Clans.AnyAsync(c => c.Tag == request.Clan.Tag, cancellationToken: cancellationToken);
+        if (!clanExiste)
         {
-            var erro = new ErrorMessage("NAO_EXISTE_CLAN", "Não existe clan");
-            var erros = new List<ErrorMessage>
-            {
-                erro
-            };
-            return CommandResult<Guerra>.InvalidInput(erros);
+            return ValidationErrors.Clan.ClanNaoExiste;
         }
 
-        List<MembroGuerra> participantes = [];
-        GuerraClan guerraClan = new();
-
-        var guerra = await _guerraRepository.ObterGuerraPorDatas(request.InicioGuerra, request.FimGuerra);
-        Guerra novaGuerra = new();
-        if (guerra is null)
+        bool existeGuerra = await context.Guerras
+            .AnyAsync(
+                g =>
+                    g.InicioGuerra == request.InicioGuerra &&
+                    g.FimGuerra == request.FimGuerra,
+                cancellationToken: cancellationToken);
+        if (existeGuerra)
         {
-            Result<Guerra> novaGuertra = Guerra.Criar(request.Status, request.InicioGuerra, request.FimGuerra, guerraClan); ;
-        }
-        else
-        {
-            novaGuerra = guerra;
+            return ValidationErrors.Guerra.GuerraJaExiste;
         }
 
-        foreach (var membros in request.Clan.Membros)
-        {
-            List<Ataque> ataques = membros.Ataques.Select(m => new Ataque()
-            {
-                Estrelas = m.Estrelas,
-            }).ToList();
+        ClanEmGuerra clanEmGuerra = new(request.Clan.Tag);
 
-            guerraClan.AdicionarMembro(membros.Tag, membros.Nome, ataques);
+        foreach (var participantesGuerra in request.Clan.Membros)
+        {
+            clanEmGuerra.AdicionarMembro(participantesGuerra.Tag, participantesGuerra.Nome);
         }
 
+        Guerra guerra = new(request.Status, request.InicioGuerra, request.FimGuerra, clanEmGuerra);
+        context.Add(guerra);
+        await context.SaveChangesAsync(cancellationToken);
 
-        _guerraRepository.Add(novaGuerra);
-
-        ValidationResult = await PersistirDados(_guerraRepository.UnitOfWork);
-
-        var result = new CommandResponse<bool>(ValidationResult, ValidationResult.IsValid);
-        return novaGuerra;
+        ClanEmGuerraDTO clan = new()
+        {
+            Tag = guerra.ClanEmGuerra.Tag,
+            Membros = guerra.ClanEmGuerra.Membros
+                .Select(c => new MembroEmGuerraDTO()
+                {
+                    Nome = c.Nome,
+                    Tag = c.Tag
+                })
+        };
+        CriarGuerraResponse response = new(guerra.Status, guerra.InicioGuerra, guerra.FimGuerra, clan);
+        return response;
     }
 }
 
-public record ClanGuerra
+public record ClanEmGuerraDTO
 {
     public string Tag { get; set; } = string.Empty;
-    public List<ParticipantesGuerra> Membros { get; set; } = [];
+    public IEnumerable<MembroEmGuerraDTO> Membros { get; set; } = [];
 }
-public record ParticipantesGuerra
+public record MembroEmGuerraDTO
 {
-    public string Tag { get; set; } = string.Empty;
-    public string Nome { get; set; } = string.Empty;
-    public List<Ataques> Ataques { get; set; } = [];
-
+    public required string Tag { get; set; }
+    public required string Nome { get; set; }
+    public IEnumerable<AtaquesDTO> Ataques { get; set; } = [];
 }
-public class Ataques
+public record AtaquesDTO
 {
     public int Estrelas { get; set; }
 }

@@ -11,6 +11,7 @@ public class BuscarClanJob(ClashOfClansService clashOfClansService) : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
+        return;
         string tag = "#2L0UC9R8P";
         string encodedTag = Uri.EscapeDataString(tag);
         Clan clan = await _clashOfClansService.BuscarClan(encodedTag);

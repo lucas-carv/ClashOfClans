@@ -29,6 +29,7 @@
   <ItemGroup>
     <Folder Include="InputModels\" />
     <Folder Include="Migrations\" />
+    <Folder Include="ViewModels\" />
   </ItemGroup>
 
 </Project>

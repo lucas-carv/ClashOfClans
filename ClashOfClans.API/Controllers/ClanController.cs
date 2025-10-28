@@ -2,7 +2,6 @@
 using ClashOfClans.API.Core.CommandResults;
 using ClashOfClans.API.Data;
 using ClashOfClans.API.Model;
-using ClashOfClans.API.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,14 +9,14 @@ using Microsoft.EntityFrameworkCore;
 namespace ClashOfClans.API.Controllers;
 
 [Route("api/v1/clan")]
-public class ClanController(IMediator mediator, ClashOfClansContext context) : MainController
+public class ClanController(IMediator mediator, ClashOfClansContext context) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
     [HttpGet("{tag}")]
-    public async Task<ActionResult<ClanViewModel>> ObterPorTag(string tag)
+    public async Task<IActionResult> ObterPorTag(string tag)
     {
-        Clan? clan = await context.Clans.FirstOrDefaultAsync(c => c.Tag == tag);
+        Clan? clan = await context.Clans.Include(c => c.Membros.Where(m => m.Situacao == SituacaoMembro.Ativo)).FirstOrDefaultAsync(c => c.Tag == tag);
         return Ok(clan);
     }
 

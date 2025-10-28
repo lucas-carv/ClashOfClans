@@ -1,5 +1,4 @@
 ﻿using ClashOfClans.API.Model;
-using ClashOfClans.API.ViewModels;
 
 namespace ClashOfClans.API.Repositories;
 
