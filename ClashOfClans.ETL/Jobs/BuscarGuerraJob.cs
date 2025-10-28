@@ -40,7 +40,6 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService) : IJob
             await integrationService.EnviarGuerra(guerraInputModel);
             return;
         }
-        int x = 1;
     }
 }
 

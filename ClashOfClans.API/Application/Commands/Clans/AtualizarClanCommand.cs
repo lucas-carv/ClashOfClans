@@ -19,8 +19,8 @@ public class AtualizarClanCommandHandler(IClanRepository clanRepository) : Comma
             return new CommandResponse<bool>(ValidationResult);
         }
         var membrosParaAdicionar = request.Membros
-            .Where(ia => !clan.Membros.Any(ic => ic.Tag == ia.Tag && ic.Situacao == SituacaoMembro.Ativo))
-            .Select(i => i).ToList()!;
+            .Where(me => !clan.Membros.Any(m => m.Tag == me.Tag && m.Situacao == SituacaoMembro.Ativo))
+            .Select(membroDTO => membroDTO);
 
         foreach (var membro in membrosParaAdicionar)
         {
@@ -28,8 +28,8 @@ public class AtualizarClanCommandHandler(IClanRepository clanRepository) : Comma
         }
 
         IEnumerable<string> membrosTagParaInativar = clan.Membros
-            .Where(ia => !request.Membros.Any(ic => ic.Tag == ia.Tag))
-            .Select(i => i.Tag)!;
+            .Where(m => !request.Membros.Any(me => me.Tag == m.Tag))
+            .Select(m => m.Tag);
 
         foreach (var membroTag in membrosTagParaInativar)
         {
@@ -45,9 +45,9 @@ public class AtualizarClanCommandHandler(IClanRepository clanRepository) : Comma
     }
 }
 
-public record AtualizarClanCommand(string tag, string nome, List<MembroDTO> membros) : Command<CommandResponse<bool>>
+public record AtualizarClanCommand(string Tag, string Nome, List<MembroDTO> Membros) : Command<CommandResponse<bool>>
 {
-    public string Tag { get; private set; } = tag;
-    public string Nome { get; private set; } = nome;
-    public List<MembroDTO> Membros { get; private set; } = membros;
+    public string Tag { get; private set; } = Tag;
+    public string Nome { get; private set; } = Nome;
+    public List<MembroDTO> Membros { get; private set; } = Membros;
 }

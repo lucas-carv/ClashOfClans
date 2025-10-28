@@ -4,14 +4,15 @@ using ClashOfClans.API.InputModels;
 using ClashOfClans.API.Model;
 using ClashOfClans.API.Repositories;
 using ClashOfClans.API.ViewModels;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClashOfClans.API.Controllers;
 
 [Route("api/v1/clan")]
-public class ClanController(IMediatorHandler mediator, IClanRepository clanRepository) : MainController
+public class ClanController(IMediator mediator, IClanRepository clanRepository) : MainController
 {
-    private readonly IMediatorHandler _mediator = mediator;
+    private readonly IMediator _mediator = mediator;
     private readonly IClanRepository _clanRepository = clanRepository;
 
     [HttpGet("{tag}")]
@@ -38,27 +39,22 @@ public class ClanController(IMediatorHandler mediator, IClanRepository clanRepos
     }
 
     [HttpPost("criar")]
-    public async Task<IActionResult> CriarClan([FromBody] ClanInputModel inputModel)
+    public async Task<IActionResult> CriarClan([FromBody] CriarClanRequest inputModel)
     {
-        CriarClanCommand adicionarClanCommand = new(
-            inputModel.Tag, 
-            inputModel.Nome, 
-            inputModel.Membros);
- 
-        var resultado = await _mediator.EnviarComando(adicionarClanCommand);
-        if (!resultado.ValidationResult.IsValid)
-        {
-            return CustomResponse(resultado.ValidationResult);
-        }
+        var resultado = await _mediator.Send(inputModel);
+        //if (!resultado.ValidationResult.IsValid)
+        //{
+        //    return CustomResponse(resultado.ValidationResult);
+        //}
         return NoContent();
     }
 
     [HttpPut("atualizar")]
-    public async Task<IActionResult> AtualizarClan([FromBody] ClanInputModel inputModel)
+    public async Task<IActionResult> AtualizarClan([FromBody] CriarClanRequest inputModel)
     {
         AtualizarClanCommand adicionarClanCommand = new(inputModel.Tag, inputModel.Nome, inputModel.Membros);
 
-        var resultado = await _mediator.EnviarComando(adicionarClanCommand);
+        var resultado = await _mediator.Send(adicionarClanCommand);
         if (!resultado.ValidationResult.IsValid)
         {
             return CustomResponse(resultado.ValidationResult);

@@ -1,24 +1,17 @@
-﻿using ClashOfClans.API.Application.Commands.Clans;
-using ClashOfClans.API.Application.Commands.Guerras;
-using ClashOfClans.API.Core;
-using ClashOfClans.API.Repositories;
+﻿using ClashOfClans.API.Application.Commands.Guerras;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClashOfClans.API.Controllers;
 
 [Route("api/v1/guerra")]
-public class GuerraController(IMediatorHandler mediator) : MainController
+public class GuerraController(IMediator mediator) : MainController
 {
-    private readonly IMediatorHandler _mediator = mediator;
+    private readonly IMediator _mediator = mediator;
     [HttpPost("criar")]
-    public async Task<IActionResult> CriarGuerra(
-                [FromServices] IMediator mediator,
-                [FromBody] CriarGuerraRequest request)
+    public async Task<IActionResult> CriarGuerra([FromBody] CriarGuerraRequest request)
     {
-        var resultado = await mediator.Send(request);
-
+        var resultado = await _mediator.Send(request);
         return resultado.ToActionResult(this);
     }
-
 }

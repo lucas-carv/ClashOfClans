@@ -3,11 +3,11 @@
 namespace ClashOfClans.API.Model;
 public class Clan : Entity, IAggregateRoot
 {
-    public string Tag { get;  } = string.Empty;
-    public string Nome { get;  } = string.Empty;
-    public List<Membro> Membros { get;  } = [];
+    public string Tag { get; init; }
+    public string Nome { get; init; }
+    public List<Membro> Membros { get; private set; } = [];
 
-    public Clan() { }
+    private Clan() { }
     public Clan(string tag, string nome)
     {
         Tag = tag;
@@ -33,6 +33,6 @@ public class Clan : Entity, IAggregateRoot
         if (membro is null)
             return;
 
-        membro.Situacao = SituacaoMembro.Inativo;
+        membro.InativarMembro();
     }
 }

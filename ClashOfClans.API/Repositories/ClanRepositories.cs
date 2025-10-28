@@ -33,7 +33,7 @@ namespace ClashOfClans.API.Repositories
         public Task<Clan> ObterClanPorTag(string tag)
         {
             var clan = _context.Clans
-                .Include(c => c.Membros)
+                .Include(c => c.Membros.Where(m => m.Situacao == SituacaoMembro.Ativo))
                 .FirstOrDefaultAsync(c => c.Tag == tag);
             return clan!;
         }

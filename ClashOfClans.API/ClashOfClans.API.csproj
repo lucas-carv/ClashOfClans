@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="InputModels\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

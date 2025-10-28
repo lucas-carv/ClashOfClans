@@ -1,22 +1,36 @@
-﻿using ClashOfClans.API.Core;
-using ClashOfClans.API.InputModels;
+﻿using ClashOfClans.API.Core.CommandResults;
+using ClashOfClans.API.Data;
 using ClashOfClans.API.Model;
-using ClashOfClans.API.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClashOfClans.API.Application.Commands.Clans;
 
-public class CriarClanCommandHandler(IClanRepository clanRepository) : CommandHandler, IRequestHandler<CriarClanCommand, CommandResponse<bool>>
-{
-    private readonly IClanRepository _clanRepository = clanRepository;
 
-    public async Task<CommandResponse<bool>> Handle(CriarClanCommand command, CancellationToken cancellationToken)
+public class CriarClanRequest(string Tag, string Nome, IEnumerable<MembroDTO> Membros) : IRequest<CommandResult<CriarClanResponse>>
+{
+    public required string Tag { get; init; } = Tag;
+    public required string Nome { get; init; } = Nome;
+    public IEnumerable<MembroDTO> Membros { get; init; } = Membros;
+}
+
+public class CriarClanResponse(string Tag, string Nome, IEnumerable<MembroDTO> Membros)
+{
+    public string Tag { get; init; } = Tag;
+    public string Nome { get; init; } = Nome;
+    public IEnumerable<MembroDTO> Membros { get; set; } = Membros;
+}
+
+public class CriarClanCommandHandler(ClashOfClansContext context) : IRequestHandler<CriarClanRequest, CommandResult<CriarClanResponse>>
+{
+    private readonly ClashOfClansContext _context = context;
+
+    public async Task<CommandResult<CriarClanResponse>> Handle(CriarClanRequest command, CancellationToken cancellationToken)
     {
-        bool existeClan = await _clanRepository.VerificarSeExisteClan(command.Tag);
-        if (existeClan)
+        bool clanExiste = await _context.Clans.AnyAsync(c => c.Tag == command.Tag, cancellationToken: cancellationToken);
+        if (clanExiste)
         {
-            AdicionarErro($"O Clan de tag {command.Tag} já existe");
-            return new CommandResponse<bool>(ValidationResult);
+            return ValidationErrors.Clan.ClanJaExiste;
         }
 
         Clan clan = new(command.Tag, command.Nome);
@@ -26,37 +40,25 @@ public class CriarClanCommandHandler(IClanRepository clanRepository) : CommandHa
             clan.AdicionarMembro(membro.Tag, membro.Nome);
         }
 
-        _clanRepository.Add(clan);
+        _context.Add(clan);
+        await _context.SaveChangesAsync(cancellationToken);
 
-        ValidationResult = await PersistirDados(_clanRepository.UnitOfWork);
+        var membros = clan.Membros
+            .Select(m => new MembroDTO()
+            {
+                Nome = m.Nome,
+                Tag = m.Tag
+            });
 
-        var result = new CommandResponse<bool>(ValidationResult, ValidationResult.IsValid);
-        return result;
+        CriarClanResponse response = new(clan.Tag, clan.Nome, membros);
+        return response;
     }
 }
 
-public record CriarClanCommand(string tag, string nome, List<MembroDTO> membros) : Command<CommandResponse<bool>>
+public class MembroDTO
 {
-    public string Tag { get; private set; } = tag;
-    public string Nome { get; private set; } = nome;
-    public List<MembroDTO> Membros { get; private set; } = membros;
-
-    //public string Type { get; set; } = string.Empty;
-    //public string Description { get; set; } = string.Empty;
-    //public bool IsFamilyFriendly { get; set; }
-    //public int ClanLevel { get; set; }
-    //public int ClanPoints { get; set; }
-    //public int ClanBuilderBasePoints { get; set; }
-    //public int ClanCapitalPoints { get; set; }
-    //public int RequiredTrophies { get; set; }
-    //public string WarFrequency { get; set; } = string.Empty;
-    //public int WarWinStreak { get; set; }
-    //public int WarWins { get; set; }
-    //public int WarTies { get; set; }
-    //public int WarLosses { get; set; }
-    //public bool IsWarLogPublic { get; set; }
-    //public int Members { get; set; }
-    //public int RequiredBuilderBaseTrophies { get; set; }
-    //public int RequiredTownhallLevel { get; set; }
-
+    //[Required(ErrorMessage = "A Tag do membro é obrigatória")]
+    public required string Tag { get; set; }
+    //[Required(ErrorMessage = "O nome do membro é obrigatório")]
+    public required string Nome { get; set; }
 }
