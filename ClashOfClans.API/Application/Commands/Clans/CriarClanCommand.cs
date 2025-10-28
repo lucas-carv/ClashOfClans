@@ -7,24 +7,12 @@ using Microsoft.EntityFrameworkCore;
 namespace ClashOfClans.API.Application.Commands.Clans;
 
 
-public class CriarClanRequest(string Tag, string Nome, IEnumerable<MembroDTO> Membros) : IRequest<CommandResult<CriarClanResponse>>
-{
-    public required string Tag { get; init; } = Tag;
-    public required string Nome { get; init; } = Nome;
-    public IEnumerable<MembroDTO> Membros { get; init; } = Membros;
-}
-
-public class CriarClanResponse(string Tag, string Nome, IEnumerable<MembroDTO> Membros)
-{
-    public string Tag { get; init; } = Tag;
-    public string Nome { get; init; } = Nome;
-    public IEnumerable<MembroDTO> Membros { get; set; } = Membros;
-}
+public record CriarClanRequest(string Tag, string Nome, IEnumerable<MembroDTO> Membros) : IRequest<CommandResult<CriarClanResponse>>;
+public record CriarClanResponse(string Tag, string Nome, IEnumerable<MembroDTO> Membros);
 
 public class CriarClanCommandHandler(ClashOfClansContext context) : IRequestHandler<CriarClanRequest, CommandResult<CriarClanResponse>>
 {
     private readonly ClashOfClansContext _context = context;
-
     public async Task<CommandResult<CriarClanResponse>> Handle(CriarClanRequest command, CancellationToken cancellationToken)
     {
         bool clanExiste = await _context.Clans.AnyAsync(c => c.Tag == command.Tag, cancellationToken: cancellationToken);
@@ -55,10 +43,8 @@ public class CriarClanCommandHandler(ClashOfClansContext context) : IRequestHand
     }
 }
 
-public class MembroDTO
+public record MembroDTO
 {
-    //[Required(ErrorMessage = "A Tag do membro é obrigatória")]
     public required string Tag { get; set; }
-    //[Required(ErrorMessage = "O nome do membro é obrigatório")]
     public required string Nome { get; set; }
 }

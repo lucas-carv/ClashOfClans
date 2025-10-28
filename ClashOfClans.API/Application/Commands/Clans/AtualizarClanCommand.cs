@@ -1,24 +1,26 @@
 ﻿using ClashOfClans.API.Core;
-using ClashOfClans.API.InputModels;
+using ClashOfClans.API.Core.CommandResults;
+using ClashOfClans.API.Data;
 using ClashOfClans.API.Model;
-using ClashOfClans.API.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClashOfClans.API.Application.Commands.Clans;
 
-public class AtualizarClanCommandHandler(IClanRepository clanRepository) : CommandHandler, IRequestHandler<AtualizarClanCommand, CommandResponse<bool>>
-{
-    private readonly IClanRepository _clanRepository = clanRepository;
+public record AtualizarClanRequest(string Tag, string Nome, IEnumerable<MembroDTO> Membros) : Command<CommandResult<AtualizarClanResponse>>;
+public record AtualizarClanResponse(string Tag, string Nome, IEnumerable<MembroDTO> Membros);
 
-    public async Task<CommandResponse<bool>> Handle(AtualizarClanCommand request, CancellationToken cancellationToken)
+public class AtualizarClanCommandHandler(ClashOfClansContext context) : CommandHandler, IRequestHandler<AtualizarClanRequest, CommandResult<AtualizarClanResponse>>
+{
+    public async Task<CommandResult<AtualizarClanResponse>> Handle(AtualizarClanRequest request, CancellationToken cancellationToken)
     {
-        Clan clan = await _clanRepository.ObterClanPorTag(request.Tag);
+        Clan? clan = await context.Clans.FirstOrDefaultAsync(c => c.Tag == request.Tag, cancellationToken: cancellationToken);
         if (clan is null)
         {
-            AdicionarErro($"Clan com a tag {request.Tag} não encontrado para ser atualizado");
-            return new CommandResponse<bool>(ValidationResult);
+            return ValidationErrors.Clan.ClanNaoExiste;
         }
-        var membrosParaAdicionar = request.Membros
+
+        IEnumerable<MembroDTO> membrosParaAdicionar = request.Membros
             .Where(me => !clan.Membros.Any(m => m.Tag == me.Tag && m.Situacao == SituacaoMembro.Ativo))
             .Select(membroDTO => membroDTO);
 
@@ -35,19 +37,15 @@ public class AtualizarClanCommandHandler(IClanRepository clanRepository) : Comma
         {
             clan.InativarMembro(membroTag);
         }
+        await context.SaveChangesAsync(cancellationToken);
 
-        _clanRepository.Update(clan);
-
-        ValidationResult = await PersistirDados(_clanRepository.UnitOfWork);
-
-        var result = new CommandResponse<bool>(ValidationResult);
-        return result;
+        IEnumerable<MembroDTO> membros = clan.Membros.Select(m =>
+            new MembroDTO
+            {
+                Nome = m.Nome,
+                Tag = m.Tag
+            });
+        AtualizarClanResponse response = new AtualizarClanResponse(clan.Tag, clan.Nome, membros);
+        return response;
     }
-}
-
-public record AtualizarClanCommand(string Tag, string Nome, List<MembroDTO> Membros) : Command<CommandResponse<bool>>
-{
-    public string Tag { get; private set; } = Tag;
-    public string Nome { get; private set; } = Nome;
-    public List<MembroDTO> Membros { get; private set; } = Membros;
 }
