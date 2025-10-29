@@ -5,12 +5,12 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClashOfClans.API.Application.Commands.Guerras;
-public record UpsertGuerraRequest(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanEmGuerraDTO Clan) : IRequest<CommandResult<CriarGuerraResponse>>;
-public record CriarGuerraResponse(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanEmGuerraDTO Clan);
+public record UpsertGuerraRequest(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanEmGuerraDTO Clan) : IRequest<CommandResult<UpsertGuerraResponse>>;
+public record UpsertGuerraResponse(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanEmGuerraDTO Clan);
 
-public class CriarGuerraCommandHandler(ClashOfClansContext context) : IRequestHandler<UpsertGuerraRequest, CommandResult<CriarGuerraResponse>>
+public class UpsertGuerraCommandHandler(ClashOfClansContext context) : IRequestHandler<UpsertGuerraRequest, CommandResult<UpsertGuerraResponse>>
 {
-    public async Task<CommandResult<CriarGuerraResponse>> Handle(UpsertGuerraRequest request, CancellationToken cancellationToken)
+    public async Task<CommandResult<UpsertGuerraResponse>> Handle(UpsertGuerraRequest request, CancellationToken cancellationToken)
     {
         bool clanExiste = await context.Clans.AnyAsync(c => c.Tag == request.Clan.Tag, cancellationToken: cancellationToken);
         if (!clanExiste)
@@ -50,7 +50,7 @@ public class CriarGuerraCommandHandler(ClashOfClansContext context) : IRequestHa
                     Tag = c.Tag
                 })
         };
-        CriarGuerraResponse response = new(guerra.Status, guerra.InicioGuerra, guerra.FimGuerra, clan);
+        UpsertGuerraResponse response = new(guerra.Status, guerra.InicioGuerra, guerra.FimGuerra, clan);
         return response;
     }
 }

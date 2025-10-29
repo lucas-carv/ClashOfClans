@@ -17,17 +17,17 @@ public class GuerraMapping : IEntityTypeConfiguration<Guerra>
             .IsUnique();
     }
 }
-public class GuerraClanMapping : IEntityTypeConfiguration<GuerraClan>
+public class ClanEmGuerraMapping : IEntityTypeConfiguration<ClanEmGuerra>
 {
-    public void Configure(EntityTypeBuilder<GuerraClan> builder)
+    public void Configure(EntityTypeBuilder<ClanEmGuerra> builder)
     {
         builder.ToTable("guerra_clan");
         builder.HasQueryFilter(p => p.FoiRemovido != null);
         builder.HasKey(c => c.Id);
 
         builder.HasOne(gc => gc.Guerra)
-       .WithOne(g => g.GuerraClan)
-       .HasForeignKey<GuerraClan>(gc => gc.GuerraId);
+       .WithOne(g => g.ClanEmGuerra)
+       .HasForeignKey<ClanEmGuerra>(gc => gc.GuerraId);
     }
 }
 
