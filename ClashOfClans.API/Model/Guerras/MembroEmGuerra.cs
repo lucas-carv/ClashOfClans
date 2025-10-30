@@ -16,14 +16,21 @@ public class MembroEmGuerra : Entity
         Nome = nome;
     }
 
-    public void AdicionarAtaque(int estrelas)
+    public void AtualizarAtaque(int estrelas)
     {
-        Ataque ataque = new()
+        Ataque? ataque = Ataques.FirstOrDefault(a => a.MembroId == this.Id);
+        if (ataque is not null)
+        {
+            ataque.Estrelas = estrelas;
+            return;
+        }
+
+        Ataque novoAtaque = new()
         {
             MembroId = this.Id,
             Estrelas = estrelas
         };
-
-        Ataques.Add(ataque);
+        Ataques.Add(novoAtaque);
+        return;
     }
 }

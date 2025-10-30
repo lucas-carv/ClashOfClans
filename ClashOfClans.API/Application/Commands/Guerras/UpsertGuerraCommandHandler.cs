@@ -18,40 +18,56 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context) : IRequestH
             return ValidationErrors.Clan.ClanNaoExiste;
         }
 
-        bool existeGuerra = await context.Guerras
-            .AnyAsync(
+        var guerraExistente = await context.Guerras.Include(g => g.ClanEmGuerra).ThenInclude(c => c.Membros).ThenInclude(m => m.Ataques)
+            .FirstOrDefaultAsync(
                 g =>
                     g.InicioGuerra == request.InicioGuerra &&
                     g.FimGuerra == request.FimGuerra,
                 cancellationToken: cancellationToken);
-        if (existeGuerra)
+        if (guerraExistente is null)
         {
-            return ValidationErrors.Guerra.GuerraJaExiste;
+            var clanEmGuerra = new ClanEmGuerra(request.Clan.Tag);
+            foreach (var participante in request.Clan.Membros)
+                clanEmGuerra.AdicionarMembro(participante.Tag, participante.Nome);
+
+            var novaGuerra = new Guerra(request.Status, request.InicioGuerra, request.FimGuerra, clanEmGuerra);
+            context.Add(novaGuerra);
+            await context.SaveChangesAsync(cancellationToken);
+
+            var responseCriacao = MapearResponse(novaGuerra);
+            return responseCriacao;
+        }
+        foreach (var membro in request.Clan.Membros)
+        {
+            var membroExiste = guerraExistente.ClanEmGuerra.Membros.FirstOrDefault(m => m.Tag == membro.Tag);
+            if (membroExiste is null)
+                continue;
+
+            foreach (var ataque in membro.Ataques)
+            {
+                membroExiste.AtualizarAtaque(ataque.Estrelas);
+            }
         }
 
-        ClanEmGuerra clanEmGuerra = new(request.Clan.Tag);
-
-        foreach (var participantesGuerra in request.Clan.Membros)
-        {
-            clanEmGuerra.AdicionarMembro(participantesGuerra.Tag, participantesGuerra.Nome);
-        }
-
-        Guerra guerra = new(request.Status, request.InicioGuerra, request.FimGuerra, clanEmGuerra);
-        context.Add(guerra);
         await context.SaveChangesAsync(cancellationToken);
 
-        ClanEmGuerraDTO clan = new()
+        var responseAtualizacao = MapearResponse(guerraExistente);
+        return responseAtualizacao;
+    }
+
+    private static UpsertGuerraResponse MapearResponse(Guerra guerra)
+    {
+        var clanDTO = new ClanEmGuerraDTO
         {
             Tag = guerra.ClanEmGuerra.Tag,
-            Membros = guerra.ClanEmGuerra.Membros
-                .Select(c => new MembroEmGuerraDTO()
-                {
-                    Nome = c.Nome,
-                    Tag = c.Tag
-                })
+            Membros = guerra.ClanEmGuerra.Membros.Select(m => new MembroEmGuerraDTO
+            {
+                Tag = m.Tag,
+                Nome = m.Nome
+            })
         };
-        UpsertGuerraResponse response = new(guerra.Status, guerra.InicioGuerra, guerra.FimGuerra, clan);
-        return response;
+
+        return new UpsertGuerraResponse(guerra.Status, guerra.InicioGuerra, guerra.FimGuerra, clanDTO);
     }
 }
 
