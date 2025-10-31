@@ -35,6 +35,8 @@ public class MembersWarDTO
 }
 public class AttacksDTO
 {
+    public string AttackerTag { get; set; }
+    public string DefenderTag { get; set; }
     public int Stars { get; set; }
 
 }

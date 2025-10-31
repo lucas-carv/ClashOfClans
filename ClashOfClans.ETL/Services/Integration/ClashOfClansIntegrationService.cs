@@ -28,7 +28,7 @@ public class IntegrationService : IntegrationServiceBaseApiService
     public async Task<bool> EnviarGuerra(GuerraInputModel guerra)
     {
         string uri = $"{_baseUrl}/guerra/criar";
-        var response = await Send<bool, GuerraInputModel>(guerra, HttpMethod.Post, uri);
+        var response = await Send<bool, GuerraInputModel>(guerra, HttpMethod.Put, uri);
         return response.IsValid;
     }
 }

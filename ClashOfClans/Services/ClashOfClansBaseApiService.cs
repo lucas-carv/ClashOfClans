@@ -85,7 +85,7 @@ public abstract class ClashOfClansBaseApiService
             };
         }
     }
-    protected HttpRequestMessage CreateRequest<TContent>(TContent content, HttpMethod method, string relativeUri)
+    protected HttpRequestMessage CreateRequest<TContent>(TContent? content, HttpMethod method, string relativeUri)
     {
         StringContent? requestContent = default;
 

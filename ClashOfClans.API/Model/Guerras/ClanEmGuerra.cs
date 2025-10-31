@@ -16,7 +16,7 @@ public class ClanEmGuerra : Entity
 
     public void AdicionarMembro(string tag, string nome)
     {
-        MembroEmGuerra membroGuerra = new(this.Id, tag, nome);
+        MembroEmGuerra membroGuerra = new(tag, nome);
         Membros.Add(membroGuerra);
     }
 }

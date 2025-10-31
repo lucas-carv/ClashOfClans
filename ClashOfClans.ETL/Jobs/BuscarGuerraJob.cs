@@ -24,7 +24,12 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService) : IJob
                 Tag = war.Clan.Tag,
                 Membros = [.. war.Clan.Members.Select(m => new MembroGuerraDTO()
                 {
-                    Ataques = m.Attacks.Select(a => new AtaquesDTO() { Estrela = a.Stars }).ToList(),
+                    Ataques = m.Attacks.Select(a => new AtaquesDTO()
+                        {
+                            Estrela = a.Stars,
+                            AtacanteTag = a.AttackerTag,
+                            DefensorTag = a.DefenderTag 
+                        }).ToList(),
                     Nome = m.Name!,
                     Tag = m.Tag!
                 })],
@@ -66,6 +71,8 @@ public class MembroGuerraDTO
 }
 public class AtaquesDTO
 {
+    public string AtacanteTag { get; set; }
+    public string DefensorTag { get; set; }
     public int Estrela { get; set; }
 }
 

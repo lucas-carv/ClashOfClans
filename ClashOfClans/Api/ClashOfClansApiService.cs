@@ -19,16 +19,8 @@ public class ClashOfClansApiService : IClashOfClansApiService
     public async Task<bool> EnviarClan(ClanViewModel clan)
     {
         string uri = $"https://localhost:7016/api/v1/clan/adicionar";
-
         var result = await Send<bool, ClanViewModel>(clan, HttpMethod.Post, uri);
-
         return result.IsValid;
-        //return new ResponseClashOfClans<bool>
-        //{
-        //    Erros = result.Erros,
-        //    IsValid = result.IsValid,
-        //    ResponseData = result.IsValid
-        //};
     }
 
     public async Task<ResponseClashOfClans<TResponse>> Send<TResponse, TContent>(TContent content, HttpMethod method, string uri)

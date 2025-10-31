@@ -21,7 +21,7 @@ public class ClanEmGuerraMapping : IEntityTypeConfiguration<ClanEmGuerra>
 {
     public void Configure(EntityTypeBuilder<ClanEmGuerra> builder)
     {
-        builder.ToTable("guerra_clan");
+        builder.ToTable("clan_em_guerra");
         builder.HasQueryFilter(p => p.FoiRemovido != null);
         builder.HasKey(c => c.Id);
 
@@ -35,7 +35,7 @@ public class MembroGuerraMapping : IEntityTypeConfiguration<MembroEmGuerra>
 {
     public void Configure(EntityTypeBuilder<MembroEmGuerra> builder)
     {
-        builder.ToTable("guerra_clan_membro");
+        builder.ToTable("membro_em_guerra");
         builder.HasQueryFilter(p => p.FoiRemovido != null);
         builder.HasKey(c => c.Id);
 
