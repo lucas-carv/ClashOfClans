@@ -4,6 +4,7 @@ using ClashOfClans.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClashOfClans.API.Migrations
 {
     [DbContext(typeof(ClashOfClansContext))]
-    partial class ClashOfClansContextModelSnapshot : ModelSnapshot
+    [Migration("20251101135917_removendo_id_inutilizado")]
+    partial class removendo_id_inutilizado
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,13 +35,11 @@ namespace ClashOfClans.API.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("DataAlteracao")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_alteracao");
 
                     b.Property<DateTime>("DataCriacao")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_criacao");
 
                     b.Property<bool?>("FoiRemovido")
@@ -47,12 +48,12 @@ namespace ClashOfClans.API.Migrations
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("longtext")
                         .HasColumnName("nome");
 
                     b.Property<string>("Tag")
                         .IsRequired()
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("tag");
 
                     b.HasKey("Id")
@@ -76,22 +77,20 @@ namespace ClashOfClans.API.Migrations
 
                     b.Property<string>("AtacanteTag")
                         .IsRequired()
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("longtext")
                         .HasColumnName("atacante_tag");
 
                     b.Property<DateTime>("DataAlteracao")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_alteracao");
 
                     b.Property<DateTime>("DataCriacao")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_criacao");
 
                     b.Property<string>("DefensorTag")
                         .IsRequired()
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("longtext")
                         .HasColumnName("defensor_tag");
 
                     b.Property<int>("Estrelas")
@@ -125,13 +124,11 @@ namespace ClashOfClans.API.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("DataAlteracao")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_alteracao");
 
                     b.Property<DateTime>("DataCriacao")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_criacao");
 
                     b.Property<bool?>("FoiRemovido")
@@ -144,7 +141,7 @@ namespace ClashOfClans.API.Migrations
 
                     b.Property<string>("Tag")
                         .IsRequired()
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("longtext")
                         .HasColumnName("tag");
 
                     b.HasKey("Id")
@@ -167,18 +164,15 @@ namespace ClashOfClans.API.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("DataAlteracao")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_alteracao");
 
                     b.Property<DateTime>("DataCriacao")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_criacao");
 
                     b.Property<DateTime>("FimGuerra")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("fim_guerra");
 
                     b.Property<bool?>("FoiRemovido")
@@ -186,13 +180,12 @@ namespace ClashOfClans.API.Migrations
                         .HasColumnName("foi_removido");
 
                     b.Property<DateTime>("InicioGuerra")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("inicio_guerra");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("longtext")
                         .HasColumnName("status");
 
                     b.HasKey("Id")
@@ -219,13 +212,11 @@ namespace ClashOfClans.API.Migrations
                         .HasColumnName("clan_em_guerra_id");
 
                     b.Property<DateTime>("DataAlteracao")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_alteracao");
 
                     b.Property<DateTime>("DataCriacao")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_criacao");
 
                     b.Property<bool?>("FoiRemovido")
@@ -234,12 +225,12 @@ namespace ClashOfClans.API.Migrations
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("longtext")
                         .HasColumnName("nome");
 
                     b.Property<string>("Tag")
                         .IsRequired()
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("longtext")
                         .HasColumnName("tag");
 
                     b.HasKey("Id")
@@ -265,13 +256,11 @@ namespace ClashOfClans.API.Migrations
                         .HasColumnName("clan_id");
 
                     b.Property<DateTime>("DataAlteracao")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_alteracao");
 
                     b.Property<DateTime>("DataCriacao")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_criacao");
 
                     b.Property<bool?>("FoiRemovido")
@@ -280,7 +269,7 @@ namespace ClashOfClans.API.Migrations
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("longtext")
                         .HasColumnName("nome");
 
                     b.Property<int>("Situacao")
@@ -289,7 +278,7 @@ namespace ClashOfClans.API.Migrations
 
                     b.Property<string>("Tag")
                         .IsRequired()
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("tag");
 
                     b.HasKey("Id")
