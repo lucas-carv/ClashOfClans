@@ -26,7 +26,7 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService) : IJob
                 {
                     Ataques = m.Attacks.Select(a => new AtaquesDTO()
                         {
-                            Estrela = a.Stars,
+                            Estrelas = a.Stars,
                             AtacanteTag = a.AttackerTag,
                             DefensorTag = a.DefenderTag 
                         }).ToList(),
@@ -73,6 +73,6 @@ public class AtaquesDTO
 {
     public string AtacanteTag { get; set; }
     public string DefensorTag { get; set; }
-    public int Estrela { get; set; }
+    public int Estrelas { get; set; }
 }
 

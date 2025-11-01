@@ -1,5 +1,6 @@
 ﻿using ClashOfClans.API.Core.CommandResults;
 using ClashOfClans.API.Data;
+using ClashOfClans.API.DTOs;
 using ClashOfClans.API.Model.Guerras;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -27,11 +28,14 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context) : IRequestH
         if (guerraExistente is null)
         {
             ClanEmGuerra clanEmGuerra = new(request.Clan.Tag);
-            foreach (var participante in request.Clan.Membros)
+            foreach (var membro in request.Clan.Membros)
             {
-                clanEmGuerra.AdicionarMembro(participante.Tag, participante.Nome);
+                MembroEmGuerra membroEmGuerra = clanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome);
+                foreach (var ataque in membro.Ataques)
+                {
+                    membroEmGuerra.AtualizarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas);
+                }
             }
-
             Guerra novaGuerra = new(request.Status, request.InicioGuerra, request.FimGuerra, clanEmGuerra);
             context.Add(novaGuerra);
             await context.SaveChangesAsync(cancellationToken);
@@ -65,28 +69,16 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context) : IRequestH
             Membros = guerra.ClanEmGuerra.Membros.Select(m => new MembroEmGuerraDTO
             {
                 Tag = m.Tag,
-                Nome = m.Nome
+                Nome = m.Nome,
+                Ataques = m.Ataques.Select(a => new AtaquesDTO
+                {
+                    AtacanteTag = a.AtacanteTag,
+                    DefensorTag = a.DefensorTag,
+                    Estrelas = a.Estrelas
+                })
             })
         };
 
         return new UpsertGuerraResponse(guerra.Status, guerra.InicioGuerra, guerra.FimGuerra, clanDTO);
     }
-}
-
-public record ClanEmGuerraDTO
-{
-    public string Tag { get; set; } = string.Empty;
-    public IEnumerable<MembroEmGuerraDTO> Membros { get; set; } = [];
-}
-public record MembroEmGuerraDTO
-{
-    public required string Tag { get; set; }
-    public required string Nome { get; set; }
-    public IEnumerable<AtaquesDTO> Ataques { get; set; } = [];
-}
-public record AtaquesDTO
-{
-    public required string AtacanteTag { get; init; }
-    public required string DefensorTag { get; init; }
-    public int Estrelas { get; set; } = 0;
 }
