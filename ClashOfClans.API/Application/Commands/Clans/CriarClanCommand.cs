@@ -1,5 +1,6 @@
 ﻿using ClashOfClans.API.Core.CommandResults;
 using ClashOfClans.API.Data;
+using ClashOfClans.API.DTOs;
 using ClashOfClans.API.Model;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -7,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 namespace ClashOfClans.API.Application.Commands.Clans;
 
 
-public record CriarClanRequest(string Tag, string Nome, IEnumerable<MembroDTO> Membros) : IRequest<CommandResult<CriarClanResponse>>;
-public record CriarClanResponse(string Tag, string Nome, IEnumerable<MembroDTO> Membros);
+public record CriarClanRequest(string Tag, string Nome, IEnumerable<MembroClanDTO> Membros) : IRequest<CommandResult<CriarClanResponse>>;
+public record CriarClanResponse(string Tag, string Nome, IEnumerable<MembroClanDTO> Membros);
 
 public class CriarClanCommandHandler(ClashOfClansContext context) : IRequestHandler<CriarClanRequest, CommandResult<CriarClanResponse>>
 {
@@ -32,7 +33,7 @@ public class CriarClanCommandHandler(ClashOfClansContext context) : IRequestHand
         await _context.SaveChangesAsync(cancellationToken);
 
         var membros = clan.Membros
-            .Select(m => new MembroDTO()
+            .Select(m => new MembroClanDTO()
             {
                 Nome = m.Nome,
                 Tag = m.Tag
@@ -41,10 +42,4 @@ public class CriarClanCommandHandler(ClashOfClansContext context) : IRequestHand
         CriarClanResponse response = new(clan.Tag, clan.Nome, membros);
         return response;
     }
-}
-
-public record MembroDTO
-{
-    public required string Tag { get; set; }
-    public required string Nome { get; set; }
 }

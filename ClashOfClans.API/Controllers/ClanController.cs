@@ -16,7 +16,11 @@ public class ClanController(IMediator mediator, ClashOfClansContext context) : C
     [HttpGet("{tag}")]
     public async Task<IActionResult> ObterPorTag(string tag)
     {
-        Clan? clan = await context.Clans.Include(c => c.Membros.Where(m => m.Situacao == SituacaoMembro.Ativo)).FirstOrDefaultAsync(c => c.Tag == tag);
+        Clan? clan = await context.Clans
+            .Include(c => 
+                c.Membros
+                .Where(m => m.Situacao == SituacaoMembro.Ativo))
+            .FirstOrDefaultAsync(c => c.Tag == tag);
         return Ok(clan);
     }
 

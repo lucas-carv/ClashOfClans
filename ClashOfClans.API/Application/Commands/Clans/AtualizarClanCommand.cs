@@ -1,14 +1,15 @@
 ﻿using ClashOfClans.API.Core;
 using ClashOfClans.API.Core.CommandResults;
 using ClashOfClans.API.Data;
+using ClashOfClans.API.DTOs;
 using ClashOfClans.API.Model;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClashOfClans.API.Application.Commands.Clans;
 
-public record AtualizarClanRequest(string Tag, string Nome, IEnumerable<MembroDTO> Membros) : Command<CommandResult<AtualizarClanResponse>>;
-public record AtualizarClanResponse(string Tag, string Nome, IEnumerable<MembroDTO> Membros);
+public record AtualizarClanRequest(string Tag, string Nome, IEnumerable<MembroClanDTO> Membros) : Command<CommandResult<AtualizarClanResponse>>;
+public record AtualizarClanResponse(string Tag, string Nome, IEnumerable<MembroClanDTO> Membros);
 
 public class AtualizarClanCommandHandler(ClashOfClansContext context) : CommandHandler, IRequestHandler<AtualizarClanRequest, CommandResult<AtualizarClanResponse>>
 {
@@ -20,7 +21,7 @@ public class AtualizarClanCommandHandler(ClashOfClansContext context) : CommandH
             return ValidationErrors.Clan.ClanNaoExiste;
         }
 
-        IEnumerable<MembroDTO> membrosParaAdicionar = request.Membros
+        IEnumerable<MembroClanDTO> membrosParaAdicionar = request.Membros
             .Where(me => !clan.Membros.Any(m => m.Tag == me.Tag && m.Situacao == SituacaoMembro.Ativo))
             .Select(membroDTO => membroDTO);
 
@@ -39,8 +40,8 @@ public class AtualizarClanCommandHandler(ClashOfClansContext context) : CommandH
         }
         await context.SaveChangesAsync(cancellationToken);
 
-        IEnumerable<MembroDTO> membros = clan.Membros.Select(m =>
-            new MembroDTO
+        IEnumerable<MembroClanDTO> membros = clan.Membros.Select(m =>
+            new MembroClanDTO
             {
                 Nome = m.Nome,
                 Tag = m.Tag

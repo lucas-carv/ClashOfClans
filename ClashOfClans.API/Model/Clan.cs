@@ -16,7 +16,7 @@ public class Clan : Entity, IAggregateRoot
 
     public void AdicionarMembro(string tag, string nome)
     {
-        Membro membro = Membros.FirstOrDefault(m => m.Tag == tag)!;
+        Membro? membro = Membros.FirstOrDefault(m => m.Tag == tag);
         if (membro is not null)
         {
             membro.AlterarNome(nome);
