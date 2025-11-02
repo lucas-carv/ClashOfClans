@@ -1,8 +1,14 @@
 ﻿namespace ClashOfClans.ETL.Models;
 
-public class Clan
+public record class Clan
 {
-    public string? Tag { get; set; }
-    public string? Name { get; set; }
-    public List<Membro> MemberList { get; set; } = [];
+    public required string Tag { get; init; }
+    public required string Name { get; init; }
+    public List<ClanMemberList> MemberList { get; set; } = [];
+}
+
+public class ClanMemberList
+{
+    public required string Tag { get; init; }
+    public required string Name { get; init; }
 }

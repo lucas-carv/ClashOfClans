@@ -1,13 +1,15 @@
-﻿using ClashOfClans.ETL.Models;
+﻿using ClashOfClans.ETL.InputModels;
+using ClashOfClans.ETL.Models;
 using ClashOfClans.ETL.Services;
 using ClashOfClans.ETL.Services.Integration;
 using Quartz;
 
 namespace ClashOfClans.ETL.Jobs;
 
-public class BuscarGuerraJob(ClashOfClansService clashOfClansService) : IJob
+public class EnviarGuerraJob(ClashOfClansService clashOfClansService, IntegrationService integrationService) : IJob
 {
     private readonly ClashOfClansService _clashOfClansService = clashOfClansService;
+    private readonly IntegrationService _integrationService = integrationService;
 
     public async Task Execute(IJobExecutionContext context)
     {
@@ -15,64 +17,44 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService) : IJob
         string encodedTag = Uri.EscapeDataString(tag);
 
         War war = await _clashOfClansService.BuscarGuerra(encodedTag);
-        IntegrationService integrationService = new();
+        if (war.State.Equals(StatusGuerra.NotInWar))
+            return;
 
-        GuerraInputModel guerraInputModel = new()
-        {
-            Clan = new ClanGuerra()
-            {
-                Tag = war.Clan.Tag,
-                Membros = [.. war.Clan.Members.Select(m => new MembroGuerraDTO()
-                {
-                    Ataques = m.Attacks.Select(a => new AtaquesDTO()
-                        {
-                            Estrelas = a.Stars,
-                            AtacanteTag = a.AttackerTag,
-                            DefensorTag = a.DefenderTag 
-                        }).ToList(),
-                    Nome = m.Name!,
-                    Tag = m.Tag!
-                })],
-            },
-            FimGuerra = war.EndTime,
-            InicioGuerra = war.StartTime,
-            Status = war.State.ToString()
-        };
+        EnviarGuerraInputModel guerraInputModel = CriarGuerraInputModel(war);
 
-        var clanIntegracao = await integrationService.ObterClanPorTag(encodedTag);
+        var clanIntegracao = await _integrationService.ObterClanPorTag(encodedTag);
         if (clanIntegracao is not null)
         {
-            await integrationService.EnviarGuerra(guerraInputModel);
+            await _integrationService.EnviarGuerra(guerraInputModel);
             return;
         }
     }
-}
 
-public class GuerraInputModel
-{
-    public string Status { get; set; } = string.Empty;
-    public DateTime InicioGuerra { get; set; }
-    public DateTime FimGuerra { get; set; }
-    public ClanGuerra Clan { get; set; } = new();
-}
+    private static EnviarGuerraInputModel CriarGuerraInputModel(War war)
+    {
+        EnviarGuerraInputModel inputModel = new()
+        {
+            Status = war.State.ToString(),
+            InicioGuerra = war.StartTime,
+            FimGuerra = war.EndTime,
+            Clan = new ClanGuerraDTO()
+            {
+                Tag = war.Clan.Tag,
+                Membros = war.Clan.Members.Select(m => new MembroGuerraDTO()
+                {
+                    Nome = m.Name,
+                    Tag = m.Tag,
+                    Ataques = m.Attacks.Select(a => new AtaquesDTO()
+                    {
+                        Estrelas = a.Stars,
+                        AtacanteTag = a.AttackerTag,
+                        DefensorTag = a.DefenderTag
+                    })
+                }),
+            }
+        };
 
-public class ClanGuerra
-{
-    public string Tag { get; set; }
-    public List<MembroGuerraDTO> Membros { get; set; } = [];
-}
-
-public class MembroGuerraDTO
-{
-    public string Tag { get; set; } = string.Empty;
-    public string Nome { get; set; } = string.Empty;
-    public List<AtaquesDTO> Ataques { get; set; } = [];
-
-}
-public class AtaquesDTO
-{
-    public string AtacanteTag { get; set; }
-    public string DefensorTag { get; set; }
-    public int Estrelas { get; set; }
+        return inputModel;
+    }
 }
 

@@ -1,7 +1,1 @@
 ﻿namespace ClashOfClans.ETL.Models;
-
-public class Membro
-{
-    public string? Tag { get; set; }
-    public string? Name { get; set; }
-}

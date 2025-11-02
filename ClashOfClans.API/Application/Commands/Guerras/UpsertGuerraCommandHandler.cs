@@ -45,13 +45,12 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context) : IRequestH
         }
         foreach (var membro in request.Clan.Membros)
         {
-            MembroEmGuerra? membroExiste = guerraExistente.ClanEmGuerra.Membros.FirstOrDefault(m => m.Tag == membro.Tag);
-            if (membroExiste is null)
-                continue;
+            MembroEmGuerra? membroEmGuerra = guerraExistente.ClanEmGuerra.Membros.FirstOrDefault(m => m.Tag == membro.Tag);
+            membroEmGuerra ??= guerraExistente.ClanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome);
 
             foreach (var ataque in membro.Ataques)
             {
-                membroExiste.AtualizarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas);
+                membroEmGuerra.AtualizarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas);
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using ClashOfClans.ETL.Jobs;
 using ClashOfClans.ETL.Services;
+using ClashOfClans.ETL.Services.Integration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ClashOfClans.ETL;
@@ -10,7 +11,8 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<ClashOfClansService>();
         services.AddTransient<BuscarClanJob>();
-        services.AddTransient<BuscarGuerraJob>();
+        services.AddTransient<EnviarGuerraJob>();
+        services.AddTransient<IntegrationService>();
 
         return services;
     }
