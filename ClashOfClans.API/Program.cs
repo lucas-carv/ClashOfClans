@@ -1,9 +1,8 @@
-using ClashOfClans.API.Core;
+using ClashOfClans.API.BackgroundServices;
 using ClashOfClans.API.Data;
 using ClashOfClans.API.Repositories;
-using FluentValidation;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +26,23 @@ builder.Services.AddDbContext<ClashOfClansContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
     ).UseSnakeCaseNamingConvention());
+
+builder.Services.AddQuartz(q =>
+{
+    var jobKey = new JobKey("AnalisarGuerrasJob");
+    q.AddJob<AnalisarGuerrasJob>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(t => t
+        .ForJob(jobKey)
+        .WithIdentity("AnalisarGuerrasTrigger")
+        // a cada 5 minutos: segundo minuto hora dia mês diaDaSemana
+        .WithCronSchedule("0 */5 * * * ?"));
+});
+
+builder.Services.AddQuartzHostedService(o =>
+{
+    o.WaitForJobsToComplete = true;
+});
 
 var app = builder.Build();
 
