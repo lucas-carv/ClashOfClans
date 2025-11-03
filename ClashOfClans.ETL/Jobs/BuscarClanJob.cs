@@ -28,7 +28,7 @@ public class BuscarClanJob(ClashOfClansService clashOfClansService) : IJob
             })
         };
 
-        var clanIntegrado = await integrationService.ObterClanPorTag(encodedTag);
+        CriarClanInputModel clanIntegrado = await integrationService.ObterClanPorTag(encodedTag);
         if (clanIntegrado == null)
         {
             await integrationService.CriarClan(clanInputModel);

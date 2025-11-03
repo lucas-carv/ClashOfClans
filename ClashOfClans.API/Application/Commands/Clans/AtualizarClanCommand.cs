@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ClashOfClans.API.Application.Commands.Clans;
 
-public record AtualizarClanRequest(string Tag, string Nome, IEnumerable<MembroClanDTO> Membros) : Command<CommandResult<AtualizarClanResponse>>;
+public record AtualizarClanRequest(string Tag, string Nome, IEnumerable<MembroClanDTO> Membros) : IRequest<CommandResult<AtualizarClanResponse>>;
 public record AtualizarClanResponse(string Tag, string Nome, IEnumerable<MembroClanDTO> Membros);
 
-public class AtualizarClanCommandHandler(ClashOfClansContext context) : CommandHandler, IRequestHandler<AtualizarClanRequest, CommandResult<AtualizarClanResponse>>
+public class AtualizarClanCommandHandler(ClashOfClansContext context) : IRequestHandler<AtualizarClanRequest, CommandResult<AtualizarClanResponse>>
 {
     public async Task<CommandResult<AtualizarClanResponse>> Handle(AtualizarClanRequest request, CancellationToken cancellationToken)
     {
@@ -46,7 +46,7 @@ public class AtualizarClanCommandHandler(ClashOfClansContext context) : CommandH
                 Nome = m.Nome,
                 Tag = m.Tag
             });
-        AtualizarClanResponse response = new AtualizarClanResponse(clan.Tag, clan.Nome, membros);
+        AtualizarClanResponse response = new (clan.Tag, clan.Nome, membros);
         return response;
     }
 }

@@ -15,7 +15,6 @@ builder.Services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
     .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>())
-    .AddScoped<IMediatorHandler, MediatorHandler>()
     .AddScoped<IClanRepository, ClanRepository>()
     .AddScoped<IGuerraRepository, GuerraRepository>();
 
