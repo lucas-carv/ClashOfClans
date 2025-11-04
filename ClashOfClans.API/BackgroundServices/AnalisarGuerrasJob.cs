@@ -1,4 +1,5 @@
 ﻿using ClashOfClans.API.Data;
+using ClashOfClans.API.Model;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 using System;
@@ -7,103 +8,126 @@ namespace ClashOfClans.API.BackgroundServices
 {
     public class AnalisarGuerrasJob : IJob
     {
-        private readonly IServiceProvider _sp;
-        private readonly ILogger<AnalisarGuerrasJob> _log;
+        private readonly ClashOfClansContext _context;
+        private readonly ILogger<AnalisarGuerrasJob> _logger;
 
-        public AnalisarGuerrasJob(IServiceProvider sp, ILogger<AnalisarGuerrasJob> log)
+        public AnalisarGuerrasJob(ClashOfClansContext context, ILogger<AnalisarGuerrasJob> logger)
         {
-            _sp = sp;
-            _log = log;
+            _context = context;
+            _logger = logger;
         }
 
         public async Task Execute(IJobExecutionContext context)
         {
-            using var scope = _sp.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<ClashOfClansContext>();
             var ct = context.CancellationToken;
 
-            // 1) Guerras finalizadas nas últimas 24h (ajuste conforme sua janela)
-            var limite = DateTime.UtcNow.AddDays(-1);
-            var guerras = await db.Guerras
-                .Where(g => g.Status == "Finalizada" && g.FimGuerra >= limite)
-                .Select(g => new { g.Id, ClanTag = g.ClanEmGuerra.Tag, g.FimGuerra })
-                .OrderByDescending(g => g.FimGuerra)
+            // Busque todos os clãs que tiveram guerra finalizada recentemente (ex.: 48h)
+            var limite = DateTime.UtcNow;
+
+            var clans = await _context.Guerras
+                .AsNoTracking()
+                .Where(g => g.Status == "notInWar" && g.FimGuerra <= limite)
+                .Select(g => g.ClanEmGuerra.Tag)
+                .Distinct()
                 .ToListAsync(ct);
 
-            foreach (var guerra in guerras)
+            foreach (var clanTag in clans)
             {
-                var membrosSemAtaque = await MembrosSemAtaqueNaGuerraAsync(guerra.Id, db, ct);
-
-                if (membrosSemAtaque.Count == 0)
-                {
-                    _log.LogInformation("Guerra {GuerraId} ({Clan}): todos atacaram.", guerra.Id, guerra.ClanTag);
-                    continue;
-                }
-
-                // 3) Faça sua ação: persistir sugestão/alertar/etc.
-                foreach (var m in membrosSemAtaque)
-                {
-                    _log.LogInformation("Guerra {GuerraId} ({Clan}) -> sem ataque: {Tag} - {Nome}",
-                        guerra.Id, guerra.ClanTag, m.Tag, m.Nome);
-
-                    // Exemplo: inserir em uma tabela de sugestões (se tiver)
-                    // await db.SugerirRemocao.AddAsync(new SugerirRemocao { TagJogador = m.Tag, GuerraId = guerra.Id, Motivo = "Sem ataque" }, ct);
-                }
-
-                // Se persistiu algo acima:
-                // await db.SaveChangesAsync(ct);
+                await AtualizarResumoParaUltimaGuerraDoClanAsync(clanTag, _context, ct);
+                _logger.LogInformation("Resumo atualizado para o clã {Clan}.", clanTag);
             }
         }
-        private static async Task<List<(string Tag, string Nome)>> MembrosSemAtaqueNaGuerraAsync(
-        int guerraId, ClashOfClansContext db, CancellationToken ct)
-        {
-            var membros = await db.Guerras
-                .AsNoTracking()
-                .Where(g => g.Id == guerraId)
-                .SelectMany(g => g.ClanEmGuerra.Membros)
-                .Where(m => !m.Ataques.Any()) // coleção vazia = nenhum ataque nessa guerra
-                .Select(m => new { m.Tag, m.Nome })
-                .ToListAsync(ct);
 
-            return membros.Select(x => (x.Tag, x.Nome)).ToList();
-        }
-
-        public async Task<IReadOnlyList<string>> MembrosSemAtacarEmDuasUltimasGuerrasAsync(string clanTag, ClashOfClansContext context, CancellationToken ct)
+        private static async Task AtualizarResumoParaUltimaGuerraDoClanAsync(string clanTag, ClashOfClansContext db, CancellationToken ct)
         {
-            // Pega as 2 últimas guerras finalizadas do clã
-            var duasUltimas = await context.Guerras
+            // Pega duas últimas guerras finalizadas do clã
+            var duas = await db.Guerras
                 .AsNoTracking()
-                .Where(g => g.Status == "Finalizada" && g.ClanEmGuerra.Tag == clanTag)
+                .Where(g => g.Status == "notInWar" && g.ClanEmGuerra.Tag == clanTag)
                 .OrderByDescending(g => g.FimGuerra)
                 .Select(g => new { g.Id })
                 .Take(2)
                 .ToListAsync(ct);
 
-            if (duasUltimas.Count < 2) return [];
+            if (duas.Count == 0) return;
 
-            var ids = duasUltimas.Select(x => x.Id).ToArray();
+            var g1Id = duas[0].Id;               // última (mais recente)
+            var g2Id = duas.Count > 1 ? duas[1].Id : (int?)null; // penúltima (se houver)
 
-            // Para essas guerras, projeta (GuerraId, TagJogador, TemAtaque)
-            var marca = await context.Guerras
+            // Membros e ataques da última guerra (g1)
+            var membrosG1 = await db.Guerras
                 .AsNoTracking()
-                .Where(g => ids.Contains(g.Id))
+                .Where(g => g.Id == g1Id)
                 .SelectMany(g => g.ClanEmGuerra.Membros
-                    .Select(m => new {
-                        GuerraId = g.Id,
-                        Tag = m.Tag,
-                        TemAtaque = m.Ataques.Any()
+                    .Select(m => new
+                    {
+                        m.Tag,
+                        m.Nome,
+                        Ataques = m.Ataques.Count()
                     }))
                 .ToListAsync(ct);
 
-            // Agrupa por jogador, verifica presença nas 2 e zero ataques nas 2
-            var candidatos = marca
-                .GroupBy(x => x.Tag)
-                .Where(g => g.Select(x => x.GuerraId).Distinct().Count() == 2
-                         && g.All(x => x.TemAtaque == false))
-                .Select(g => g.Key)
-                .ToList();
+            var tagsG1 = membrosG1.Select(x => x.Tag).ToHashSet();
 
-            return candidatos;
+            // Conjunto de tags que também participaram da penúltima (g2)
+            HashSet<string> tagsG2 = new();
+            if (g2Id.HasValue)
+            {
+                tagsG2 = (await db.Guerras
+                    .AsNoTracking()
+                    .Where(g => g.Id == g2Id.Value)
+                    .SelectMany(g => g.ClanEmGuerra.Membros.Select(m => m.Tag))
+                    .ToListAsync(ct))
+                    .ToHashSet();
+            }
+
+            // Carrega resumos atuais do clã (para upsert e para achar “ausentes em g1”)
+            var resumosAtuais = await db.Set<MembroGuerraResumo>()
+                .Where(r => r.ClanTag == clanTag)
+                .ToListAsync(ct);
+
+            var porTag = resumosAtuais.ToDictionary(r => r.Tag, r => r);
+
+            // 1) Upsert para quem está na última guerra (g1)
+            foreach (var m in membrosG1)
+            {
+                int guerrasSeq = 1 + (tagsG2.Contains(m.Tag) ? 1 : 0);
+
+                if (!porTag.TryGetValue(m.Tag, out var resumo))
+                {
+                    resumo = new MembroGuerraResumo
+                    {
+                        ClanTag = clanTag,
+                        Tag = m.Tag,
+                        Nome = m.Nome,
+                        GuerrasParticipadasSeq = guerrasSeq,
+                        QuantidadeAtaques = m.Ataques,
+                        UltimaGuerraId = g1Id
+                    };
+                    db.Add(resumo);
+                    porTag[m.Tag] = resumo;
+                }
+                else
+                {
+                    resumo.Nome = m.Nome; // mantém atualizado
+                    resumo.GuerrasParticipadasSeq = guerrasSeq;  // 1 ou 2
+                    resumo.QuantidadeAtaques = m.Ataques;        // só da g1
+                    resumo.UltimaGuerraId = g1Id;
+                    db.Update(resumo);
+                }
+            }
+
+            // 2) Zerar quem NÃO participou da última guerra (g1)
+            foreach (var resumo in resumosAtuais.Where(r => !tagsG1.Contains(r.Tag)))
+            {
+                resumo.GuerrasParticipadasSeq = 0;
+                resumo.QuantidadeAtaques = 0;
+                resumo.UltimaGuerraId = g1Id; // ancora o reset na última guerra
+                db.Update(resumo);
+            }
+
+            await db.SaveChangesAsync(ct);
+        
         }
     }
 }

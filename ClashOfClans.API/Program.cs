@@ -33,10 +33,12 @@ builder.Services.AddQuartz(q =>
     q.AddJob<AnalisarGuerrasJob>(opts => opts.WithIdentity(jobKey));
 
     q.AddTrigger(t => t
-        .ForJob(jobKey)
-        .WithIdentity("AnalisarGuerrasTrigger")
-        // a cada 5 minutos: segundo minuto hora dia mês diaDaSemana
-        .WithCronSchedule("0 */5 * * * ?"));
+         .ForJob(jobKey)
+         .WithIdentity("AnalisarGuerrasTrigger")
+         .StartNow() // executa logo na inicialização
+         .WithSimpleSchedule(s => s
+             .WithIntervalInMinutes(5)
+             .RepeatForever())); // repete para sempre
 });
 
 builder.Services.AddQuartzHostedService(o =>
