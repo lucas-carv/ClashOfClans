@@ -20,7 +20,7 @@ namespace ClashOfClans.API.BackgroundServices
 
         public async Task Execute(IJobExecutionContext context)
         {
-            var ct = context.CancellationToken;
+            CancellationToken cancellationToken = context.CancellationToken;
 
             // Busca todos os clãs que tiveram guerras finalizadas recentemente
             var clans = await _context.Guerras
@@ -28,11 +28,11 @@ namespace ClashOfClans.API.BackgroundServices
                 .Where(g => g.Status == "notInWar")
                 .Select(g => g.ClanEmGuerra.Tag)
                 .Distinct()
-                .ToListAsync(ct);
+                .ToListAsync(cancellationToken);
 
             foreach (var clanTag in clans)
             {
-                var membros = await ObterMembrosQueNaoAtacaramNasDuasUltimasGuerrasAsync(clanTag, _context, ct);
+                var membros = await ObterMembrosQueNaoAtacaramNasDuasUltimasGuerrasAsync(clanTag,  cancellationToken);
 
                 if (membros.Count == 0)
                 {
@@ -46,45 +46,42 @@ namespace ClashOfClans.API.BackgroundServices
             }
         }
 
-        public async Task<List<MembroEmGuerra>> ObterMembrosQueNaoAtacaramNasDuasUltimasGuerrasAsync(string clanTag, ClashOfClansContext db, CancellationToken ct)
+        public async Task<List<MembroEmGuerra>> ObterMembrosQueNaoAtacaramNasDuasUltimasGuerrasAsync(string clanTag, CancellationToken cancellationToken)
         {
-            // Pega duas últimas guerras finalizadas do clã
-
-            var ultimasDuasGuerras = await db.Guerras
+            var ultimasDuasGuerras = await _context.Guerras
                 .AsNoTracking()
                 .Where(g => g.Status == "notInWar" && g.ClanEmGuerra.Tag == clanTag)
                 .OrderByDescending(g => g.FimGuerra)
                 .Take(2)
                 .Select(g => new { g.Id })
-                .ToListAsync(ct);
+                .ToListAsync(cancellationToken);
 
             if (ultimasDuasGuerras.Count < 2)
                 return [];
 
-            var ids = ultimasDuasGuerras.Select(g => g.Id).ToArray();
-            // Membros e ataques da última guerra (g1)
-            var membrosComAtaques = await db.Guerras
+            IEnumerable<int> guerrasIds = ultimasDuasGuerras.Select(g => g.Id);
+            
+            var membrosDaGuerra = await _context.Guerras
            .AsNoTracking()
-           .Where(g => ids.Contains(g.Id))
+           .Where(g => guerrasIds.Contains(g.Id))
            .SelectMany(g => g.ClanEmGuerra.Membros.Select(m => new
-           {
-               GuerraId = g.Id,
-               m.Tag,
-               m.Nome,
-               QuantidadeAtaques = m.Ataques.Count()
-           }))
-           .ToListAsync(ct);
+               {
+                   GuerraId = g.Id,
+                   m.Tag,
+                   m.Nome,
+                   QuantidadeAtaques = m.Ataques.Count
+               }))
+           .ToListAsync(cancellationToken);
 
-            // 3️⃣ Agrupa por jogador
-            var membrosSemAtaqueNasDuas = membrosComAtaques
+            var membrosSemAtaques = membrosDaGuerra
                 .GroupBy(m => m.Tag)
                 .Where(g =>
-                    g.Select(x => x.GuerraId).Distinct().Count() == 2 && // participou nas 2
-                    g.All(x => x.QuantidadeAtaques == 0))                // 0 ataques em ambas
+                    g.Select(x => x.GuerraId).Distinct().Count() == 2 && 
+                    g.All(x => x.QuantidadeAtaques == 0))               
                 .Select(g => new MembroEmGuerra(g.Key, g.First().Nome))
                 .ToList();
 
-            return membrosSemAtaqueNasDuas;
+            return membrosSemAtaques;
 
         }
     }
