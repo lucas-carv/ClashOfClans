@@ -7,6 +7,7 @@ using System;
 
 namespace ClashOfClans.API.BackgroundServices
 {
+    [DisallowConcurrentExecution]
     public class AnalisarGuerrasJob : IJob
     {
         private readonly ClashOfClansContext _context;
@@ -22,17 +23,16 @@ namespace ClashOfClans.API.BackgroundServices
         {
             CancellationToken cancellationToken = context.CancellationToken;
 
-            // Busca todos os clãs que tiveram guerras finalizadas recentemente
-            var clans = await _context.Guerras
+            List<string> clansTags = await _context.Guerras
                 .AsNoTracking()
                 .Where(g => g.Status == "notInWar")
                 .Select(g => g.ClanEmGuerra.Tag)
                 .Distinct()
                 .ToListAsync(cancellationToken);
 
-            foreach (var clanTag in clans)
+            foreach (var clanTag in clansTags)
             {
-                var membros = await ObterMembrosQueNaoAtacaramNasDuasUltimasGuerrasAsync(clanTag,  cancellationToken);
+                List<MembroGuerraResumo> membros = await ObterAtaquesDeMembros(clanTag, cancellationToken);
 
                 if (membros.Count == 0)
                 {
@@ -40,13 +40,22 @@ namespace ClashOfClans.API.BackgroundServices
                     continue;
                 }
 
-                foreach (var m in membros)
-                    _logger.LogInformation("Clã {Clan} → Membro {Tag} ({Nome}) não atacou em nenhuma das 2 últimas guerras.",
-                        clanTag, m.Tag, m.Nome);
+                foreach (var membro in membros)
+                {
+                    MembroGuerraResumo? membroExiste = _context.MembrosGuerrasResumo.FirstOrDefault(m => m.Tag == membro.Tag && m.ClanTag == clanTag);
+                    if (membroExiste is null)
+                    {
+                        _context.Add(membro);
+                        continue;
+                    }
+                    membroExiste.AtualizarQuantidadeAtaques(membro.QuantidadeAtaques);
+                    membroExiste.GuerrasParticipadasSeq = membro.GuerrasParticipadasSeq;
+                }
             }
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<List<MembroEmGuerra>> ObterMembrosQueNaoAtacaramNasDuasUltimasGuerrasAsync(string clanTag, CancellationToken cancellationToken)
+        public async Task<List<MembroGuerraResumo>> ObterAtaquesDeMembros(string clanTag, CancellationToken cancellationToken)
         {
             var ultimasDuasGuerras = await _context.Guerras
                 .AsNoTracking()
@@ -60,29 +69,29 @@ namespace ClashOfClans.API.BackgroundServices
                 return [];
 
             IEnumerable<int> guerrasIds = ultimasDuasGuerras.Select(g => g.Id);
-            
+
             var membrosDaGuerra = await _context.Guerras
            .AsNoTracking()
            .Where(g => guerrasIds.Contains(g.Id))
            .SelectMany(g => g.ClanEmGuerra.Membros.Select(m => new
-               {
-                   GuerraId = g.Id,
-                   m.Tag,
-                   m.Nome,
-                   QuantidadeAtaques = m.Ataques.Count
-               }))
+           {
+               GuerraId = g.Id,
+               m.Tag,
+               m.Nome,
+               QuantidadeAtaques = m.Ataques.Count
+           }))
            .ToListAsync(cancellationToken);
 
-            var membrosSemAtaques = membrosDaGuerra
+            List<MembroGuerraResumo> membros = membrosDaGuerra
                 .GroupBy(m => m.Tag)
-                .Where(g =>
-                    g.Select(x => x.GuerraId).Distinct().Count() == 2 && 
-                    g.All(x => x.QuantidadeAtaques == 0))               
-                .Select(g => new MembroEmGuerra(g.Key, g.First().Nome))
+                .Select(g => new MembroGuerraResumo(clanTag, g.Key, g.First().Nome)
+                {
+                    QuantidadeAtaques = g.Sum(x => x.QuantidadeAtaques),
+                    GuerrasParticipadasSeq = g.Select(x => x.GuerraId).Distinct().Count()
+                })
                 .ToList();
 
-            return membrosSemAtaques;
-
+            return membros;
         }
     }
 }

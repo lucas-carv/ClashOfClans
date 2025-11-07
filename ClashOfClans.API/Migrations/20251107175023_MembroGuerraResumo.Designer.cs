@@ -4,6 +4,7 @@ using ClashOfClans.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClashOfClans.API.Migrations
 {
     [DbContext(typeof(ClashOfClansContext))]
-    partial class ClashOfClansContextModelSnapshot : ModelSnapshot
+    [Migration("20251107175023_MembroGuerraResumo")]
+    partial class MembroGuerraResumo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -353,10 +356,6 @@ namespace ClashOfClans.API.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_membros_guerras_resumo");
-
-                    b.HasIndex("ClanTag", "Tag")
-                        .IsUnique()
-                        .HasDatabaseName("ix_membros_guerras_resumo_clan_tag_tag");
 
                     b.ToTable("membros_guerras_resumo", (string)null);
                 });

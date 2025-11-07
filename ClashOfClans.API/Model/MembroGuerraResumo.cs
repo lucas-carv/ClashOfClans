@@ -4,10 +4,21 @@ namespace ClashOfClans.API.Model;
 
 public class MembroGuerraResumo : Entity
 {
-    public string ClanTag { get; set; } = null!;
-    public string Tag { get; set; } = null!;
-    public string Nome { get; set; } = null!;
-    public int GuerrasParticipadasSeq { get; set; }   
-    public int QuantidadeAtaques { get; set; }      
-    public int UltimaGuerraId { get; set; }         
+    public string ClanTag { get; init; } 
+    public string Tag { get; init; } 
+    public string Nome { get; init; }
+    public int GuerrasParticipadasSeq { get;  set; } = 0;
+    public int QuantidadeAtaques { get;  set; } = 0;
+
+    public MembroGuerraResumo(string clanTag, string tag, string nome)
+    {
+        ClanTag = clanTag;
+        Tag = tag;
+        Nome = nome;
+    }
+
+    public void AtualizarQuantidadeAtaques(int quantidadeAtaques)
+    {
+        QuantidadeAtaques = quantidadeAtaques;
+    }
 }
