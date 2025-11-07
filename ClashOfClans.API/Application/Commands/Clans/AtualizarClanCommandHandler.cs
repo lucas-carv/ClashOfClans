@@ -15,7 +15,9 @@ public class AtualizarClanCommandHandler(ClashOfClansContext context) : IRequest
 {
     public async Task<CommandResult<AtualizarClanResponse>> Handle(AtualizarClanRequest request, CancellationToken cancellationToken)
     {
-        Clan? clan = await context.Clans.FirstOrDefaultAsync(c => c.Tag == request.Tag, cancellationToken: cancellationToken);
+        Clan? clan = await context.Clans
+            .Include(m => m.Membros)
+            .FirstOrDefaultAsync(c => c.Tag == request.Tag, cancellationToken: cancellationToken);
         if (clan is null)
         {
             return ValidationErrors.Clan.ClanNaoExiste;
