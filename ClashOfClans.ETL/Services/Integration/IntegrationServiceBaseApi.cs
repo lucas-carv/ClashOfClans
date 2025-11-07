@@ -3,16 +3,15 @@ using Newtonsoft.Json.Serialization;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
-using static System.Net.WebRequestMethods;
 
 namespace ClashOfClans.ETL.Services.Integration;
 
-public abstract class IntegrationServiceBaseApiService
+public abstract class IntegrationServiceBaseApi
 {
     private readonly HttpClient _httpClient;
     protected readonly string _baseUrl = $"https://localhost:7016/api/v1";
 
-    public IntegrationServiceBaseApiService()
+    public IntegrationServiceBaseApi()
     {
         _httpClient = new HttpClient();
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -37,15 +36,17 @@ public abstract class IntegrationServiceBaseApiService
         }
         catch (Exception ex)
         {
-            ResponseIntegrationApi<TResponse> response = new ResponseIntegrationApi<TResponse>();
-            response.IsValid = false;
-            response.Erros = new string[1] { $"Erro ao enviar requisição ao servidor {ex}" };
+            ResponseIntegrationApi<TResponse> response = new()
+            {
+                IsValid = false,
+                Erros = [$"Erro ao enviar requisição ao servidor {ex}"]
+            };
             return response;
         }
     }
-    protected HttpRequestMessage CreateRequest<TContent>(TContent content, HttpMethod method, string relativeUri)
+    protected static HttpRequestMessage CreateRequest<TContent>(TContent content, HttpMethod method, string relativeUri)
     {
-        StringContent stringContent = null;
+        StringContent? stringContent = null;
         if (content != null)
         {
             JsonSerializerSettings settings = new JsonSerializerSettings
@@ -56,7 +57,6 @@ public abstract class IntegrationServiceBaseApiService
             var objetoSerializado = JsonConvert.SerializeObject(content, settings);
 
             stringContent = new StringContent(objetoSerializado, Encoding.UTF8, "application/json");
-            //stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
         }
 
         return new HttpRequestMessage
@@ -66,14 +66,14 @@ public abstract class IntegrationServiceBaseApiService
             RequestUri = new Uri(new Uri("https://localhost:7016"), relativeUri)
         };
     }
-    private async Task<ResponseIntegrationApi<T>> ParseReponse<T>(HttpResponseMessage response)
+    private static async Task<ResponseIntegrationApi<T>> ParseReponse<T>(HttpResponseMessage response)
     {
         string text = await response.Content.ReadAsStringAsync();
         if (response.StatusCode == HttpStatusCode.Accepted || string.IsNullOrEmpty(text))
         {
             return new ResponseIntegrationApi<T>
             {
-                ResponseData = default(T),
+                ResponseData = default,
                 IsValid = true,
                 Erros = Array.Empty<string>()
             };
@@ -81,10 +81,12 @@ public abstract class IntegrationServiceBaseApiService
 
         if (!response.IsSuccessStatusCode)
         {
-            ResponseIntegrationApi<T> responseIFood = new ResponseIntegrationApi<T>();
-            responseIFood.ResponseData = default(T);
-            responseIFood.IsValid = false;
-            responseIFood.Erros = new string[1] { text };
+            ResponseIntegrationApi<T> responseIFood = new()
+            {
+                ResponseData = default,
+                IsValid = false,
+                Erros = new string[1] { text }
+            };
             return responseIFood;
         }
 
@@ -97,7 +99,8 @@ public abstract class IntegrationServiceBaseApiService
                     _ = errorArgs.ErrorContext.Error.Message;
                     errorArgs.ErrorContext.Handled = true;
                 }
-            });
+                !
+            })!;
             return new ResponseIntegrationApi<T>
             {
                 ResponseData = responseData,
@@ -106,12 +109,13 @@ public abstract class IntegrationServiceBaseApiService
         }
         catch (Exception ex)
         {
-            ResponseIntegrationApi<T> responseIFood = new ResponseIntegrationApi<T>();
-            responseIFood.ResponseData = default(T);
-            responseIFood.IsValid = false;
-            responseIFood.Erros = new string[1] { ex.Message };
-            return responseIFood;
+            ResponseIntegrationApi<T> responseIntegracao = new()
+            {
+                ResponseData = default,
+                IsValid = false,
+                Erros = [ex.Message]
+            };
+            return responseIntegracao;
         }
     }
-
 }

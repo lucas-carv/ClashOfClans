@@ -1,10 +1,9 @@
 ﻿using ClashOfClans.ETL.InputModels;
-using ClashOfClans.ETL.Jobs;
-using ClashOfClans.ETL.Models;
+using ClashOfClans.ETL.Responses;
 
 namespace ClashOfClans.ETL.Services.Integration;
 
-public class IntegrationService : IntegrationServiceBaseApiService
+public class IntegrationService : IntegrationServiceBaseApi
 {
     public async Task<bool> CriarClan(CriarClanInputModel clan)
     {
@@ -15,7 +14,7 @@ public class IntegrationService : IntegrationServiceBaseApiService
     public async Task<bool> AtualizarClan(CriarClanInputModel clan)
     {
         string uri = $"{_baseUrl}/clan/atualizar";
-        var response = await Send<bool, CriarClanInputModel>(clan, HttpMethod.Put, uri);
+        var response = await Send<AtualizarClanResponse, CriarClanInputModel>(clan, HttpMethod.Put, uri);
         return response.IsValid;
     }
     
