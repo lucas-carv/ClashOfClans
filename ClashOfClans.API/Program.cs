@@ -1,6 +1,5 @@
 using ClashOfClans.API.BackgroundServices;
 using ClashOfClans.API.Data;
-using ClashOfClans.API.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
@@ -13,9 +12,7 @@ builder.Services.AddControllers();
 builder.Services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
-    .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>())
-    .AddScoped<IClanRepository, ClanRepository>()
-    .AddScoped<IGuerraRepository, GuerraRepository>();
+    .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
 //var assembly = AppDomain.CurrentDomain.Load("ClashOfClans.API");
 //AssemblyScanner.FindValidatorsInAssembly(assembly).ForEach(result => builder.Services.AddScoped(result.InterfaceType, result.ValidatorType));

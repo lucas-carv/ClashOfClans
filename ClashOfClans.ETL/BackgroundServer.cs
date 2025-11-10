@@ -13,12 +13,9 @@ public class BackgroundServer : IDisposable
 
         Scheduler.JobFactory = new ScopedJobFactory(provider);
         Scheduler.Start();
-        Console.WriteLine("Iniciado");
         Scheduler.ListenerManager.AddJobListener(new GlobalJobListener(), GroupMatcher<JobKey>.AnyGroup());
 
-
         this.LoadJobs();
-
     }
     public void AddJob<T>(IntervalSimpleSchedule interval, int value, string group = "default") where T : IJob
     {
@@ -48,7 +45,6 @@ public class BackgroundServer : IDisposable
 
     public void AddJob<T>(ITrigger trigger) where T : IJob
     {
-        Console.WriteLine($"Agendando job: {typeof(T).Name}");
         string jobName = typeof(T).Name;
 
         IJobDetail job = JobBuilder.Create<T>()

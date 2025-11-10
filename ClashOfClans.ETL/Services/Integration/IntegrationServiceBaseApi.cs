@@ -85,7 +85,7 @@ public abstract class IntegrationServiceBaseApi
             {
                 ResponseData = default,
                 IsValid = false,
-                Erros = new string[1] { text }
+                Erros = [text]
             };
             return responseIFood;
         }
