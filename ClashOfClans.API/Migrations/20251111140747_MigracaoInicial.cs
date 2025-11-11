@@ -21,12 +21,12 @@ namespace ClashOfClans.API.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    tag = table.Column<string>(type: "varchar(255)", nullable: false)
+                    tag = table.Column<string>(type: "varchar(100)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    nome = table.Column<string>(type: "longtext", nullable: false)
+                    nome = table.Column<string>(type: "varchar(100)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    data_alteracao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    data_criacao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    data_alteracao = table.Column<DateTime>(type: "datetime(0)", precision: 0, nullable: false),
+                    data_criacao = table.Column<DateTime>(type: "datetime(0)", precision: 0, nullable: false),
                     foi_removido = table.Column<bool>(type: "tinyint(1)", nullable: true)
                 },
                 constraints: table =>
@@ -41,17 +41,41 @@ namespace ClashOfClans.API.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    status = table.Column<string>(type: "longtext", nullable: false)
+                    status = table.Column<string>(type: "varchar(100)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    inicio_guerra = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    fim_guerra = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    data_alteracao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    data_criacao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    inicio_guerra = table.Column<DateTime>(type: "datetime(0)", precision: 0, nullable: false),
+                    fim_guerra = table.Column<DateTime>(type: "datetime(0)", precision: 0, nullable: false),
+                    data_alteracao = table.Column<DateTime>(type: "datetime(0)", precision: 0, nullable: false),
+                    data_criacao = table.Column<DateTime>(type: "datetime(0)", precision: 0, nullable: false),
                     foi_removido = table.Column<bool>(type: "tinyint(1)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_guerra", x => x.id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "membros_guerras_resumo",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    clan_tag = table.Column<string>(type: "varchar(100)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    tag = table.Column<string>(type: "varchar(100)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    nome = table.Column<string>(type: "varchar(100)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    guerras_participadas_seq = table.Column<int>(type: "int", nullable: false),
+                    quantidade_ataques = table.Column<int>(type: "int", nullable: false),
+                    data_alteracao = table.Column<DateTime>(type: "datetime(0)", precision: 0, nullable: false),
+                    data_criacao = table.Column<DateTime>(type: "datetime(0)", precision: 0, nullable: false),
+                    foi_removido = table.Column<bool>(type: "tinyint(1)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_membros_guerras_resumo", x => x.id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -62,13 +86,13 @@ namespace ClashOfClans.API.Migrations
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     clan_id = table.Column<int>(type: "int", nullable: false),
-                    tag = table.Column<string>(type: "varchar(255)", nullable: false)
+                    tag = table.Column<string>(type: "varchar(100)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    nome = table.Column<string>(type: "longtext", nullable: false)
+                    nome = table.Column<string>(type: "varchar(100)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     situacao = table.Column<int>(type: "int", nullable: false),
-                    data_alteracao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    data_criacao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    data_alteracao = table.Column<DateTime>(type: "datetime(0)", precision: 0, nullable: false),
+                    data_criacao = table.Column<DateTime>(type: "datetime(0)", precision: 0, nullable: false),
                     foi_removido = table.Column<bool>(type: "tinyint(1)", nullable: true)
                 },
                 constraints: table =>
@@ -89,11 +113,11 @@ namespace ClashOfClans.API.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    tag = table.Column<string>(type: "longtext", nullable: false)
+                    tag = table.Column<string>(type: "varchar(100)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     guerra_id = table.Column<int>(type: "int", nullable: false),
-                    data_alteracao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    data_criacao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    data_alteracao = table.Column<DateTime>(type: "datetime(0)", precision: 0, nullable: false),
+                    data_criacao = table.Column<DateTime>(type: "datetime(0)", precision: 0, nullable: false),
                     foi_removido = table.Column<bool>(type: "tinyint(1)", nullable: true)
                 },
                 constraints: table =>
@@ -114,14 +138,13 @@ namespace ClashOfClans.API.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    guerra_clan_id = table.Column<int>(type: "int", nullable: false),
-                    tag = table.Column<string>(type: "longtext", nullable: false)
+                    tag = table.Column<string>(type: "varchar(100)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    nome = table.Column<string>(type: "longtext", nullable: false)
+                    nome = table.Column<string>(type: "varchar(100)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     clan_em_guerra_id = table.Column<int>(type: "int", nullable: true),
-                    data_alteracao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    data_criacao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    data_alteracao = table.Column<DateTime>(type: "datetime(0)", precision: 0, nullable: false),
+                    data_criacao = table.Column<DateTime>(type: "datetime(0)", precision: 0, nullable: false),
                     foi_removido = table.Column<bool>(type: "tinyint(1)", nullable: true)
                 },
                 constraints: table =>
@@ -141,15 +164,14 @@ namespace ClashOfClans.API.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    membro_id = table.Column<int>(type: "int", nullable: false),
-                    atacante_tag = table.Column<string>(type: "longtext", nullable: false)
+                    atacante_tag = table.Column<string>(type: "varchar(100)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    defensor_tag = table.Column<string>(type: "longtext", nullable: false)
+                    defensor_tag = table.Column<string>(type: "varchar(100)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     estrelas = table.Column<int>(type: "int", nullable: false),
                     membro_em_guerra_id = table.Column<int>(type: "int", nullable: true),
-                    data_alteracao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    data_criacao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    data_alteracao = table.Column<DateTime>(type: "datetime(0)", precision: 0, nullable: false),
+                    data_criacao = table.Column<DateTime>(type: "datetime(0)", precision: 0, nullable: false),
                     foi_removido = table.Column<bool>(type: "tinyint(1)", nullable: true)
                 },
                 constraints: table =>
@@ -201,6 +223,12 @@ namespace ClashOfClans.API.Migrations
                 name: "ix_membro_em_guerra_clan_em_guerra_id",
                 table: "membro_em_guerra",
                 column: "clan_em_guerra_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_membros_guerras_resumo_clan_tag_tag",
+                table: "membros_guerras_resumo",
+                columns: new[] { "clan_tag", "tag" },
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -211,6 +239,9 @@ namespace ClashOfClans.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "membro");
+
+            migrationBuilder.DropTable(
+                name: "membros_guerras_resumo");
 
             migrationBuilder.DropTable(
                 name: "membro_em_guerra");
