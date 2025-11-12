@@ -50,5 +50,8 @@ public class AtaqueMapping : IEntityTypeConfiguration<Ataque>
         builder.ToTable("guerra_membro_ataque");
         builder.HasQueryFilter(p => p.FoiRemovido != null);
         builder.HasKey(c => c.Id);
+
+        builder.HasIndex(a => new { a.AtacanteTag, a.DefensorTag })
+              .IsUnique();
     }
 }

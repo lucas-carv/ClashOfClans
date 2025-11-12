@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClashOfClans.API.Migrations
 {
     [DbContext(typeof(ClashOfClansContext))]
-    [Migration("20251111140747_MigracaoInicial")]
+    [Migration("20251112212539_MigracaoInicial")]
     partial class MigracaoInicial
     {
         /// <inheritdoc />
@@ -114,6 +114,10 @@ namespace ClashOfClans.API.Migrations
 
                     b.HasIndex("MembroEmGuerraId")
                         .HasDatabaseName("ix_guerra_membro_ataque_membro_em_guerra_id");
+
+                    b.HasIndex("AtacanteTag", "DefensorTag")
+                        .IsUnique()
+                        .HasDatabaseName("ix_guerra_membro_ataque_atacante_tag_defensor_tag");
 
                     b.ToTable("guerra_membro_ataque", (string)null);
                 });

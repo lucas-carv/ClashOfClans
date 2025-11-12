@@ -204,6 +204,12 @@ namespace ClashOfClans.API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "ix_guerra_membro_ataque_atacante_tag_defensor_tag",
+                table: "guerra_membro_ataque",
+                columns: new[] { "atacante_tag", "defensor_tag" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "ix_guerra_membro_ataque_membro_em_guerra_id",
                 table: "guerra_membro_ataque",
                 column: "membro_em_guerra_id");

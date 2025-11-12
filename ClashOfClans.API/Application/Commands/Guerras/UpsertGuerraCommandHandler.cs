@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClashOfClans.API.Application.Commands.Guerras;
+
 public record UpsertGuerraRequest(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanEmGuerraDTO Clan) : IRequest<CommandResult<UpsertGuerraResponse>>;
 public record UpsertGuerraResponse(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanEmGuerraDTO Clan);
 
@@ -43,6 +44,9 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context) : IRequestH
             UpsertGuerraResponse responseCriacao = MapearResponse(novaGuerra);
             return responseCriacao;
         }
+
+        guerraExistente.Status = request.Status;
+
         foreach (var membro in request.Clan.Membros)
         {
             MembroEmGuerra? membroEmGuerra = guerraExistente.ClanEmGuerra.Membros.FirstOrDefault(m => m.Tag == membro.Tag);

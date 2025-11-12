@@ -5,7 +5,7 @@ namespace ClashOfClans.API.Model.Guerras;
 
 public class Guerra : Entity, IAggregateRoot
 {
-    public string Status { get; private set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
     public DateTime InicioGuerra { get; init; }
     public DateTime FimGuerra { get; init; }
     public ClanEmGuerra ClanEmGuerra { get; init; }

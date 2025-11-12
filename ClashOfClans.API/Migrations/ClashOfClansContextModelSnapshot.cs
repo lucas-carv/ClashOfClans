@@ -112,6 +112,10 @@ namespace ClashOfClans.API.Migrations
                     b.HasIndex("MembroEmGuerraId")
                         .HasDatabaseName("ix_guerra_membro_ataque_membro_em_guerra_id");
 
+                    b.HasIndex("AtacanteTag", "DefensorTag")
+                        .IsUnique()
+                        .HasDatabaseName("ix_guerra_membro_ataque_atacante_tag_defensor_tag");
+
                     b.ToTable("guerra_membro_ataque", (string)null);
                 });
 
