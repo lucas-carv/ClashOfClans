@@ -25,12 +25,24 @@ public class IntegrationService : IntegrationServiceBaseApi
         return response.ResponseData;
     }
 
-    public async Task<bool> EnviarGuerra(EnviarGuerraInputModel guerra)
+    public async Task<UpsertGuerraResponse> EnviarGuerra(EnviarGuerraInputModel guerra)
     {
         string uri = $"{_baseUrl}/guerra/criar";
-        var response = await Send<bool, EnviarGuerraInputModel>(guerra, HttpMethod.Put, uri);
-        return response.IsValid;
+        var response = await Send<UpsertGuerraResponse, EnviarGuerraInputModel>(guerra, HttpMethod.Put, uri);
+        return response.ResponseData;
     }
+}
+public class UpsertGuerraResponse(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanEmGuerraDTO Clan);
+public record ClanEmGuerraDTO
+{
+    public required string Tag { get; init; }
+    public IEnumerable<MembroEmGuerraDTO> Membros { get; set; } = [];
+}
+public record MembroEmGuerraDTO
+{
+    public required string Tag { get; set; }
+    public required string Nome { get; set; }
+    public IEnumerable<AtaquesDTO> Ataques { get; set; } = [];
 }
 
 public class ResponseIntegrationApi<T>

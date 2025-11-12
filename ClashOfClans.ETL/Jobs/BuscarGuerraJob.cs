@@ -25,7 +25,10 @@ public class EnviarGuerraJob(ClashOfClansService clashOfClansService, Integratio
         var clanIntegracao = await _integrationService.ObterClanPorTag(encodedTag);
         if (clanIntegracao is not null)
         {
+            Console.WriteLine($"{DateTime.Now} - Enviando guerra");
             await _integrationService.EnviarGuerra(guerraInputModel);
+
+            Console.WriteLine($"{DateTime.Now} - Guerra enviada com sucesso");
             return;
         }
     }
