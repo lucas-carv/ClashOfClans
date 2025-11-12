@@ -17,6 +17,7 @@ public class War
 public enum StatusGuerra
 {
     NotInWar,
+    WarEnded,
     InWar
 }
 

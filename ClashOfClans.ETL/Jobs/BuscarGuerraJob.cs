@@ -17,20 +17,18 @@ public class EnviarGuerraJob(ClashOfClansService clashOfClansService, Integratio
         string encodedTag = Uri.EscapeDataString(tag);
 
         War war = await _clashOfClansService.BuscarGuerra(encodedTag);
-        //if (war.State.Equals(StatusGuerra.NotInWar))
-        //    return;
+        if (war.State.Equals(StatusGuerra.NotInWar))
+            return;
 
         EnviarGuerraInputModel guerraInputModel = CriarGuerraInputModel(war);
 
         var clanIntegracao = await _integrationService.ObterClanPorTag(encodedTag);
-        if (clanIntegracao is not null)
-        {
-            Console.WriteLine($"{DateTime.Now} - Enviando guerra");
-            await _integrationService.EnviarGuerra(guerraInputModel);
-
-            Console.WriteLine($"{DateTime.Now} - Guerra enviada com sucesso");
+        if (clanIntegracao is null)
             return;
-        }
+
+        Console.WriteLine($"{DateTime.Now} - Enviando guerra");
+        await _integrationService.EnviarGuerra(guerraInputModel);
+        Console.WriteLine($"{DateTime.Now} - Guerra enviada com sucesso");
     }
 
     private static EnviarGuerraInputModel CriarGuerraInputModel(War war)

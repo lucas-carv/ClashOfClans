@@ -6,7 +6,7 @@ public class MembroEmGuerra : Entity
 {
     public string Tag { get; init; }
     public string Nome { get; init; }
-    public List<Ataque> Ataques { get; set; } = [];
+    public List<GuerraMembroAtaque> Ataques { get; set; } = [];
     private MembroEmGuerra() { }
     public MembroEmGuerra(string tag, string nome)
     {
@@ -16,14 +16,14 @@ public class MembroEmGuerra : Entity
 
     public void AtualizarAtaque(string atacanteTag, string defensorTag, int estrelas)
     {
-        Ataque? ataque = Ataques.FirstOrDefault(a => a.DefensorTag == defensorTag && a.AtacanteTag == defensorTag);
+        GuerraMembroAtaque? ataque = Ataques.FirstOrDefault(a => a.AtacanteTag == atacanteTag && a.DefensorTag == defensorTag);
         if (ataque is not null)
         {
             ataque.AtualizarEstrelas(estrelas);
             return;
         }
 
-        Ataque novoAtaque = new(atacanteTag, defensorTag);
+        GuerraMembroAtaque novoAtaque = new(atacanteTag, defensorTag);
         novoAtaque.AtualizarEstrelas(estrelas);
         Ataques.Add(novoAtaque);
         return;

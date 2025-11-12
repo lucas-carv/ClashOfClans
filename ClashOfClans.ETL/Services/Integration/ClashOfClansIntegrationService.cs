@@ -5,11 +5,11 @@ namespace ClashOfClans.ETL.Services.Integration;
 
 public class IntegrationService : IntegrationServiceBaseApi
 {
-    public async Task<bool> CriarClan(CriarClanInputModel clan)
+    public async Task<CriarClanInputModel> CriarClan(CriarClanInputModel clan)
     {
         string uri = $"{_baseUrl}/clan/criar";
-        var response = await Send<bool, CriarClanInputModel>(clan, HttpMethod.Post, uri);
-        return response.IsValid;
+        var response = await Send<CriarClanInputModel, CriarClanInputModel>(clan, HttpMethod.Post, uri);
+        return response.ResponseData;
     }
     public async Task<bool> AtualizarClan(CriarClanInputModel clan)
     {

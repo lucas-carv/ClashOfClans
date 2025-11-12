@@ -25,7 +25,7 @@ namespace ClashOfClans.API.BackgroundServices
 
             List<string> clansTags = await _context.Guerras
                 .AsNoTracking()
-                .Where(g => g.Status == "notInWar")
+                .Where(g => g.Status == "WarEnded")
                 .Select(g => g.ClanEmGuerra.Tag)
                 .Distinct()
                 .ToListAsync(cancellationToken);
@@ -51,15 +51,15 @@ namespace ClashOfClans.API.BackgroundServices
                     membroExiste.AtualizarQuantidadeAtaques(membro.QuantidadeAtaques);
                     membroExiste.GuerrasParticipadasSeq = membro.GuerrasParticipadasSeq;
                 }
+                await _context.SaveChangesAsync(cancellationToken);
             }
-            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<List<MembroGuerraResumo>> ObterAtaquesDeMembros(string clanTag, CancellationToken cancellationToken)
         {
             var ultimasDuasGuerras = await _context.Guerras
                 .AsNoTracking()
-                .Where(g => g.Status == "notInWar" && g.ClanEmGuerra.Tag == clanTag)
+                .Where(g => g.Status == "WarEnded" && g.ClanEmGuerra.Tag == clanTag)
                 .OrderByDescending(g => g.FimGuerra)
                 .Take(2)
                 .Select(g => new { g.Id })

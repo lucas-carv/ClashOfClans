@@ -49,8 +49,7 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context) : IRequestH
 
         foreach (var membro in request.Clan.Membros)
         {
-            MembroEmGuerra? membroEmGuerra = guerraExistente.ClanEmGuerra.Membros.FirstOrDefault(m => m.Tag == membro.Tag);
-            membroEmGuerra ??= guerraExistente.ClanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome);
+            MembroEmGuerra membroEmGuerra = guerraExistente.ClanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome);
 
             foreach (var ataque in membro.Ataques)
             {

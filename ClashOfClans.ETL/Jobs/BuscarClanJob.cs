@@ -23,17 +23,20 @@ public class BuscarClanJob(ClashOfClansService clashOfClansService) : IJob
             Nome = clan.Name,
             Membros = clan.MemberList.Select(m => new MembroDTO()
             {
-                Nome = m.Name,
-                Tag = m.Tag
+                Tag = m.Tag,
+                Nome = m.Name
             })
         };
 
         CriarClanInputModel clanIntegrado = await integrationService.ObterClanPorTag(encodedTag);
-        if (clanIntegrado == null)
+        if (clanIntegrado is not null)
         {
-            await integrationService.CriarClan(clanInputModel);
+            Console.WriteLine($"{DateTime.Now} - Atualizando Clan");
+            await integrationService.AtualizarClan(clanInputModel);
             return;
         }
-        await integrationService.AtualizarClan(clanInputModel);
+
+        Console.WriteLine($"{DateTime.Now} - Criando Clan");
+        await integrationService.CriarClan(clanInputModel);
     }
 }

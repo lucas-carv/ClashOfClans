@@ -4,7 +4,7 @@ public static class ClashOfClansJobs
 {
     public static void AddClashOfClansJobs(this BackgroundServer configuration)
     {
-        configuration.AddJob<BuscarClanJob>(IntervalSimpleSchedule.Minutes, 5);
-        configuration.AddJob<EnviarGuerraJob>(IntervalSimpleSchedule.Minutes, 15);
+        configuration.AddJob<BuscarClanJob>(IntervalSimpleSchedule.Minutes, 30);
+        configuration.AddJob<EnviarGuerraJob>(IntervalSimpleSchedule.Minutes, 3);
     }
 }

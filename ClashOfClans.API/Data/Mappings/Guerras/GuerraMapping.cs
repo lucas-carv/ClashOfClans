@@ -43,9 +43,9 @@ public class MembroGuerraMapping : IEntityTypeConfiguration<MembroEmGuerra>
 }
 
 
-public class AtaqueMapping : IEntityTypeConfiguration<Ataque>
+public class AtaqueMapping : IEntityTypeConfiguration<GuerraMembroAtaque>
 {
-    public void Configure(EntityTypeBuilder<Ataque> builder)
+    public void Configure(EntityTypeBuilder<GuerraMembroAtaque> builder)
     {
         builder.ToTable("guerra_membro_ataque");
         builder.HasQueryFilter(p => p.FoiRemovido != null);
