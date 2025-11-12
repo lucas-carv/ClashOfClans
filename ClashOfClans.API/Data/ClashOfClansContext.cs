@@ -1,4 +1,5 @@
 ﻿using ClashOfClans.API.Core;
+using ClashOfClans.API.Core.Extensions;
 using ClashOfClans.API.Model;
 using ClashOfClans.API.Model.Guerras;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,9 @@ public class ClashOfClansContext(DbContextOptions<ClashOfClansContext> options) 
     public DbSet<MembroGuerraResumo> MembrosGuerrasResumo { get; set; }
     public async Task<bool> Commit()
     {
+        if (!ChangeTracker.HasChanges()) return false;
+        ChangeTracker.EnableSoftDelete();
+
         var result = await base.SaveChangesAsync();
         return result > 0;
     }
