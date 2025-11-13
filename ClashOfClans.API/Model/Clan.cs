@@ -10,6 +10,15 @@ public class Clan : Entity, IAggregateRoot
     private Clan() { }
     public Clan(string tag, string nome)
     {
+        if (string.IsNullOrWhiteSpace(tag))
+            throw new ArgumentException("Tag não pode ser vazia.", nameof(tag));
+
+        if (!tag.StartsWith('#'))
+            throw new ArgumentException("Tag deve começar com #.", nameof(tag));
+
+        if (string.IsNullOrWhiteSpace(nome))
+            throw new ArgumentException("Nome não pode ser vazio.", nameof(nome));
+
         Tag = tag;
         Nome = nome;
     }

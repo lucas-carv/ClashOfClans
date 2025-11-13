@@ -6,7 +6,7 @@ public class GuerraMembroAtaque : Entity
 {
     public string AtacanteTag { get; init; }
     public string DefensorTag { get; init; }
-    public int Estrelas { get; private set; } = 0;
+    public int Estrelas { get;  set; }
     private GuerraMembroAtaque() { }
     public GuerraMembroAtaque(string atacanteTag, string defensorTag)
     {
