@@ -1,9 +1,7 @@
 ﻿using ClashOfClans.API.Data;
 using ClashOfClans.API.Model;
-using ClashOfClans.API.Model.Guerras;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
-using System;
 
 namespace ClashOfClans.API.BackgroundServices
 {
@@ -82,14 +80,13 @@ namespace ClashOfClans.API.BackgroundServices
            }))
            .ToListAsync(cancellationToken);
 
-            List<MembroGuerraResumo> membros = membrosDaGuerra
+            List<MembroGuerraResumo> membros = [.. membrosDaGuerra
                 .GroupBy(m => m.Tag)
                 .Select(g => new MembroGuerraResumo(clanTag, g.Key, g.First().Nome)
                 {
                     QuantidadeAtaques = g.Sum(x => x.QuantidadeAtaques),
                     GuerrasParticipadasSeq = g.Select(x => x.GuerraId).Distinct().Count()
-                })
-                .ToList();
+                })];
 
             return membros;
         }

@@ -18,6 +18,7 @@ public enum StatusGuerra
 {
     NotInWar,
     WarEnded,
+    Preparation,
     InWar
 }
 
