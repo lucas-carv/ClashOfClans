@@ -30,14 +30,7 @@ namespace ClashOfClans.API.BackgroundServices
 
             foreach (var clanTag in clansTags)
             {
-                List<MembroGuerraResumo> membros = await ObterAtaquesDeMembros(clanTag, cancellationToken);
-
-                if (membros.Count == 0)
-                {
-                    _logger.LogInformation("Clã {Clan}: nenhum membro inelegível encontrado.", clanTag);
-                    continue;
-                }
-
+                IEnumerable<MembroGuerraResumo> membros = await ObterAtaquesDeMembros(clanTag, cancellationToken);
                 foreach (var membro in membros)
                 {
                     MembroGuerraResumo? membroExiste = _context.MembrosGuerrasResumo.FirstOrDefault(m => m.Tag == membro.Tag && m.ClanTag == clanTag);
