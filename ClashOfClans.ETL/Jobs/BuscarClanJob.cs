@@ -14,7 +14,13 @@ public class BuscarClanJob(ClashOfClansService clashOfClansService) : IJob
     {
         string tag = "#2L0UC9R8P";
         string encodedTag = Uri.EscapeDataString(tag);
+
         Clan clan = await _clashOfClansService.BuscarClan(encodedTag);
+        if (clan is null)
+        {
+            Console.WriteLine("Falha ao obter clan");
+            return;
+        }
         IntegrationService integrationService = new();
 
         CriarClanInputModel clanInputModel = new()

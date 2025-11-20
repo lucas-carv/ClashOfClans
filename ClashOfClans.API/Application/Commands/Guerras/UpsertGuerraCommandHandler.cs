@@ -24,7 +24,7 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context) : IRequestH
             .FirstOrDefaultAsync(
                 g =>
                     g.InicioGuerra == request.InicioGuerra &&
-                    g.FimGuerra == request.FimGuerra,
+                    g.ClanEmGuerra.Tag == request.Clan.Tag,
                 cancellationToken: cancellationToken);
         if (guerraExistente is null)
         {
@@ -46,6 +46,11 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context) : IRequestH
         }
 
         guerraExistente.Status = request.Status;
+        if (!guerraExistente.FimGuerra.Equals(request.FimGuerra))
+        {
+            guerraExistente.AlterarDataFinalGuerra(request.FimGuerra);
+        }
+
 
         foreach (var membro in request.Clan.Membros)
         {
