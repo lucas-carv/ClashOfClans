@@ -15,5 +15,10 @@ public class MembroMapping : IEntityTypeConfiguration<Membro>
         builder
             .HasIndex(p => p.Tag)
             .IsUnique();
+
+        builder.Property(m => m.Situacao)
+               .HasConversion<string>()
+               .HasMaxLength(20)
+               .HasColumnType("varchar(20)"); ;
     }
 }
