@@ -62,7 +62,7 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context) : IRequestH
             }
         }
 
-        await context.SaveChangesAsync(cancellationToken);
+        await context.Commit(cancellationToken);
 
         var responseAtualizacao = MapearResponse(guerraExistente);
         return responseAtualizacao;
