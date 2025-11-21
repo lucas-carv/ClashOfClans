@@ -11,13 +11,13 @@ public class ClashOfClansContext(DbContextOptions<ClashOfClansContext> options) 
     public DbSet<Clan> Clans { get; set; }
     public DbSet<Guerra> Guerras { get; set; }
     public DbSet<MembroGuerraResumo> MembrosGuerrasResumo { get; set; }
-    public async Task<bool> Commit(CancellationToken cancellationToken)
+    public async Task Commit(CancellationToken cancellationToken)
     {
-        if (!ChangeTracker.HasChanges()) return false;
-        ChangeTracker.EnableSoftDelete();
+        if (!ChangeTracker.HasChanges())
+            return;
 
-        var result = await base.SaveChangesAsync(cancellationToken);
-        return result > 0;
+        ChangeTracker.EnableSoftDelete();
+        await base.SaveChangesAsync(cancellationToken);
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

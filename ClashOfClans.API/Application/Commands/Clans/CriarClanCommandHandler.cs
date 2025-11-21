@@ -30,7 +30,7 @@ public class CriarClanCommandHandler(ClashOfClansContext context) : IRequestHand
         }
 
         _context.Add(clan);
-        await _context.SaveChangesAsync(cancellationToken);
+        await _context.Commit(cancellationToken);
 
         var membros = clan.Membros
             .Select(m => new MembroClanDTO()

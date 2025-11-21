@@ -40,7 +40,7 @@ public class AtualizarClanCommandHandler(ClashOfClansContext context) : IRequest
         {
             clan.InativarMembro(membroTag);
         }
-        await context.SaveChangesAsync(cancellationToken);
+        await context.Commit(cancellationToken);
 
         IEnumerable<MembroClanDTO> membros = clan.Membros.Select(m =>
             new MembroClanDTO
