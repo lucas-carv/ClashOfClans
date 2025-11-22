@@ -27,11 +27,22 @@ builder.Services.AddDbContext<ClashOfClansContext>(options =>
 builder.Services.AddQuartz(q =>
 {
     var jobKey = new JobKey("AnalisarGuerrasJob");
+    var jobKey2 = new JobKey("DetectarMembrosInativosEmGuerrasJob");
     q.AddJob<AnalisarGuerrasJob>(opts => opts.WithIdentity(jobKey));
 
     q.AddTrigger(t => t
          .ForJob(jobKey)
          .WithIdentity("AnalisarGuerrasTrigger")
+         .StartNow() // executa logo na inicialização
+         .WithSimpleSchedule(s => s
+             .WithIntervalInMinutes(5)
+             .RepeatForever())); // repete para sempre
+
+    q.AddJob<DetectarMembrosInativosEmGuerrasJob>(opts => opts.WithIdentity(jobKey2));
+
+    q.AddTrigger(t => t
+         .ForJob(jobKey2)
+         .WithIdentity("DetectarMembrosInativosEmGuerrasTrigger")
          .StartNow() // executa logo na inicialização
          .WithSimpleSchedule(s => s
              .WithIntervalInMinutes(5)

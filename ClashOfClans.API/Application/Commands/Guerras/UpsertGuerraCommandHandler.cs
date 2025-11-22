@@ -20,7 +20,7 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context) : IRequestH
             return ValidationErrors.Clan.ClanNaoExiste;
         }
 
-        Guerra? guerraExistente = await context.Guerras.Include(g => g.ClanEmGuerra).ThenInclude(c => c.Membros).ThenInclude(m => m.Ataques)
+        Guerra? guerraExistente = await context.Guerras.Include(g => g.ClanEmGuerra).ThenInclude(c => c.MembrosEmGuerra).ThenInclude(m => m.Ataques)
             .FirstOrDefaultAsync(
                 g =>
                     g.InicioGuerra == request.InicioGuerra &&
@@ -73,7 +73,7 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context) : IRequestH
         ClanEmGuerraDTO clanDTO = new()
         {
             Tag = guerra.ClanEmGuerra.Tag,
-            Membros = guerra.ClanEmGuerra.Membros.Select(m => new MembroEmGuerraDTO
+            Membros = guerra.ClanEmGuerra.MembrosEmGuerra.Select(m => new MembroEmGuerraDTO
             {
                 Tag = m.Tag,
                 Nome = m.Nome,

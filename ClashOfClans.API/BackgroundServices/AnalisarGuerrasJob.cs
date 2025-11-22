@@ -58,7 +58,7 @@ public class AnalisarGuerrasJob(ClashOfClansContext context, ILogger<AnalisarGue
         var membrosDaGuerra = await _context.Guerras
        .AsNoTracking()
        .Where(g => guerrasIds.Contains(g.Id))
-       .SelectMany(g => g.ClanEmGuerra.Membros.Select(m => new
+       .SelectMany(g => g.ClanEmGuerra.MembrosEmGuerra.Select(m => new
        {
            GuerraId = g.Id,
            m.Tag,

@@ -5,7 +5,7 @@ namespace ClashOfClans.API.Model.Guerras;
 public class ClanEmGuerra : Entity
 {
     public string Tag { get; init; }
-    public List<MembroEmGuerra> Membros { get; set; } = [];
+    public List<MembroEmGuerra> MembrosEmGuerra { get; set; } = [];
     public int GuerraId { get; }
     public Guerra Guerra { get; }
     private ClanEmGuerra() { }
@@ -16,12 +16,12 @@ public class ClanEmGuerra : Entity
 
     public MembroEmGuerra AdicionarMembro(string tag, string nome)
     {
-        var membroExiste = Membros.FirstOrDefault(m => m.Tag == tag);
+        var membroExiste = MembrosEmGuerra.FirstOrDefault(m => m.Tag == tag);
         if (membroExiste is not null)
             return membroExiste;
 
         MembroEmGuerra membroGuerra = new(tag, nome);
-        Membros.Add(membroGuerra);
+        MembrosEmGuerra.Add(membroGuerra);
         return membroGuerra;
     }
 }
