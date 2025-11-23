@@ -54,7 +54,7 @@ public class DetectarMembrosInativosEmGuerrasJob : IJob
                 .Where(m => !tagsMembrosQueParticiparam.Contains(m.Tag)) // ajuste o nome da prop
                 .ToList();
 
-            int x = 0;
+            
         }
     }
 }
