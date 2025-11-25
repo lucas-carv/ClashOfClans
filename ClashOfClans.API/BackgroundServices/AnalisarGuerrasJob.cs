@@ -36,7 +36,7 @@ public class AnalisarGuerrasJob(ClashOfClansContext context, ILogger<AnalisarGue
                 membroExiste.AtualizarQuantidadeAtaques(membro.QuantidadeAtaques);
                 membroExiste.GuerrasParticipadasSeq = membro.GuerrasParticipadasSeq;
             }
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.Commit(cancellationToken);
         }
     }
 
