@@ -6,6 +6,7 @@ public class MembroEmGuerra : Entity
 {
     public string Tag { get; init; }
     public string Nome { get; init; }
+    // posição no mapa // será que coloca aqui ??
     public List<GuerraMembroAtaque> Ataques { get; set; } = [];
     private MembroEmGuerra() { }
     public MembroEmGuerra(string tag, string nome)

@@ -7,6 +7,8 @@ public class GuerraMembroAtaque : Entity
     public string AtacanteTag { get; init; }
     public string DefensorTag { get; init; }
     public int Estrelas { get;  set; }
+    // posição mapa atacante
+    // posição mapa defensor
     private GuerraMembroAtaque() { }
     public GuerraMembroAtaque(string atacanteTag, string defensorTag)
     {
