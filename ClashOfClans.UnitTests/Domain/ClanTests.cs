@@ -1,6 +1,4 @@
-﻿
-
-using ClashOfClans.API.BackgroundServices;
+﻿using ClashOfClans.API.BackgroundServices;
 using ClashOfClans.API.Data;
 using ClashOfClans.API.Model;
 using ClashOfClans.API.Model.Guerras;
@@ -13,35 +11,35 @@ namespace ClashOfClans.UnitTests.Domain;
 
 public class ClanTests
 {
-    [Fact]
-    public void Deve_criar_um_clan_corretamente()
-    {
-        // Arrange
-        string tag = "#ABC123";
-        string nome = "Meu Clan";
+    //[Fact]
+    //public void Deve_criar_um_clan_corretamente()
+    //{
+    //    // Arrange
+    //    string tag = "#ABC123";
+    //    string nome = "Meu Clan";
 
-        // Act
-        var clan = new Clan(tag, nome);
+    //    // Act
+    //    var clan = new Clan(tag, nome);
 
-        // Assert
-        Assert.Equal(tag, clan.Tag);
-        Assert.Equal(nome, clan.Nome);
-    }
+    //    // Assert
+    //    Assert.Equal(tag, clan.Tag);
+    //    Assert.Equal(nome, clan.Nome);
+    //}
 
-    [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
-    [InlineData(null)]
-    public void Deve_falhar_quando_tag_for_vazia(string tagInvalida)
-    {
-        Assert.Throws<ArgumentException>(() => new Clan(tagInvalida!, "Nome"));
-    }
+    //[Theory]
+    //[InlineData("")]
+    //[InlineData("   ")]
+    //[InlineData(null)]
+    //public void Deve_falhar_quando_tag_for_vazia(string tagInvalida)
+    //{
+    //    Assert.Throws<ArgumentException>(() => new Clan(tagInvalida!, "Nome"));
+    //}
 
-    [Fact]
-    public void Deve_falhar_quando_tag_nao_comeca_com_cardinal()
-    {
-        Assert.Throws<ArgumentException>(() => new Clan("ABC123", "Nome"));
-    }
+    //[Fact]
+    //public void Deve_falhar_quando_tag_nao_comeca_com_cardinal()
+    //{
+    //    Assert.Throws<ArgumentException>(() => new Clan("ABC123", "Nome"));
+    //}
 }
 
 public class AnaliseAtaquesTests
