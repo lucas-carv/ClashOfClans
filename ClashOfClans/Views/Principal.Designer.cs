@@ -30,8 +30,8 @@
         {
             BuscarClanButton = new Button();
             MembrosDataGridView = new DataGridView();
-            ListarMembrosButton = new Button();
             MembroColumn = new DataGridViewTextBoxColumn();
+            ListarMembrosButton = new Button();
             ((System.ComponentModel.ISupportInitialize)MembrosDataGridView).BeginInit();
             SuspendLayout();
             // 
@@ -57,21 +57,22 @@
             MembrosDataGridView.Size = new Size(468, 150);
             MembrosDataGridView.TabIndex = 1;
             // 
+            // MembroColumn
+            // 
+            MembroColumn.DataPropertyName = "Name";
+            MembroColumn.HeaderText = "Membro";
+            MembroColumn.Name = "MembroColumn";
+            MembroColumn.ReadOnly = true;
+            // 
             // ListarMembrosButton
             // 
-            ListarMembrosButton.Location = new Point(333, 197);
+            ListarMembrosButton.Location = new Point(183, 110);
             ListarMembrosButton.Name = "ListarMembrosButton";
             ListarMembrosButton.Size = new Size(167, 23);
             ListarMembrosButton.TabIndex = 2;
             ListarMembrosButton.Text = "Listar Membros";
             ListarMembrosButton.UseVisualStyleBackColor = true;
             ListarMembrosButton.Click += ListarMembrosButton_Click;
-            // 
-            // MembroColumn
-            // 
-            MembroColumn.DataPropertyName = "Name";
-            MembroColumn.HeaderText = "Membro";
-            MembroColumn.Name = "MembroColumn";
             // 
             // Principal
             // 

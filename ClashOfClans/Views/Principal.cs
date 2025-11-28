@@ -13,10 +13,9 @@ namespace ClashOfClans
             InitializeComponent();
         }
 
-        private void BuscarClanButton_Click(object sender, EventArgs e)
+        private async Task BuscarClanButton_Click(object sender, EventArgs e)
         {
-            Task TaskBuscarClan = BuscarClan();
-            Task.WhenAll(TaskBuscarClan);
+            await BuscarClan();
         }
 
         private async Task BuscarClan()
@@ -32,10 +31,9 @@ namespace ClashOfClans
             await clashOfClansApiService.EnviarClan(clanViewModel);
         }
 
-        private void ListarMembrosButton_Click(object sender, EventArgs e)
+        private async Task ListarMembrosButton_Click(object sender, EventArgs e)
         {
-            Task TaskObterMembros = ObterMembros();
-            Task.WhenAll(TaskObterMembros);
+            await ObterMembros();
         }
         private async Task ObterMembros()
         {
