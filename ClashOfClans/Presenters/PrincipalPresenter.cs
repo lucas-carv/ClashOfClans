@@ -26,7 +26,7 @@ public class PrincipalPresenter : IPresenter
     private async void CarregarMembrosDaApi()
     {
         IntegrationService integrationService = new();
-        List<MembroViewModel> membros = await integrationService.ObterMembros("#2LOUC9R8P");
+        List<MembroViewModel> membros = await integrationService.ObterMembros("#2L0UC9R8P");
         if (membros != null)
         {
             _view.PopularGrid(membros);
