@@ -13,12 +13,12 @@ public class ClanService : ClashOfClansBaseApiService, IClanService
         return result.ResponseData;
     }
 
-    public async Task<Membros> BuscarMembros(string tag)
+    public async Task<List<MembroViewModel>> BuscarMembros(string tag)
     {
         string encodedTag = Uri.EscapeDataString(tag);
         string uri = $"/v1/clans/{encodedTag}/members";
         var request = CreateRequest<string>(null, HttpMethod.Get, uri);
-        var result = await SendRequest<Membros>(request);
+        var result = await SendRequest<List<MembroViewModel>>(request);
         return result.ResponseData;
     }
 }

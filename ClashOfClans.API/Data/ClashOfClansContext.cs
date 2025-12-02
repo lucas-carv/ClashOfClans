@@ -10,6 +10,7 @@ public class ClashOfClansContext(DbContextOptions<ClashOfClansContext> options) 
 {
     public DbSet<Clan> Clans { get; set; }
     public DbSet<Guerra> Guerras { get; set; }
+    public DbSet<Membro> Membros { get; set; }
     public DbSet<MembroGuerraResumo> MembrosGuerrasResumo { get; set; }
     public async Task Commit(CancellationToken cancellationToken)
     {

@@ -30,61 +30,102 @@
         {
             BuscarClanButton = new Button();
             MembrosDataGridView = new DataGridView();
-            MembroColumn = new DataGridViewTextBoxColumn();
-            ListarMembrosButton = new Button();
+            NomeColumn = new DataGridViewTextBoxColumn();
+            GuerrasParticipadasSeqColumn = new DataGridViewTextBoxColumn();
+            QuantidadeAtaquesColumn = new DataGridViewTextBoxColumn();
+            TagColumn = new DataGridViewTextBoxColumn();
+            panel1 = new Panel();
+            panel2 = new Panel();
             ((System.ComponentModel.ISupportInitialize)MembrosDataGridView).BeginInit();
+            panel1.SuspendLayout();
+            panel2.SuspendLayout();
             SuspendLayout();
             // 
             // BuscarClanButton
             // 
-            BuscarClanButton.Location = new Point(86, 110);
+            BuscarClanButton.Location = new Point(36, 33);
             BuscarClanButton.Name = "BuscarClanButton";
-            BuscarClanButton.Size = new Size(75, 23);
+            BuscarClanButton.Size = new Size(203, 23);
             BuscarClanButton.TabIndex = 0;
-            BuscarClanButton.Text = "button1";
+            BuscarClanButton.Text = "Listar membros";
             BuscarClanButton.UseVisualStyleBackColor = true;
-            BuscarClanButton.Click += BuscarClanButton_Click;
             // 
             // MembrosDataGridView
             // 
             MembrosDataGridView.AllowUserToAddRows = false;
             MembrosDataGridView.AllowUserToDeleteRows = false;
+            MembrosDataGridView.AllowUserToOrderColumns = true;
             MembrosDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            MembrosDataGridView.Columns.AddRange(new DataGridViewColumn[] { MembroColumn });
-            MembrosDataGridView.Location = new Point(100, 246);
+            MembrosDataGridView.Columns.AddRange(new DataGridViewColumn[] { NomeColumn, GuerrasParticipadasSeqColumn, QuantidadeAtaquesColumn, TagColumn });
+            MembrosDataGridView.Dock = DockStyle.Fill;
+            MembrosDataGridView.Location = new Point(0, 0);
             MembrosDataGridView.Name = "MembrosDataGridView";
             MembrosDataGridView.ReadOnly = true;
-            MembrosDataGridView.Size = new Size(468, 150);
+            MembrosDataGridView.Size = new Size(677, 406);
             MembrosDataGridView.TabIndex = 1;
             // 
-            // MembroColumn
+            // NomeColumn
             // 
-            MembroColumn.DataPropertyName = "Name";
-            MembroColumn.HeaderText = "Membro";
-            MembroColumn.Name = "MembroColumn";
-            MembroColumn.ReadOnly = true;
+            NomeColumn.DataPropertyName = "Nome";
+            NomeColumn.HeaderText = "Nome";
+            NomeColumn.Name = "NomeColumn";
+            NomeColumn.ReadOnly = true;
             // 
-            // ListarMembrosButton
+            // GuerrasParticipadasSeqColumn
             // 
-            ListarMembrosButton.Location = new Point(183, 110);
-            ListarMembrosButton.Name = "ListarMembrosButton";
-            ListarMembrosButton.Size = new Size(167, 23);
-            ListarMembrosButton.TabIndex = 2;
-            ListarMembrosButton.Text = "Listar Membros";
-            ListarMembrosButton.UseVisualStyleBackColor = true;
-            ListarMembrosButton.Click += ListarMembrosButton_Click;
+            GuerrasParticipadasSeqColumn.DataPropertyName = "GuerrasParticipadasSeq";
+            GuerrasParticipadasSeqColumn.FillWeight = 150F;
+            GuerrasParticipadasSeqColumn.HeaderText = "Sequencia de guerras";
+            GuerrasParticipadasSeqColumn.Name = "GuerrasParticipadasSeqColumn";
+            GuerrasParticipadasSeqColumn.ReadOnly = true;
+            GuerrasParticipadasSeqColumn.Width = 150;
+            // 
+            // QuantidadeAtaquesColumn
+            // 
+            QuantidadeAtaquesColumn.DataPropertyName = "QuantidadeAtaques";
+            QuantidadeAtaquesColumn.HeaderText = "Quantidade de ataques";
+            QuantidadeAtaquesColumn.Name = "QuantidadeAtaquesColumn";
+            QuantidadeAtaquesColumn.ReadOnly = true;
+            QuantidadeAtaquesColumn.Width = 200;
+            // 
+            // TagColumn
+            // 
+            TagColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            TagColumn.DataPropertyName = "Tag";
+            TagColumn.HeaderText = "Tag";
+            TagColumn.Name = "TagColumn";
+            TagColumn.ReadOnly = true;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(BuscarClanButton);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(677, 81);
+            panel1.TabIndex = 3;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(MembrosDataGridView);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(0, 81);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(677, 406);
+            panel2.TabIndex = 4;
             // 
             // Principal
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(677, 487);
-            Controls.Add(ListarMembrosButton);
-            Controls.Add(MembrosDataGridView);
-            Controls.Add(BuscarClanButton);
+            Controls.Add(panel2);
+            Controls.Add(panel1);
             Name = "Principal";
             Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)MembrosDataGridView).EndInit();
+            panel1.ResumeLayout(false);
+            panel2.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -92,7 +133,11 @@
 
         private Button BuscarClanButton;
         private DataGridView MembrosDataGridView;
-        private Button ListarMembrosButton;
-        private DataGridViewTextBoxColumn MembroColumn;
+        private Panel panel1;
+        private Panel panel2;
+        private DataGridViewTextBoxColumn NomeColumn;
+        private DataGridViewTextBoxColumn GuerrasParticipadasSeqColumn;
+        private DataGridViewTextBoxColumn QuantidadeAtaquesColumn;
+        private DataGridViewTextBoxColumn TagColumn;
     }
 }

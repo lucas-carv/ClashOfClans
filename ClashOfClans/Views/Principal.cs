@@ -1,44 +1,21 @@
-using ClashOfClans.Api;
 using ClashOfClans.Models;
-using ClashOfClans.Services;
+using ClashOfClans.Presenters;
 
-namespace ClashOfClans
+namespace ClashOfClans;
+
+public partial class Principal : Form, IPrincipalView
 {
-    public partial class Principal : Form
+    public event EventHandler? BuscarMembroClickEvent;
+
+    public Principal()
     {
-        private readonly ClanService _clanService;
-        public Principal()
-        {
-            _clanService = new();
-            InitializeComponent();
-        }
+        InitializeComponent();
 
-        private async Task BuscarClanButton_Click(object sender, EventArgs e)
-        {
-            await BuscarClan();
-        }
+        BuscarClanButton.Click += (s, e) => { BuscarMembroClickEvent?.Invoke(s, e); };
+    }
 
-        private async Task BuscarClan()
-        {
-            Clan clan = await _clanService.BuscarClan("#2LOUC9R8P");
-            ClanViewModel clanViewModel = new()
-            {
-                MemberList = clan.MemberList,
-                Name = clan.Name,
-                Tag = clan.Tag
-            };
-            ClashOfClansApiService clashOfClansApiService = new();
-            await clashOfClansApiService.EnviarClan(clanViewModel);
-        }
-
-        private async Task ListarMembrosButton_Click(object sender, EventArgs e)
-        {
-            await ObterMembros();
-        }
-        private async Task ObterMembros()
-        {
-            Membros membros = await _clanService.BuscarMembros("#2LOUC9R8P");
-            MembrosDataGridView.DataSource = membros.items;
-        }
+    public void PopularGrid(List<MembroViewModel> membros)
+    {
+        MembrosDataGridView.DataSource = membros;
     }
 }

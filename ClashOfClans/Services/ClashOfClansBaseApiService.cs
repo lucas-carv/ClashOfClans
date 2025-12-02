@@ -14,12 +14,12 @@ public abstract class ClashOfClansBaseApiService
     {
         _httpClient = new HttpClient();
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImZmODcwMWEzLTBiMDMtNDI2NS1hYWJjLTkxY2ZkNzI1N2QxNiIsImlhdCI6MTc2MTY4OTI5Niwic3ViIjoiZGV2ZWxvcGVyL2YzM2YwYjI5LWM0NGItODk0Yi02MTY4LWI3YjNlNjUyNmI5YyIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjIwMC4yMTYuNTcuMTMwIl0sInR5cGUiOiJjbGllbnQifV19.4Kx7POLTsiOQCNnRZKH18sk3qAJZkZ0MACSU14WY1AJiTFYmaIYslfYaJFnX3EKEeqJcpAFjbZoVTX7-yu50-w");
     }
     protected async Task<ResponseClashOfClans<TResponse>> SendRequest<TResponse>(HttpRequestMessage request)
     {
         try
         {
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjAzYjJiYmY4LTk1MzYtNDRmMy04ZmQ5LTA0Njk1M2NkNTJjOSIsImlhdCI6MTc0NTQ0MDM4Nywic3ViIjoiZGV2ZWxvcGVyL2YzM2YwYjI5LWM0NGItODk0Yi02MTY4LWI3YjNlNjUyNmI5YyIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjE4OS44My4xOTkuNjQiXSwidHlwZSI6ImNsaWVudCJ9XX0.zkG5LA6HNpFyYK32SRzOHGmvgP-_RPEHdWRHQ2HSk_gjRi8l9s1TcM47XVZbxJFW3gaui0KIY9OnOCMg-SvJ7Q");
             var response = await _httpClient.SendAsync(request);
 
             return await ParseReponse<TResponse>(response);

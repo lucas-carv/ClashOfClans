@@ -1,12 +1,10 @@
 ﻿namespace ClashOfClans.Models;
 
-public class Membros
+public record MembroViewModel
 {
-    public List<Membro> items { get; set; }
-}
-
-public class Membro
-{
+    public string Nome { get; set; }
     public string Tag { get; set; }
-    public string Name { get; set; }
+
+    public int GuerrasParticipadasSeq { get; set; }
+    public int QuantidadeAtaques { get; set; }
 }
