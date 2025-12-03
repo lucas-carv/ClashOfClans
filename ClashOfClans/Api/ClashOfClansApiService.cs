@@ -8,19 +8,13 @@ using System.Net;
 
 namespace ClashOfClans.Api;
 
-public class ClashOfClansApiService : IClashOfClansApiService
+public class ClashOfClansApiService 
 {
     private readonly HttpClient _httpClient;
     public ClashOfClansApiService()
     {
         _httpClient = new HttpClient();
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-    }
-    public async Task<bool> EnviarClan(ClanViewModel clan)
-    {
-        string uri = $"https://localhost:7016/api/v1/clan/adicionar";
-        var result = await Send<bool, ClanViewModel>(clan, HttpMethod.Post, uri);
-        return result.IsValid;
     }
 
     public async Task<ResponseClashOfClans<TResponse>> Send<TResponse, TContent>(TContent content, HttpMethod method, string uri)
@@ -125,8 +119,4 @@ public class ClashOfClansApiService : IClashOfClansApiService
 
         return request;
     }
-}
-public interface IClashOfClansApiService
-{
-    Task<bool> EnviarClan(ClanViewModel clan);
 }
