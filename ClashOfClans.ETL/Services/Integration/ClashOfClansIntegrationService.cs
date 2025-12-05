@@ -1,4 +1,5 @@
 ﻿using ClashOfClans.ETL.InputModels;
+using ClashOfClans.ETL.Jobs;
 using ClashOfClans.ETL.Responses;
 
 namespace ClashOfClans.ETL.Services.Integration;
@@ -17,7 +18,7 @@ public class IntegrationService : IntegrationServiceBaseApi
         var response = await Send<AtualizarClanResponse, CriarClanInputModel>(clan, HttpMethod.Put, uri);
         return response.IsValid;
     }
-    
+
     public async Task<CriarClanInputModel> ObterClanPorTag(string tag)
     {
         string uri = $"https://localhost:7016/api/v1/clan/{tag}";
@@ -31,6 +32,14 @@ public class IntegrationService : IntegrationServiceBaseApi
         var response = await Send<UpsertGuerraResponse, EnviarGuerraInputModel>(guerra, HttpMethod.Put, uri);
         return response.ResponseData;
     }
+
+    public async Task<bool> EnviarLigaDeClan(LigaDeGuerra ligaDeGuerra)
+    {
+        string uri = $"{_baseUrl}/liga-guerra/criar";
+        var response = await Send<bool, LigaDeGuerra>(ligaDeGuerra, HttpMethod.Post, uri);
+        return response.ResponseData;
+    }
+
 }
 public class UpsertGuerraResponse(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanEmGuerraDTO Clan);
 public record ClanEmGuerraDTO

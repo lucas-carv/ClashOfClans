@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<BuscarClanJob>();
         services.AddTransient<EnviarGuerraJob>();
         services.AddTransient<IntegrationService>();
+        services.AddTransient<BuscarLigaDeClansJob>();
 
         return services;
     }

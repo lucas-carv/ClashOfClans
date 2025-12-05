@@ -1,1 +1,0 @@
-﻿namespace ClashOfClans.ETL.Models;

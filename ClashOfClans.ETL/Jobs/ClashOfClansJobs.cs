@@ -6,5 +6,7 @@ public static class ClashOfClansJobs
     {
         configuration.AddJob<BuscarClanJob>(IntervalSimpleSchedule.Minutes, 30);
         configuration.AddJob<EnviarGuerraJob>(IntervalSimpleSchedule.Minutes, 3);
+
+        configuration.AddJob<BuscarLigaDeClansJob>(IntervalSimpleSchedule.Minutes, 3);
     }
 }
