@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using ClashOfClans.ETL.Services.Integration;
+using Newtonsoft.Json;
 
 namespace ClashOfClans.ETL.Models.LigaDeClans;
 

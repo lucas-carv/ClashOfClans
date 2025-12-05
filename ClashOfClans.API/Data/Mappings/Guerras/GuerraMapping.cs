@@ -12,9 +12,9 @@ public class GuerraMapping : IEntityTypeConfiguration<Guerra>
         builder.HasQueryFilter(p => p.FoiRemovido != null);
         builder.HasKey(c => c.Id);
 
-        builder
-            .HasIndex(p => new { p.InicioGuerra, p.FimGuerra })
-            .IsUnique();
+        //builder
+        //    .HasIndex(p => new { p.InicioGuerra, p.FimGuerra})
+        //    .IsUnique();
     }
 }
 public class ClanEmGuerraMapping : IEntityTypeConfiguration<ClanEmGuerra>
@@ -26,8 +26,12 @@ public class ClanEmGuerraMapping : IEntityTypeConfiguration<ClanEmGuerra>
         builder.HasKey(c => c.Id);
 
         builder.HasOne(gc => gc.Guerra)
-       .WithOne(g => g.ClanEmGuerra)
-       .HasForeignKey<ClanEmGuerra>(gc => gc.GuerraId);
+           .WithOne(g => g.ClanEmGuerra)
+           .HasForeignKey<ClanEmGuerra>(gc => gc.GuerraId);
+
+        builder
+            .HasIndex(p => new { p.GuerraId, p.Tag })
+            .IsUnique();
     }
 }
 
@@ -38,7 +42,6 @@ public class MembroGuerraMapping : IEntityTypeConfiguration<MembroEmGuerra>
         builder.ToTable("membro_em_guerra");
         builder.HasQueryFilter(p => p.FoiRemovido != null);
         builder.HasKey(c => c.Id);
-
     }
 }
 
@@ -51,7 +54,7 @@ public class AtaqueMapping : IEntityTypeConfiguration<GuerraMembroAtaque>
         builder.HasQueryFilter(p => p.FoiRemovido != null);
         builder.HasKey(c => c.Id);
 
-        builder.HasIndex(a => new { a.AtacanteTag, a.DefensorTag })
+        builder.HasIndex(a => new { a.AtacanteTag, a.DefensorTag, a.MembroEmGuerraId })
               .IsUnique();
     }
 }

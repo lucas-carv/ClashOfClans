@@ -43,8 +43,10 @@ public class EnviarGuerraJob(ClashOfClansService clashOfClansService, Integratio
             Status = war.State.ToString(),
             InicioGuerra = war.StartTime,
             FimGuerra = war.EndTime,
+            TipoGuerra = "Normal",
             Clan = new ClanGuerraDTO()
             {
+                Nome = war.Clan.Name,
                 Tag = war.Clan.Tag,
                 Membros = war.Clan.Members.Select(m => new MembroGuerraDTO()
                 {

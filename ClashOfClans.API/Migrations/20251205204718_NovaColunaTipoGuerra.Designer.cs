@@ -4,6 +4,7 @@ using ClashOfClans.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClashOfClans.API.Migrations
 {
     [DbContext(typeof(ClashOfClansContext))]
-    partial class ClashOfClansContextModelSnapshot : ModelSnapshot
+    [Migration("20251205204718_NovaColunaTipoGuerra")]
+    partial class NovaColunaTipoGuerra
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,10 +112,6 @@ namespace ClashOfClans.API.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_clan_em_guerra_guerra_id");
 
-                    b.HasIndex("GuerraId", "Tag")
-                        .IsUnique()
-                        .HasDatabaseName("ix_clan_em_guerra_guerra_id_tag");
-
                     b.ToTable("clan_em_guerra", (string)null);
                 });
 
@@ -143,11 +142,6 @@ namespace ClashOfClans.API.Migrations
                     b.Property<bool?>("FoiRemovido")
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("foi_removido");
-
-                    b.Property<string>("GuerraTag")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("guerra_tag");
 
                     b.Property<DateTime>("InicioGuerra")
                         .HasPrecision(0)
@@ -207,7 +201,7 @@ namespace ClashOfClans.API.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("foi_removido");
 
-                    b.Property<int>("MembroEmGuerraId")
+                    b.Property<int?>("MembroEmGuerraId")
                         .HasColumnType("int")
                         .HasColumnName("membro_em_guerra_id");
 
@@ -217,9 +211,9 @@ namespace ClashOfClans.API.Migrations
                     b.HasIndex("MembroEmGuerraId")
                         .HasDatabaseName("ix_guerra_membro_ataque_membro_em_guerra_id");
 
-                    b.HasIndex("AtacanteTag", "DefensorTag", "MembroEmGuerraId")
+                    b.HasIndex("AtacanteTag", "DefensorTag")
                         .IsUnique()
-                        .HasDatabaseName("ix_guerra_membro_ataque_atacante_tag_defensor_tag_membro_em_gue");
+                        .HasDatabaseName("ix_guerra_membro_ataque_atacante_tag_defensor_tag");
 
                     b.ToTable("guerra_membro_ataque", (string)null);
                 });
@@ -621,8 +615,6 @@ namespace ClashOfClans.API.Migrations
                     b.HasOne("ClashOfClans.API.Model.Guerras.MembroEmGuerra", null)
                         .WithMany("Ataques")
                         .HasForeignKey("MembroEmGuerraId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("fk_guerra_membro_ataque_membro_em_guerra_membro_em_guerra_id");
                 });
 

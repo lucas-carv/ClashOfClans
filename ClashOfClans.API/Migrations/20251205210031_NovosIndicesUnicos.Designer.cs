@@ -4,6 +4,7 @@ using ClashOfClans.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClashOfClans.API.Migrations
 {
     [DbContext(typeof(ClashOfClansContext))]
-    partial class ClashOfClansContextModelSnapshot : ModelSnapshot
+    [Migration("20251205210031_NovosIndicesUnicos")]
+    partial class NovosIndicesUnicos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,11 +146,6 @@ namespace ClashOfClans.API.Migrations
                     b.Property<bool?>("FoiRemovido")
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("foi_removido");
-
-                    b.Property<string>("GuerraTag")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("guerra_tag");
 
                     b.Property<DateTime>("InicioGuerra")
                         .HasPrecision(0)

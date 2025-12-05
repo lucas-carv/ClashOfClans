@@ -1,5 +1,6 @@
 using ClashOfClans.API.BackgroundServices;
 using ClashOfClans.API.Data;
+using ClashOfClans.API.Services.Guerras;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
@@ -24,6 +25,7 @@ builder.Services.AddDbContext<ClashOfClansContext>(options =>
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
     ).UseSnakeCaseNamingConvention());
 
+builder.Services.AddScoped<GuerraService>();
 builder.Services.AddQuartz(q =>
 {
     var jobKey = new JobKey("AnalisarGuerrasJob");

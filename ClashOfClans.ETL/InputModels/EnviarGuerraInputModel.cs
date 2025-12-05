@@ -6,10 +6,12 @@ public record class EnviarGuerraInputModel
     public DateTime InicioGuerra { get; init; }
     public DateTime FimGuerra { get; init; }
     public required ClanGuerraDTO Clan { get; init; }
+    public string TipoGuerra { get; set; }
 }
 public record class ClanGuerraDTO
 {
     public required string Tag { get; init; }
+    public required string Nome { get; init; }
     public IEnumerable<MembroGuerraDTO> Membros { get;  set; } = [];
 }
 

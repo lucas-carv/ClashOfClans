@@ -31,16 +31,16 @@ namespace ClashOfClans.API.Model.LigaDeClans
 
             return ligaGuerraClan;
         }
-        public void AdicionarRodada(int dia, string guerraTag, string clanTag, string clanTagOponente)
+        public void AdicionarRodada(string status, int dia, string guerraTag, string clanTag, string clanTagOponente, DateTime inicioGuerra, DateTime fimGuerra)
         {
             LigaGuerraRodada? rodadaExiste = Rodadas.FirstOrDefault(c => c.GuerraTag == guerraTag && c.Dia == dia);
             if (rodadaExiste is not null)
             {
-                rodadaExiste.AtualizarRodada(clanTag, clanTagOponente);
+                rodadaExiste.AtualizarRodada(clanTag, clanTagOponente, inicioGuerra, fimGuerra);
                 return;
             }
 
-            LigaGuerraRodada novaRodada = new(dia, guerraTag, clanTag, clanTagOponente);
+            LigaGuerraRodada novaRodada = new(status, dia, guerraTag, clanTag, clanTagOponente, inicioGuerra, fimGuerra);
             _rodadas.Add(novaRodada);
         }
     }

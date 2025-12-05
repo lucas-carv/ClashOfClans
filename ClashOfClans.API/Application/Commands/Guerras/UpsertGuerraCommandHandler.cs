@@ -2,15 +2,16 @@
 using ClashOfClans.API.Data;
 using ClashOfClans.API.DTOs;
 using ClashOfClans.API.Model.Guerras;
+using ClashOfClans.API.Services.Guerras;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClashOfClans.API.Application.Commands.Guerras;
 
-public record UpsertGuerraRequest(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanEmGuerraDTO Clan) : IRequest<CommandResult<UpsertGuerraResponse>>;
+public record UpsertGuerraRequest(string Status, DateTime InicioGuerra, DateTime FimGuerra, string TipoGuerra, ClanEmGuerraDTO Clan) : IRequest<CommandResult<UpsertGuerraResponse>>;
 public record UpsertGuerraResponse(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanEmGuerraDTO Clan);
 
-public class UpsertGuerraCommandHandler(ClashOfClansContext context) : IRequestHandler<UpsertGuerraRequest, CommandResult<UpsertGuerraResponse>>
+public class UpsertGuerraCommandHandler(ClashOfClansContext context, GuerraService guerraService) : IRequestHandler<UpsertGuerraRequest, CommandResult<UpsertGuerraResponse>>
 {
     public async Task<CommandResult<UpsertGuerraResponse>> Handle(UpsertGuerraRequest request, CancellationToken cancellationToken)
     {
@@ -28,16 +29,8 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context) : IRequestH
                 cancellationToken: cancellationToken);
         if (guerraExistente is null)
         {
-            ClanEmGuerra clanEmGuerra = new(request.Clan.Tag);
-            foreach (var membro in request.Clan.Membros)
-            {
-                MembroEmGuerra membroEmGuerra = clanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome);
-                foreach (var ataque in membro.Ataques)
-                {
-                    membroEmGuerra.AtualizarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas);
-                }
-            }
-            Guerra novaGuerra = new(request.Status, request.InicioGuerra, request.FimGuerra, clanEmGuerra);
+            Guerra novaGuerra = guerraService.CriarGuerra(request.Status, request.InicioGuerra, request.FimGuerra, request.TipoGuerra, request.Clan);
+
             context.Add(novaGuerra);
             await context.SaveChangesAsync(cancellationToken);
 
@@ -45,26 +38,11 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context) : IRequestH
             return responseCriacao;
         }
 
-        guerraExistente.Status = request.Status;
-        if (!guerraExistente.FimGuerra.Equals(request.FimGuerra))
-        {
-            guerraExistente.AlterarDataFinalGuerra(request.FimGuerra);
-        }
-
-
-        foreach (var membro in request.Clan.Membros)
-        {
-            MembroEmGuerra membroEmGuerra = guerraExistente.ClanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome);
-
-            foreach (var ataque in membro.Ataques)
-            {
-                membroEmGuerra.AtualizarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas);
-            }
-        }
-
+        Guerra guerra = guerraService.AtualizarGuerra(guerraExistente, request.Status, request.InicioGuerra, request.FimGuerra, request.Clan);
+        context.Update(guerra);
         await context.Commit(cancellationToken);
 
-        var responseAtualizacao = MapearResponse(guerraExistente);
+        UpsertGuerraResponse responseAtualizacao = MapearResponse(guerra);
         return responseAtualizacao;
     }
 
@@ -77,6 +55,7 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context) : IRequestH
             {
                 Tag = m.Tag,
                 Nome = m.Nome,
+                CentroVilaLevel = m.CentroVilaLevel,
                 Ataques = m.Ataques.Select(a => new AtaquesDTO
                 {
                     AtacanteTag = a.AtacanteTag,

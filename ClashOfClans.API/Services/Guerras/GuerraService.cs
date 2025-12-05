@@ -1,0 +1,46 @@
+﻿using ClashOfClans.API.Application.Commands.Guerras;
+using ClashOfClans.API.Core.CommandResults;
+using ClashOfClans.API.Data;
+using ClashOfClans.API.DTOs;
+using ClashOfClans.API.Model.Guerras;
+using Microsoft.EntityFrameworkCore;
+using System.Threading;
+
+namespace ClashOfClans.API.Services.Guerras;
+
+public class GuerraService
+{
+    public Guerra CriarGuerra(string status, DateTime inicioGuerra, DateTime fimGuerra, string tipoGuerra, ClanEmGuerraDTO clan)
+    {
+        ClanEmGuerra clanEmGuerra = new(clan.Tag, clan.Nome);
+        foreach (var membro in clan.Membros)
+        {
+            MembroEmGuerra membroEmGuerra = clanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome);
+            foreach (var ataque in membro.Ataques)
+            {
+                membroEmGuerra.AtualizarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas);
+            }
+        }
+        Guerra novaGuerra = new(status, inicioGuerra, fimGuerra, tipoGuerra, clanEmGuerra);
+        return novaGuerra;
+    }
+    public Guerra AtualizarGuerra(Guerra guerraExistente, string status, DateTime inicioGuerra, DateTime fimGuerra, ClanEmGuerraDTO clan)
+    {
+        guerraExistente.Status = status;
+        if (!guerraExistente.FimGuerra.Equals(fimGuerra))
+        {
+            guerraExistente.AlterarDataFinalGuerra(fimGuerra);
+        }
+        guerraExistente.ClanEmGuerra.Nome = clan.Nome;
+        foreach (var membro in clan.Membros)
+        {
+            MembroEmGuerra membroEmGuerra = guerraExistente.ClanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome);
+
+            foreach (var ataque in membro.Ataques)
+            {
+                membroEmGuerra.AtualizarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas);
+            }
+        }
+        return guerraExistente;
+    }
+}

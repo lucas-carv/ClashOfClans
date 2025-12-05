@@ -6,6 +6,7 @@ using Quartz;
 
 namespace ClashOfClans.ETL.Jobs;
 
+[DisallowConcurrentExecution]
 public class BuscarClanJob(ClashOfClansService clashOfClansService) : IJob
 {
     private readonly ClashOfClansService _clashOfClansService = clashOfClansService;
