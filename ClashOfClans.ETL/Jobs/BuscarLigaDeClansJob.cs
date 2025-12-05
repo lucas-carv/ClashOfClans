@@ -8,30 +8,51 @@ namespace ClashOfClans.ETL.Jobs;
 
 public class BuscarLigaDeClansJob(ClashOfClansService clashOfClansService) : IJob
 {
-
     private readonly ClashOfClansService _clashOfClansService = clashOfClansService;
     public async Task Execute(IJobExecutionContext context)
     {
         string tag = "#2L0UC9R8P";
         string encodedTag = Uri.EscapeDataString(tag);
 
-        ClanWarLeagueGroup clanWarLeague = await _clashOfClansService.BuscarLiga(encodedTag);
-        if (clanWarLeague is null)
+        ClanWarLeagueGroup clanWarLeagueGroup = await _clashOfClansService.BuscarGrupoLiga(encodedTag);
+        if (clanWarLeagueGroup is null)
         {
-            Console.WriteLine("Falha ao obter clan");
+            Console.WriteLine("Falha ao obter grupo da liga");
             return;
         }
         IntegrationService integrationService = new();
+        List<LigaGuerraRodada> rodadas = [];
+        int dia = 1;
+
+        foreach (var rounds in clanWarLeagueGroup.Rounds)
+        {
+            foreach (var round in rounds.WarTags)
+            {
+                string encodedWarTag = Uri.EscapeDataString(round);
+                ClanWarLeague clanWarLeague = await _clashOfClansService.BuscarGuerraDaLiga(encodedWarTag);
+                if (clanWarLeague.Clan is null)
+                {
+                    continue;
+                }
+                LigaGuerraRodada rodada = new()
+                {
+                    ClanTag = clanWarLeague.Clan.Tag,
+                    ClanTagOponente = clanWarLeague.Opponent.Tag,
+                    Dia = dia,
+                    GuerraTag = round
+                };
+                rodadas.Add(rodada);
+            }
+            dia++;
+        }
 
         LigaDeGuerra ligaDeGuerra = new()
         {
-            Status = clanWarLeague.State,
-            Temporada = clanWarLeague.Season,
-            Rodadas = clanWarLeague.Rounds.Select(r => new LigaGuerraRodada()
-            {
-                GuerraTags = r.WarTags
-            }).ToList(),
-            Clans = clanWarLeague.Clans.Select(c => new LigaGuerraClan()
+            ClanTag = tag,
+            Status = clanWarLeagueGroup.State,
+            Temporada = clanWarLeagueGroup.Season,
+            Rodadas = rodadas,
+            Clans = clanWarLeagueGroup.Clans.Select(c => new LigaGuerraClan()
             {
                 ClanLevel = c.ClanLevel,
                 Nome = c.Name,
@@ -48,31 +69,11 @@ public class BuscarLigaDeClansJob(ClashOfClansService clashOfClansService) : IJo
 
         await integrationService.EnviarLigaDeClan(ligaDeGuerra);
 
-        //CriarClanInputModel clanInputModel = new()
-        //{
-        //    Tag = clan.Tag,
-        //    Nome = clan.Name,
-        //    Membros = clan.MemberList.Select(m => new MembroDTO()
-        //    {
-        //        Tag = m.Tag,
-        //        Nome = m.Name
-        //    })
-        //};
-
-        //CriarClanInputModel clanIntegrado = await integrationService.ObterClanPorTag(encodedTag);
-        //if (clanIntegrado is not null)
-        //{
-        //    Console.WriteLine($"{DateTime.Now} - Atualizando Clan");
-        //    await integrationService.AtualizarClan(clanInputModel);
-        //    return;
-        //}
-
-        //Console.WriteLine($"{DateTime.Now} - Criando Clan");
-        //await integrationService.CriarClan(clanInputModel);
     }
 }
 public class LigaDeGuerra
 {
+    public string ClanTag { get; set; }
     public string Status { get; set; }
     public string Temporada { get; set; }
     public List<LigaGuerraClan>? Clans { get; set; }
@@ -94,5 +95,8 @@ public class LigaGuerraMembro
 }
 public class LigaGuerraRodada
 {
-    public List<string> GuerraTags { get; set; }
+    public int Dia { get; set; }
+    public string GuerraTag { get; set; }
+    public string ClanTag { get; set; }
+    public string ClanTagOponente { get; set; }
 }

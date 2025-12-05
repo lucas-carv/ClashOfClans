@@ -1,4 +1,6 @@
-﻿namespace ClashOfClans.ETL.Models.LigaDeClans;
+﻿using Newtonsoft.Json;
+
+namespace ClashOfClans.ETL.Models.LigaDeClans;
 
 public class ClanWarLeagueGroup
 {
@@ -24,4 +26,15 @@ public class ClanWarLeagueClanMember
 public class ClanWarLeagueRound
 {
     public List<string> WarTags { get; set; }
+}
+
+public class ClanWarLeague
+{
+    public string State { get; set; }
+    [JsonConverter(typeof(CustomDateTimeConverter))]
+    public DateTime StartTime { get; set; }
+    [JsonConverter(typeof(CustomDateTimeConverter))]
+    public DateTime EndTime { get; set; }
+    public ClanWar Clan { get; set; }
+    public ClanWar Opponent { get; set; }
 }

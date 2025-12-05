@@ -4,6 +4,7 @@ using ClashOfClans.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClashOfClans.API.Migrations
 {
     [DbContext(typeof(ClashOfClansContext))]
-    partial class ClashOfClansContextModelSnapshot : ModelSnapshot
+    [Migration("20251205140959_NovaColunaClanTagLigaDeGuerra")]
+    partial class NovaColunaClanTagLigaDeGuerra
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -412,16 +415,6 @@ namespace ClashOfClans.API.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ClanTag")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("clan_tag");
-
-                    b.Property<string>("ClanTagOponente")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("clan_tag_oponente");
-
                     b.Property<DateTime>("DataAlteracao")
                         .HasPrecision(0)
                         .HasColumnType("datetime(0)")
@@ -432,18 +425,14 @@ namespace ClashOfClans.API.Migrations
                         .HasColumnType("datetime(0)")
                         .HasColumnName("data_criacao");
 
-                    b.Property<int>("Dia")
-                        .HasColumnType("int")
-                        .HasColumnName("dia");
-
                     b.Property<bool?>("FoiRemovido")
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("foi_removido");
 
-                    b.Property<string>("GuerraTag")
+                    b.Property<string>("GuerraTags")
                         .IsRequired()
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("guerra_tag");
+                        .HasColumnType("longtext")
+                        .HasColumnName("guerra_tags");
 
                     b.Property<int?>("LigaDeGuerraId")
                         .HasColumnType("int")
@@ -603,7 +592,7 @@ namespace ClashOfClans.API.Migrations
                     b.HasOne("ClashOfClans.API.Model.LigaDeClans.LigaDeGuerra", null)
                         .WithMany("Clans")
                         .HasForeignKey("LigaDeGuerraId")
-                        .HasConstraintName("fk_liga_guerra_clan_liga_de_guerras_liga_de_guerra_id");
+                        .HasConstraintName("fk_liga_guerra_clan_liga_de_guerra_liga_de_guerra_id");
                 });
 
             modelBuilder.Entity("ClashOfClans.API.Model.LigaDeClans.LigaGuerraMembro", b =>
@@ -619,7 +608,7 @@ namespace ClashOfClans.API.Migrations
                     b.HasOne("ClashOfClans.API.Model.LigaDeClans.LigaDeGuerra", null)
                         .WithMany("Rodadas")
                         .HasForeignKey("LigaDeGuerraId")
-                        .HasConstraintName("fk_liga_guerra_rodada_liga_de_guerras_liga_de_guerra_id");
+                        .HasConstraintName("fk_liga_guerra_rodada_liga_de_guerra_liga_de_guerra_id");
                 });
 
             modelBuilder.Entity("ClashOfClans.API.Model.Membro", b =>

@@ -1,31 +1,47 @@
 ﻿using ClashOfClans.API.Core;
 
 namespace ClashOfClans.API.Model.LigaDeClans
-{ 
+{
 
     public class LigaDeGuerra : Entity, IAggregateRoot
     {
-        public string Status { get; set; }
-        public string Temporada { get; set; }
-        public List<LigaGuerraClan>? Clans { get; set; }
-        public List<LigaGuerraRodada>? Rodadas { get; set; }
-    }
+        public string ClanTag { get; init; }
+        public string Status { get; init; }
+        public string Temporada { get; init; }
+        public IReadOnlyCollection<LigaGuerraRodada> Rodadas => _rodadas;
+        private readonly List<LigaGuerraRodada> _rodadas = [];
+        public IReadOnlyCollection<LigaGuerraClan> Clans => _clans;
+        private readonly List<LigaGuerraClan> _clans = [];
+        private LigaDeGuerra() { }
+        public LigaDeGuerra(string clanTag, string status, string temporada)
+        {
+            ClanTag = clanTag;
+            Status = status;
+            Temporada = temporada;
+        }
 
-    public class LigaGuerraClan : Entity
-    {
-        public string Tag { get; set; }
-        public int ClanLevel { get; set; }
-        public string Nome { get; set; }
-        public List<LigaGuerraMembro> Membros { get; set; }
-    }
-    public class LigaGuerraMembro : Entity
-    {
-        public string Tag { get; set; }
-        public int CentroVilaLevel { get; set; }
-        public string Nome { get; set; }
-    }
-    public class LigaGuerraRodada : Entity
-    {
-        public List<string> GuerraTags { get; set; }
+        public LigaGuerraClan AdicionarClan(string tag, string nome, int clanLevel)
+        {
+            LigaGuerraClan? clanExiste = Clans.FirstOrDefault(c => c.Tag == tag);
+            if (clanExiste is not null)
+                return clanExiste;
+
+            LigaGuerraClan ligaGuerraClan = new(tag, nome, clanLevel);
+            _clans.Add(ligaGuerraClan);
+
+            return ligaGuerraClan;
+        }
+        public void AdicionarRodada(int dia, string guerraTag, string clanTag, string clanTagOponente)
+        {
+            LigaGuerraRodada? rodadaExiste = Rodadas.FirstOrDefault(c => c.GuerraTag == guerraTag && c.Dia == dia);
+            if (rodadaExiste is not null)
+            {
+                rodadaExiste.AtualizarRodada(clanTag, clanTagOponente);
+                return;
+            }
+
+            LigaGuerraRodada novaRodada = new(dia, guerraTag, clanTag, clanTagOponente);
+            _rodadas.Add(novaRodada);
+        }
     }
 }

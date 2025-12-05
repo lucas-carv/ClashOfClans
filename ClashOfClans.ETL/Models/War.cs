@@ -25,6 +25,7 @@ public enum StatusGuerra
 public class ClanWar
 {
     public string Tag { get; set; } = string.Empty;
+    public string Name { get; set; }
     public List<MembersWarDTO> Members { get; set; } = [];
 }
 

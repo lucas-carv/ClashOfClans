@@ -8,7 +8,7 @@ public class LigaDeGuerrasMapping : IEntityTypeConfiguration<LigaDeGuerra>
 {
     public void Configure(EntityTypeBuilder<LigaDeGuerra> builder)
     {
-        builder.ToTable("liga-guerra");
+        builder.ToTable("liga_guerra");
         builder.HasQueryFilter(p => p.FoiRemovido != null);
         builder.HasKey(c => c.Id);
 

@@ -21,11 +21,19 @@ public class ClashOfClansService : ClashOfClansBaseApiService
     }
 
 
-    public async Task<ClanWarLeagueGroup> BuscarLiga(string clanTag)
+    public async Task<ClanWarLeagueGroup> BuscarGrupoLiga(string clanTag)
     {
         string uri = $"/v1/clans/{clanTag}/currentwar/leaguegroup";
         var request = CreateRequest<string>(null, HttpMethod.Get, uri);
         var result = await SendRequest<ClanWarLeagueGroup>(request);
+        return result.ResponseData!;
+    }
+
+    public async Task<ClanWarLeague> BuscarGuerraDaLiga(string guerraTag)
+    {
+        string uri = $"/v1/clanwarleagues/wars/{guerraTag}";
+        var request = CreateRequest<string>(null, HttpMethod.Get, uri);
+        var result = await SendRequest<ClanWarLeague>(request);
         return result.ResponseData!;
     }
 }

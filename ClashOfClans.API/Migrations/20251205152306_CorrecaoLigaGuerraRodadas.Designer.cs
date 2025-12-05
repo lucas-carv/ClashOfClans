@@ -4,6 +4,7 @@ using ClashOfClans.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClashOfClans.API.Migrations
 {
     [DbContext(typeof(ClashOfClansContext))]
-    partial class ClashOfClansContextModelSnapshot : ModelSnapshot
+    [Migration("20251205152306_CorrecaoLigaGuerraRodadas")]
+    partial class CorrecaoLigaGuerraRodadas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -412,16 +415,6 @@ namespace ClashOfClans.API.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ClanTag")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("clan_tag");
-
-                    b.Property<string>("ClanTagOponente")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("clan_tag_oponente");
-
                     b.Property<DateTime>("DataAlteracao")
                         .HasPrecision(0)
                         .HasColumnType("datetime(0)")
@@ -432,18 +425,9 @@ namespace ClashOfClans.API.Migrations
                         .HasColumnType("datetime(0)")
                         .HasColumnName("data_criacao");
 
-                    b.Property<int>("Dia")
-                        .HasColumnType("int")
-                        .HasColumnName("dia");
-
                     b.Property<bool?>("FoiRemovido")
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("foi_removido");
-
-                    b.Property<string>("GuerraTag")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("guerra_tag");
 
                     b.Property<int?>("LigaDeGuerraId")
                         .HasColumnType("int")
