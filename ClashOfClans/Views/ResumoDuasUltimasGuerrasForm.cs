@@ -1,13 +1,13 @@
 using ClashOfClans.Models;
-using ClashOfClans.Presenters;
+using ClashOfClans.Views;
 
 namespace ClashOfClans;
 
-public partial class Principal : Form, IPrincipalView
+public partial class ResumoDuasUltimasGuerrasView : Form, IResumoDuasUltimasGuerrasView
 {
     public event EventHandler? BuscarMembroClickEvent;
 
-    public Principal()
+    public ResumoDuasUltimasGuerrasView()
     {
         InitializeComponent();
 

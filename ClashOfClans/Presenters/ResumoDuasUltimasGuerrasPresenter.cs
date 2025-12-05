@@ -4,15 +4,15 @@ using ClashOfClans.Views;
 
 namespace ClashOfClans.Presenters;
 
-public class PrincipalPresenter : IPresenter
+public class ResumoDuasUltimasGuerrasPresenter : IPresenter
 {
     public string Titulo { get => _view.Text; set => _view.Text = value; }
     public IViewBase View => _view;
 
-    public event EventHandler BuscarMembroClickEvent;
-    private readonly IPrincipalView _view;
+    public event EventHandler? BuscarMembroClickEvent;
+    private readonly IResumoDuasUltimasGuerrasView _view;
 
-    public PrincipalPresenter(IPrincipalView view)
+    public ResumoDuasUltimasGuerrasPresenter(IResumoDuasUltimasGuerrasView view)
     {
         _view = view;
         _view.BuscarMembroClickEvent += AtualizarClickEvent;
@@ -35,6 +35,5 @@ public class PrincipalPresenter : IPresenter
 
     public void Show()
     {
-        throw new NotImplementedException();
     }
 }

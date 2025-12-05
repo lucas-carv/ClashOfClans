@@ -1,9 +1,8 @@
 ﻿using ClashOfClans.Models;
-using ClashOfClans.Views;
 
-namespace ClashOfClans;
+namespace ClashOfClans.Views;
 
-public interface IPrincipalView : IViewBase
+public interface IResumoDuasUltimasGuerrasView : IViewBase
 {
     event EventHandler BuscarMembroClickEvent;
     void PopularGrid(List<MembroViewModel> membros);

@@ -1,6 +1,6 @@
 ﻿namespace ClashOfClans
 {
-    partial class Principal
+    partial class ResumoDuasUltimasGuerrasView
     {
         /// <summary>
         ///  Required designer variable.

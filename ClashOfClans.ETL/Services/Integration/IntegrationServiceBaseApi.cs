@@ -44,12 +44,12 @@ public abstract class IntegrationServiceBaseApi
             return response;
         }
     }
-    protected static HttpRequestMessage CreateRequest<TContent>(TContent content, HttpMethod method, string relativeUri)
+    protected static HttpRequestMessage CreateRequest<TContent>(TContent? content, HttpMethod method, string relativeUri)
     {
         StringContent? stringContent = null;
         if (content != null)
         {
-            JsonSerializerSettings settings = new JsonSerializerSettings
+            JsonSerializerSettings settings = new()
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 Formatting = Formatting.Indented
