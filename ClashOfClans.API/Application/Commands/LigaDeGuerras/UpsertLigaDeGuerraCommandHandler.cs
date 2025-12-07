@@ -107,20 +107,20 @@ namespace ClashOfClans.API.Application.Commands.LigaDeGuerras
 
     }
 
-    public class LigaGuerraClanRequest
+    public record LigaGuerraClanRequest
     {
         public string Tag { get; set; }
         public int ClanLevel { get; set; }
         public string Nome { get; set; }
         public List<LigaGuerraMembroRequest> Membros { get; set; }
     }
-    public class LigaGuerraMembroRequest
+    public record LigaGuerraMembroRequest
     {
         public string Tag { get; set; }
         public int CentroVilaLevel { get; set; }
         public string Nome { get; set; }
     }
-    public class LigaGuerraRodadaRequest
+    public record LigaGuerraRodadaRequest
     {
         public string Status { get; set; }
         public int Dia { get; init; }
