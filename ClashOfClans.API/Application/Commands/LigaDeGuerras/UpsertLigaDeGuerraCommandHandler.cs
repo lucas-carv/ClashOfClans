@@ -65,37 +65,28 @@ namespace ClashOfClans.API.Application.Commands.LigaDeGuerras
                         ligaDeGuerra.AdicionarRodada(rodada.Status, rodada.Dia, rodada.GuerraTag, rodada.ClanTag, rodada.ClanTagOponente, rodada.InicioGuerra, rodada.FimGuerra);
                     }
                 }
-
-                context.Update(ligaDeGuerra);
             }
-
-            foreach (var clan in request.Clans)
+            foreach (var rodada in request.Rodadas)
             {
-                foreach (var rodada in request.Rodadas)
-                {
-                    Guerra? guerra = context.Guerras.Local.FirstOrDefault(g => g.ClanEmGuerra.Tag == rodada.ClanTag && g.GuerraTag == rodada.GuerraTag);
+                Guerra? guerra = await context.Guerras
+                        .Include(g => g.ClanEmGuerra)
+                            .ThenInclude(c => c.MembrosEmGuerra)
+                                .ThenInclude(m => m.Ataques)
+                        .FirstOrDefaultAsync(g => g.ClanEmGuerra.Tag == rodada.ClanTag && g.GuerraTag == rodada.GuerraTag,
+                                             cancellationToken);
+                ClanEmGuerraDTO clan = request.Clans.First(c => c.Tag == rodada.ClanTag);
 
-                    if (guerra is null)
-                    {
-                        guerra = await context.Guerras
-                            .Include(g => g.ClanEmGuerra)
-                                .ThenInclude(c => c.MembrosEmGuerra)
-                                    .ThenInclude(m => m.Ataques)
-                            .FirstOrDefaultAsync(g => g.ClanEmGuerra.Tag == rodada.ClanTag && g.GuerraTag == rodada.GuerraTag,
-                                                 cancellationToken);
-                    }
-                    if (guerra is null)
-                    {
-                        guerra = guerraService.CriarGuerra(rodada.Status, rodada.InicioGuerra, rodada.FimGuerra, rodada.TipoGuerra, clan);
-                        guerra.DefinirGuerraTag(rodada.GuerraTag);
-                        context.Guerras.Add(guerra);
-                        continue;
-                    }
-                    else
-                    {
-                        Guerra guerraAtualizada = guerraService.AtualizarGuerra(guerra, rodada.Status, rodada.InicioGuerra, rodada.FimGuerra, clan);
-                        guerraAtualizada.DefinirGuerraTag(rodada.GuerraTag);
-                    }
+                if (guerra is null)
+                {
+                    guerra = guerraService.CriarGuerra(rodada.Status, rodada.InicioGuerra, rodada.FimGuerra, rodada.TipoGuerra, clan);
+                    guerra.DefinirGuerraTag(rodada.GuerraTag);
+                    context.Guerras.Add(guerra);
+                    continue;
+                }
+                else
+                {
+                    guerraService.AtualizarGuerra(guerra, rodada.Status, rodada.InicioGuerra, rodada.FimGuerra, clan);
+                    guerra.DefinirGuerraTag(rodada.GuerraTag);
                 }
             }
 

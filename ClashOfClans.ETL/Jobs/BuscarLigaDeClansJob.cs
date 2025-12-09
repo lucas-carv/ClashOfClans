@@ -37,7 +37,7 @@ public class BuscarLigaDeClansJob(ClashOfClansService clashOfClansService) : IJo
                 }
                 LigaGuerraRodada rodada = new()
                 {
-                    Status = clanWarLeagueGroup.State,
+                    Status = clanWarLeague.State,
                     ClanTag = clanWarLeague.Clan.Tag,
                     ClanTagOponente = clanWarLeague.Opponent.Tag,
                     Dia = dia,

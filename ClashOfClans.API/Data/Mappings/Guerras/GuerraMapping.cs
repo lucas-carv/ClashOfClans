@@ -11,10 +11,6 @@ public class GuerraMapping : IEntityTypeConfiguration<Guerra>
         builder.ToTable("guerra");
         builder.HasQueryFilter(p => p.FoiRemovido != null);
         builder.HasKey(c => c.Id);
-
-        //builder
-        //    .HasIndex(p => new { p.InicioGuerra, p.FimGuerra})
-        //    .IsUnique();
     }
 }
 public class ClanEmGuerraMapping : IEntityTypeConfiguration<ClanEmGuerra>

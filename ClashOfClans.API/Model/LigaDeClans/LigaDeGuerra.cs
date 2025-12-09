@@ -36,7 +36,7 @@ namespace ClashOfClans.API.Model.LigaDeClans
             LigaGuerraRodada? rodadaExiste = Rodadas.FirstOrDefault(c => c.GuerraTag == guerraTag && c.Dia == dia);
             if (rodadaExiste is not null)
             {
-                rodadaExiste.AtualizarRodada(clanTag, clanTagOponente, inicioGuerra, fimGuerra);
+                rodadaExiste.AtualizarRodada(status, clanTag, clanTagOponente, inicioGuerra, fimGuerra);
                 return;
             }
 

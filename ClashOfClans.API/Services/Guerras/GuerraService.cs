@@ -31,7 +31,6 @@ public class GuerraService
         {
             guerraExistente.AlterarDataFinalGuerra(fimGuerra);
         }
-        guerraExistente.ClanEmGuerra.Nome = clan.Nome;
         foreach (var membro in clan.Membros)
         {
             MembroEmGuerra membroEmGuerra = guerraExistente.ClanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome);
