@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ClashOfClans.API.Application.Commands.Clans;
 
-
 public record CriarClanRequest(string Tag, string Nome, IEnumerable<MembroClanDTO> Membros) : IRequest<CommandResult<CriarClanResponse>>;
 public record CriarClanResponse(string Tag, string Nome, IEnumerable<MembroClanDTO> Membros);
 

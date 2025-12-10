@@ -28,7 +28,7 @@ public class Clan : Entity, IAggregateRoot
         Membro? membro = Membros.FirstOrDefault(m => m.Tag == tag);
         if (membro is not null)
         {
-            membro.AlterarNome(nome);
+            membro.AtualizarDataEntradaENome(nome);
             return;
         }
 

@@ -7,15 +7,16 @@ public class Membro(int clanId, string tag, string nome) : Entity
     public int ClanId { get; init; } = clanId;
     public string Tag { get; init; } = tag;
     public string Nome { get; private set; } = nome;
-    //public DateTime DataEntrada { get; set; } = DateTime.Now;
+    public DateTime DataEntrada { get; private set; } = DateTime.Now;
     public SituacaoMembro Situacao { get; private set; } = SituacaoMembro.Ativo;
 
-    public void AlterarNome(string nome)
+    public void AtualizarDataEntradaENome(string nome)
     {
         ArgumentException.ThrowIfNullOrEmpty(nome);
 
         Nome = nome;
         Situacao = SituacaoMembro.Ativo;
+        DataEntrada = DateTime.Now;
     }
 
     public void InativarMembro()

@@ -1,5 +1,4 @@
-﻿using ClashOfClans.API.Core;
-using ClashOfClans.API.Core.CommandResults;
+﻿using ClashOfClans.API.Core.CommandResults;
 using ClashOfClans.API.Data;
 using ClashOfClans.API.DTOs;
 using ClashOfClans.API.Model.Clans;
@@ -10,7 +9,6 @@ namespace ClashOfClans.API.Application.Commands.Clans;
 
 public record AtualizarClanRequest(string Tag, string Nome, IEnumerable<MembroClanDTO> Membros) : IRequest<CommandResult<AtualizarClanResponse>>;
 public record AtualizarClanResponse(string Tag, string Nome, IEnumerable<MembroClanDTO> Membros);
-
 public class AtualizarClanCommandHandler(ClashOfClansContext context) : IRequestHandler<AtualizarClanRequest, CommandResult<AtualizarClanResponse>>
 {
     public async Task<CommandResult<AtualizarClanResponse>> Handle(AtualizarClanRequest request, CancellationToken cancellationToken)
@@ -33,7 +31,7 @@ public class AtualizarClanCommandHandler(ClashOfClansContext context) : IRequest
         }
 
         IEnumerable<string> membrosTagParaInativar = clan.Membros
-            .Where(m => !request.Membros.Any(me => me.Tag == m.Tag))
+            .Where(m => m.Situacao == SituacaoMembro.Ativo && !request.Membros.Any(me => me.Tag == m.Tag))
             .Select(m => m.Tag);
 
         foreach (var membroTag in membrosTagParaInativar)
@@ -42,12 +40,14 @@ public class AtualizarClanCommandHandler(ClashOfClansContext context) : IRequest
         }
         await context.Commit(cancellationToken);
 
-        IEnumerable<MembroClanDTO> membros = clan.Membros.Select(m =>
-            new MembroClanDTO
-            {
-                Nome = m.Nome,
-                Tag = m.Tag
-            });
+        IEnumerable<MembroClanDTO> membros = clan.Membros
+            .Where(m => m.Situacao == SituacaoMembro.Ativo)
+            .Select(m =>
+                new MembroClanDTO
+                {
+                    Nome = m.Nome,
+                    Tag = m.Tag
+                });
         AtualizarClanResponse response = new (clan.Tag, clan.Nome, membros);
         return response;
     }
