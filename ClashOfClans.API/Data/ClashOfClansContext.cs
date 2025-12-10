@@ -1,6 +1,6 @@
 ﻿using ClashOfClans.API.Core;
 using ClashOfClans.API.Core.Extensions;
-using ClashOfClans.API.Model;
+using ClashOfClans.API.Model.Clans;
 using ClashOfClans.API.Model.Guerras;
 using ClashOfClans.API.Model.LigaDeClans;
 using Microsoft.EntityFrameworkCore;

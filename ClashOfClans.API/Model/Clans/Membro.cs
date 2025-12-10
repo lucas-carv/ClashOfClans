@@ -1,7 +1,6 @@
 ﻿using ClashOfClans.API.Core;
-using System.Text.Json.Serialization;
 
-namespace ClashOfClans.API.Model;
+namespace ClashOfClans.API.Model.Clans;
 
 public class Membro(int clanId, string tag, string nome) : Entity
 {
@@ -13,7 +12,7 @@ public class Membro(int clanId, string tag, string nome) : Entity
 
     public void AlterarNome(string nome)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(nome);
+        ArgumentException.ThrowIfNullOrEmpty(nome);
 
         Nome = nome;
         Situacao = SituacaoMembro.Ativo;

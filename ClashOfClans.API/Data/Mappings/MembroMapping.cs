@@ -1,4 +1,4 @@
-﻿using ClashOfClans.API.Model;
+﻿using ClashOfClans.API.Model.Clans;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,6 +1,6 @@
 ﻿using ClashOfClans.API.Core;
 
-namespace ClashOfClans.API.Model;
+namespace ClashOfClans.API.Model.Clans;
 public class Clan : Entity, IAggregateRoot
 {
     public string Tag { get; init; }
@@ -32,7 +32,7 @@ public class Clan : Entity, IAggregateRoot
             return;
         }
 
-        Membro novoMembro = new(this.Id, tag, nome);
+        Membro novoMembro = new(Id, tag, nome);
         Membros.Add(novoMembro);
     }
 

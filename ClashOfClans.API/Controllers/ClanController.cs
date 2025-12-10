@@ -1,7 +1,7 @@
 ﻿using ClashOfClans.API.Application.Commands.Clans;
 using ClashOfClans.API.Core.CommandResults;
 using ClashOfClans.API.Data;
-using ClashOfClans.API.Model;
+using ClashOfClans.API.Model.Clans;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

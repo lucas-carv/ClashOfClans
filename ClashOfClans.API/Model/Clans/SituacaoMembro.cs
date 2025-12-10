@@ -1,4 +1,4 @@
-﻿namespace ClashOfClans.API.Model;
+﻿namespace ClashOfClans.API.Model.Clans;
 
 public enum SituacaoMembro 
 {

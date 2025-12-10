@@ -1,5 +1,5 @@
 ﻿using ClashOfClans.API.Data;
-using ClashOfClans.API.Model;
+using ClashOfClans.API.Model.Clans;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
