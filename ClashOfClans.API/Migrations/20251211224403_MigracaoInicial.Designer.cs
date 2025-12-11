@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClashOfClans.API.Migrations
 {
     [DbContext(typeof(ClashOfClansContext))]
-    [Migration("20251210233018_NovaColunaNomeMembrosInativos")]
-    partial class NovaColunaNomeMembrosInativos
+    [Migration("20251211224403_MigracaoInicial")]
+    partial class MigracaoInicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -558,31 +558,13 @@ namespace ClashOfClans.API.Migrations
 
             modelBuilder.Entity("ClashOfClans.API.Model.MembroGuerraResumo", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("MembroTag")
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("membro_tag");
 
                     b.Property<string>("ClanTag")
-                        .IsRequired()
                         .HasColumnType("varchar(100)")
                         .HasColumnName("clan_tag");
-
-                    b.Property<DateTime>("DataAlteracao")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
-                        .HasColumnName("data_alteracao");
-
-                    b.Property<DateTime>("DataCriacao")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
-                        .HasColumnName("data_criacao");
-
-                    b.Property<bool?>("FoiRemovido")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("foi_removido");
 
                     b.Property<int>("GuerrasParticipadasSeq")
                         .HasColumnType("int")
@@ -597,39 +579,21 @@ namespace ClashOfClans.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("quantidade_ataques");
 
-                    b.Property<string>("Tag")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("tag");
-
-                    b.HasKey("Id")
+                    b.HasKey("MembroTag", "ClanTag")
                         .HasName("pk_membros_guerras_resumo");
-
-                    b.HasIndex("ClanTag", "Tag")
-                        .IsUnique()
-                        .HasDatabaseName("ix_membros_guerras_resumo_clan_tag_tag");
 
                     b.ToTable("membros_guerras_resumo", (string)null);
                 });
 
             modelBuilder.Entity("ClashOfClans.API.Model.MembroInativoGuerra", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("MembroTag")
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("membro_tag");
 
                     b.Property<string>("ClanTag")
-                        .IsRequired()
                         .HasColumnType("varchar(100)")
                         .HasColumnName("clan_tag");
-
-                    b.Property<DateTime>("CriadoEm")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
-                        .HasColumnName("criado_em");
 
                     b.Property<DateTime>("DataAvaliacao")
                         .HasPrecision(0)
@@ -641,38 +605,15 @@ namespace ClashOfClans.API.Migrations
                         .HasColumnType("datetime(0)")
                         .HasColumnName("data_entrada_membro");
 
-                    b.Property<int>("GuerrasAnalisadas")
-                        .HasColumnType("int")
-                        .HasColumnName("guerras_analisadas");
-
-                    b.Property<int>("GuerrasNaoParticipadas")
-                        .HasColumnType("int")
-                        .HasColumnName("guerras_nao_participadas");
-
-                    b.Property<int>("GuerrasParticipadas")
-                        .HasColumnType("int")
-                        .HasColumnName("guerras_participadas");
-
-                    b.Property<int>("MembroId")
-                        .HasColumnType("int")
-                        .HasColumnName("membro_id");
-
-                    b.Property<string>("Motivo")
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("motivo");
-
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("varchar(100)")
                         .HasColumnName("nome");
 
-                    b.HasKey("Id")
-                        .HasName("pk_membros_inativos_guerras");
+                    b.HasKey("MembroTag", "ClanTag")
+                        .HasName("pk_membro_inativo_guerra");
 
-                    b.HasIndex("MembroId")
-                        .HasDatabaseName("ix_membros_inativos_guerras_membro_id");
-
-                    b.ToTable("membros_inativos_guerras", (string)null);
+                    b.ToTable("membro_inativo_guerra", (string)null);
                 });
 
             modelBuilder.Entity("ClashOfClans.API.Model.Clans.Membro", b =>
@@ -737,18 +678,6 @@ namespace ClashOfClans.API.Migrations
                         .WithMany("Rodadas")
                         .HasForeignKey("LigaDeGuerraId")
                         .HasConstraintName("fk_liga_guerra_rodada_liga_de_guerras_liga_de_guerra_id");
-                });
-
-            modelBuilder.Entity("ClashOfClans.API.Model.MembroInativoGuerra", b =>
-                {
-                    b.HasOne("ClashOfClans.API.Model.Clans.Membro", "Membro")
-                        .WithMany()
-                        .HasForeignKey("MembroId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_membros_inativos_guerras_membros_membro_id");
-
-                    b.Navigation("Membro");
                 });
 
             modelBuilder.Entity("ClashOfClans.API.Model.Clans.Clan", b =>
