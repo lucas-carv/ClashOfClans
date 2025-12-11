@@ -23,4 +23,4 @@ WORKDIR /app
 COPY --from=build /app/publish .
 
 # TROCAR NomeDaSuaApi.dll pelo nome correto do seu projeto
-ENTRYPOINT ["dotnet", "NomeDaSuaApi.dll"]
+ENTRYPOINT ["dotnet", "ClashOfClans.API.dll"]
