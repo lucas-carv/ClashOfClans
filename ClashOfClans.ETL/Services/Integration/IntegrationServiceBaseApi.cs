@@ -81,13 +81,13 @@ public abstract class IntegrationServiceBaseApi
 
         if (!response.IsSuccessStatusCode)
         {
-            ResponseIntegrationApi<T> responseIFood = new()
+            ResponseIntegrationApi<T> responseIntegration = new()
             {
                 ResponseData = default,
                 IsValid = false,
                 Erros = [text]
             };
-            return responseIFood;
+            return responseIntegration;
         }
 
         try
