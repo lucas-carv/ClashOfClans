@@ -1,6 +1,6 @@
 ﻿using ClashOfClans.API.Core;
 
-namespace ClashOfClans.API.Model.Clans;
+namespace ClashOfClans.API.Model;
 
 public class MembroGuerraResumo : Entity
 {

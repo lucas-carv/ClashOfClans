@@ -1,7 +1,6 @@
-﻿using ClashOfClans.API.Model.Clans;
+﻿using ClashOfClans.API.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Reflection.Emit;
 
 namespace ClashOfClans.API.Data.Mappings.Guerras;
 

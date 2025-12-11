@@ -1,5 +1,6 @@
 ﻿using ClashOfClans.API.Core;
 using ClashOfClans.API.Core.Extensions;
+using ClashOfClans.API.Model;
 using ClashOfClans.API.Model.Clans;
 using ClashOfClans.API.Model.Guerras;
 using ClashOfClans.API.Model.LigaDeClans;
@@ -13,6 +14,7 @@ public class ClashOfClansContext(DbContextOptions<ClashOfClansContext> options) 
     public DbSet<Guerra> Guerras { get; set; }
     public DbSet<Membro> Membros { get; set; }
     public DbSet<MembroGuerraResumo> MembrosGuerrasResumo { get; set; }
+    public DbSet<MembroInativoGuerra> MembrosInativosGuerras { get; set; }
     public DbSet<LigaDeGuerra> LigaDeGuerras { get; set; }
     public async Task Commit(CancellationToken cancellationToken)
     {

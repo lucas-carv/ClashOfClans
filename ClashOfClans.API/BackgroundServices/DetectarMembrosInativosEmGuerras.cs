@@ -1,60 +1,82 @@
 ﻿using ClashOfClans.API.Data;
+using ClashOfClans.API.Model;
 using ClashOfClans.API.Model.Clans;
+using ClashOfClans.API.Model.Guerras;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
 namespace ClashOfClans.API.BackgroundServices;
 
-public class DetectarMembrosInativosEmGuerrasJob : IJob
+public class DetectarMembrosInativosEmGuerrasJob(ClashOfClansContext context) : IJob
 {
-    public readonly ClashOfClansContext _context;
-
-    public DetectarMembrosInativosEmGuerrasJob(ClashOfClansContext context)
-    {
-        _context = context;
-    }
+    private readonly ClashOfClansContext _context = context;
 
     public async Task Execute(IJobExecutionContext context)
     {
         CancellationToken cancellationToken = context.CancellationToken;
 
+        var limite = DateTime.Now.AddDays(-2);
+        
         List<string> clansTags = await _context.Guerras
             .AsNoTracking()
-            .Where(g => g.Status == "WarEnded")
+            .Where(g => g.Status == "WarEnded" && g.FimGuerra >= limite)
             .Select(g => g.ClanEmGuerra.Tag)
             .Distinct()
             .ToListAsync(cancellationToken);
 
         foreach (var clanTag in clansTags)
         {
-            var ultimasCincoGuerras = await _context.Guerras
-               .Include(g => g.ClanEmGuerra).ThenInclude(a => a.MembrosEmGuerra).ThenInclude(a => a.Ataques)
-               .Where(g => g.Status == "WarEnded" && g.ClanEmGuerra.Tag == clanTag)
-               .OrderByDescending(g => g.FimGuerra)
-               .Take(5)
-               .ToListAsync(cancellationToken);
-
-            if (ultimasCincoGuerras.Count < 2)
-                return;
-
-            var membrosAtivos = await _context.Clans
-                .Where(c => c.Tag == clanTag)
-                .SelectMany(c => c.Membros) // "achata" a lista de membros
-                .Where(m => m.Situacao == SituacaoMembro.Ativo)
+            List<Guerra> ultimasCincoGuerras = await _context.Guerras
+                .Include(g => g.ClanEmGuerra)
+                    .ThenInclude(a => a.MembrosEmGuerra)
+                        .ThenInclude(a => a.Ataques)
+                .Where(g => g.Status == "WarEnded" && g.ClanEmGuerra.Tag == clanTag)
+                .OrderByDescending(g => g.FimGuerra)
+                .Take(5)
                 .ToListAsync(cancellationToken);
 
+            if (ultimasCincoGuerras.Count < 5) 
+                continue;
 
-            var tagsMembrosQueParticiparam = ultimasCincoGuerras
+            DateTime dataLimiteEntrada = ultimasCincoGuerras
+                .Min(g => g.InicioGuerra); 
+
+            List<Membro> membrosElegiveis = await _context.Clans
+                .Where(c => c.Tag == clanTag)
+                .SelectMany(c => c.Membros)
+                .Where(m =>
+                    m.Situacao == SituacaoMembro.Ativo &&
+                    m.DataEntrada <= dataLimiteEntrada
+                )
+                .ToListAsync(cancellationToken);
+
+            HashSet<string> tagsMembrosQueParticiparam = ultimasCincoGuerras
                 .SelectMany(g => g.ClanEmGuerra.MembrosEmGuerra)
-                .Select(mg => mg.Tag) // ajuste se o nome for diferente
+                .Select(mg => mg.Tag)
                 .Distinct()
-                .ToHashSet(); // HashSet para Contains mais rápido
+                .ToHashSet();
 
-            var membrosAtivosNaoParticipantes = membrosAtivos
-                .Where(m => !tagsMembrosQueParticiparam.Contains(m.Tag)) // ajuste o nome da prop
+            List<Membro> membrosAtivosNaoParticipantes = membrosElegiveis
+                .Where(m => !tagsMembrosQueParticiparam.Contains(m.Tag))
                 .ToList();
 
-            
+            if (membrosAtivosNaoParticipantes.Count == 0)
+                continue;
+
+            List<MembroInativoGuerra> antigos = await _context.MembrosInativosGuerras
+                .Where(x => x.ClanTag == clanTag)
+                .ToListAsync(cancellationToken);
+
+            if (antigos.Count > 0)
+            {
+                _context.MembrosInativosGuerras.RemoveRange(antigos);
+            }
+
+            var novosRegistros = membrosAtivosNaoParticipantes
+                .Select(m => new MembroInativoGuerra(m.Tag, m.Nome, clanTag, DateTime.Now, m.DataEntrada)).ToList();
+
+            _context.MembrosInativosGuerras.AddRange(novosRegistros);
+            await _context.Commit(cancellationToken);
         }
     }
 }

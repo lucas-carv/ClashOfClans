@@ -1,5 +1,5 @@
 ﻿using ClashOfClans.API.Data;
-using ClashOfClans.API.Model.Clans;
+using ClashOfClans.API.Model;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 

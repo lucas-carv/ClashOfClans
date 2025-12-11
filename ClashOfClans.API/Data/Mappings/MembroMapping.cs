@@ -19,9 +19,6 @@ public class MembroMapping : IEntityTypeConfiguration<Membro>
         builder.Property(m => m.Situacao)
                .HasConversion<string>()
                .HasMaxLength(20)
-               .HasColumnType("varchar(20)"); 
-
-        builder.Property(p => p.DataEntrada)
-               .HasDefaultValue(DateTime.Now);
+               .HasColumnType("varchar(20)");
     }
 }

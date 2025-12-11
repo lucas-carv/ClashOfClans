@@ -1,0 +1,16 @@
+﻿using ClashOfClans.API.Model;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace ClashOfClans.API.Data.Mappings;
+
+public class MembroInativoGuerraMapping : IEntityTypeConfiguration<MembroInativoGuerra>
+{
+    public void Configure(EntityTypeBuilder<MembroInativoGuerra> builder)
+    {
+        builder.ToTable("membro_inativo_guerra");
+
+        // se você só mantém um snapshot por vez:
+        builder.HasKey(m => new { m.MembroTag, m.ClanTag });
+    }
+}
