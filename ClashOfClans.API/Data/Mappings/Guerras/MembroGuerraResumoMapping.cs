@@ -8,7 +8,6 @@ public class MembroGuerraResumoMapping : IEntityTypeConfiguration<MembroGuerraRe
 {
     public void Configure(EntityTypeBuilder<MembroGuerraResumo> builder)
     {
-        builder.HasIndex(x => new { x.ClanTag, x.Tag })
-               .IsUnique();
+        builder.HasKey(m => new { m.MembroTag, m.ClanTag });
     }
 }

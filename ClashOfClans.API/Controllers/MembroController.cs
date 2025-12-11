@@ -13,13 +13,13 @@ namespace ClashOfClans.API.Controllers
         {
             var membros = await context.MembrosGuerrasResumo
                 .Where(m => m.ClanTag == clanTag &&
-                       context.Membros.Any(mem => mem.Tag == m.Tag && mem.Situacao == SituacaoMembro.Ativo)).OrderBy(m => m.QuantidadeAtaques).ThenByDescending(m => m.GuerrasParticipadasSeq)
+                       context.Membros.Any(mem => mem.Tag == m.MembroTag && mem.Situacao == SituacaoMembro.Ativo)).OrderBy(m => m.QuantidadeAtaques).ThenByDescending(m => m.GuerrasParticipadasSeq)
                 .ToListAsync();
 
             List<MembroViewModel> membrosViewModel = membros.Select(m => new MembroViewModel
             {
                 Nome = m.Nome,
-                Tag = m.Tag,
+                Tag = m.MembroTag,
                 QuantidadeAtaques = m.QuantidadeAtaques,
                 GuerrasParticipadasSeq = m.GuerrasParticipadasSeq
             }).ToList();

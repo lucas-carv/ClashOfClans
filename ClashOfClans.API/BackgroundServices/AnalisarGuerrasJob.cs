@@ -27,7 +27,7 @@ public class AnalisarGuerrasJob(ClashOfClansContext context, ILogger<AnalisarGue
             IEnumerable<MembroGuerraResumo> membros = await ObterAtaquesDeMembros(clanTag, cancellationToken);
             foreach (var membro in membros)
             {
-                MembroGuerraResumo? membroExiste = _context.MembrosGuerrasResumo.FirstOrDefault(m => m.Tag == membro.Tag && m.ClanTag == clanTag);
+                MembroGuerraResumo? membroExiste = _context.MembrosGuerrasResumo.FirstOrDefault(m => m.MembroTag == membro.MembroTag && m.ClanTag == clanTag);
                 if (membroExiste is null)
                 {
                     _context.Add(membro);

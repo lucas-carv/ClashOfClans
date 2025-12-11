@@ -9,8 +9,6 @@ public class MembroInativoGuerraMapping : IEntityTypeConfiguration<MembroInativo
     public void Configure(EntityTypeBuilder<MembroInativoGuerra> builder)
     {
         builder.ToTable("membro_inativo_guerra");
-
-        // se você só mantém um snapshot por vez:
         builder.HasKey(m => new { m.MembroTag, m.ClanTag });
     }
 }
