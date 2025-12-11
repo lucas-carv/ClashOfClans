@@ -7,10 +7,8 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClashOfClans.API.Application.Commands.Guerras;
-
 public record UpsertGuerraRequest(string Status, DateTime InicioGuerra, DateTime FimGuerra, string TipoGuerra, ClanEmGuerraDTO Clan) : IRequest<CommandResult<UpsertGuerraResponse>>;
 public record UpsertGuerraResponse(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanEmGuerraDTO Clan);
-
 public class UpsertGuerraCommandHandler(ClashOfClansContext context, GuerraService guerraService) : IRequestHandler<UpsertGuerraRequest, CommandResult<UpsertGuerraResponse>>
 {
     public async Task<CommandResult<UpsertGuerraResponse>> Handle(UpsertGuerraRequest request, CancellationToken cancellationToken)
@@ -32,7 +30,7 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context, GuerraServi
             Guerra novaGuerra = guerraService.CriarGuerra(request.Status, request.InicioGuerra, request.FimGuerra, request.TipoGuerra, request.Clan);
 
             context.Add(novaGuerra);
-            await context.SaveChangesAsync(cancellationToken);
+            await context.Commit(cancellationToken);
 
             UpsertGuerraResponse responseCriacao = MapearResponse(novaGuerra);
             return responseCriacao;
