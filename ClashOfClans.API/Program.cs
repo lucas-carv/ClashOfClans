@@ -19,11 +19,23 @@ builder.Services
 //AssemblyScanner.FindValidatorsInAssembly(assembly).ForEach(result => builder.Services.AddScoped(result.InterfaceType, result.ValidatorType));
 //builder.Services.AddMediatR(assembly);
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Informe a versão explicitamente, em vez de usar AutoDetect:
+var serverVersion = new MariaDbServerVersion(new Version(10, 5, 29));
+
+
 builder.Services.AddDbContext<ClashOfClansContext>(options =>
-    options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
-    ).UseSnakeCaseNamingConvention());
+{
+    options.UseMySql(connectionString, serverVersion, mySqlOptions =>
+    {
+        mySqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorNumbersToAdd: null);
+    })
+        .UseSnakeCaseNamingConvention();
+});
 
 builder.Services.AddScoped<GuerraService>();
 builder.Services.AddQuartz(q =>
@@ -68,6 +80,15 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+
+if (app.Environment.IsProduction())
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<ClashOfClansContext>();
+    db.Database.Migrate(); // cria/atualiza o schema no Johnny
+}
+
 app.MapControllers();
 
 app.Run();
