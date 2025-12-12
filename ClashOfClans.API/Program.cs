@@ -1,4 +1,4 @@
-using ClashOfClans.API.BackgroundServices;
+ï»¿using ClashOfClans.API.BackgroundServices;
 using ClashOfClans.API.Data;
 using ClashOfClans.API.Services.Guerras;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +35,7 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(t => t
          .ForJob(jobKey)
          .WithIdentity("AnalisarGuerrasTrigger")
-         .StartNow() // executa logo na inicialização
+         .StartNow() // executa logo na inicializaÃ§Ã£o
          .WithSimpleSchedule(s => s
              .WithIntervalInMinutes(5)
              .RepeatForever())); // repete para sempre
@@ -45,7 +45,7 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(t => t
          .ForJob(jobKey2)
          .WithIdentity("DetectarMembrosInativosEmGuerrasTrigger")
-         .StartNow() // executa logo na inicialização
+         .StartNow() // executa logo na inicializaÃ§Ã£o
          .WithSimpleSchedule(s => s
              .WithIntervalInMinutes(5)
              .RepeatForever())); // repete para sempre
@@ -59,16 +59,15 @@ builder.Services.AddQuartzHostedService(o =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+app.UseSwagger();
+app.UseSwaggerUI();
+//}
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
