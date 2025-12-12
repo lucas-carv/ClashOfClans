@@ -1,26 +1,29 @@
-# Imagem base s� para rodar a API
+﻿# Etapa de runtime (onde a API vai rodar)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-
-# Porta interna que a API vai escutar
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
 
-# Imagem para build
+# Etapa de build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copia tudo pro container
+# copia o código TODO da solução
 COPY . .
 
-# Restaura e publica em Release
+# ⬇️ MUITO IMPORTANTE: entra na pasta do PROJETO DA API
+WORKDIR /ClashOfClans.API
+
+# restaura os pacotes da API (e dos projetos referenciados)
 RUN dotnet restore
+
+# publica a API em Release
 RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
 
-# Imagem final
+# imagem final
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
-# TROCAR NomeDaSuaApi.dll pelo nome correto do seu projeto
+# se o nome do .csproj for outro, troque aqui também
 ENTRYPOINT ["dotnet", "ClashOfClans.API.dll"]
