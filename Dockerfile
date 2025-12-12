@@ -8,22 +8,19 @@ ENV ASPNETCORE_URLS=http://+:8080
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# copia o código TODO da solução
+# Copia todo o código da solução para dentro da imagem
 COPY . .
 
-# ⬇️ MUITO IMPORTANTE: entra na pasta do PROJETO DA API
-WORKDIR /ClashOfClans.API
+# Restaura os pacotes da API (ajuste o caminho se o nome da pasta/projeto mudar)
+RUN dotnet restore "ClashOfClans.API/ClashOfClans.API.csproj"
 
-# restaura os pacotes da API (e dos projetos referenciados)
-RUN dotnet restore
+# Publica a API
+RUN dotnet publish "ClashOfClans.API/ClashOfClans.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# publica a API em Release
-RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
-
-# imagem final
+# Imagem final
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
-# se o nome do .csproj for outro, troque aqui também
+# DLL que você confirmou que é esse nome 👇
 ENTRYPOINT ["dotnet", "ClashOfClans.API.dll"]
