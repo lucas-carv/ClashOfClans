@@ -10,23 +10,25 @@ public static class ChangeTrackerExtension
     /// </summary>
     public static void EnableSoftDelete(this ChangeTracker changeTracker)
     {
+        var agora = HorarioBrasil.Agora;
+
         foreach (var entry in changeTracker.Entries().Where(entry => entry.Entity.GetType().GetProperty("DataAlteracao") != null).ToList())
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Property("DataCriacao").CurrentValue = DateTime.Now;
-                entry.Property("DataAlteracao").CurrentValue = DateTime.Now;
+                entry.Property("DataCriacao").CurrentValue = agora;
+                entry.Property("DataAlteracao").CurrentValue = agora;
             }
 
             if (entry.State == EntityState.Modified)
             {
                 entry.Property("DataCriacao").IsModified = false;
-                entry.Property("DataAlteracao").CurrentValue = DateTime.Now;
+                entry.Property("DataAlteracao").CurrentValue = agora;
             }
             if (entry.State == EntityState.Deleted)
             {
                 entry.State = EntityState.Unchanged;
-                entry.Property("DataAlteracao").CurrentValue = DateTime.Now;
+                entry.Property("DataAlteracao").CurrentValue = agora;
                 entry.Property("FoiRemovido").CurrentValue = null;
             }
         }

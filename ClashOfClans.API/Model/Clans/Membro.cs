@@ -7,7 +7,7 @@ public class Membro(int clanId, string tag, string nome) : Entity
     public int ClanId { get; init; } = clanId;
     public string Tag { get; init; } = tag;
     public string Nome { get; private set; } = nome;
-    public DateTime DataEntrada { get; private set; } = DateTime.Now;
+    public DateTime DataEntrada { get; private set; } = HorarioBrasil.Agora;
     public SituacaoMembro Situacao { get; private set; } = SituacaoMembro.Ativo;
 
     public void AtualizarDataEntradaENome(string nome)
@@ -16,7 +16,7 @@ public class Membro(int clanId, string tag, string nome) : Entity
 
         Nome = nome;
         Situacao = SituacaoMembro.Ativo;
-        DataEntrada = DateTime.Now;
+        DataEntrada = HorarioBrasil.Agora;
     }
 
     public void InativarMembro()
