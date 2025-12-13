@@ -21,7 +21,8 @@ public class IntegrationService : IntegrationServiceBaseApi
 
     public async Task<CriarClanInputModel> ObterClanPorTag(string tag)
     {
-        string uri = $"https://localhost:7016/api/v1/clan/{tag}";
+        //string uri = $"https://localhost:7016/api/v1/clan/{tag}";
+        string uri = $"https://clashofclans-1-bwjm.onrender.com/api/v1/clan/{tag}";
         var response = await Send<CriarClanInputModel>(HttpMethod.Get, uri);
         return response.ResponseData;
     }

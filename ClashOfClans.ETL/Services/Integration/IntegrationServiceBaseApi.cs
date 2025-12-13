@@ -9,7 +9,8 @@ namespace ClashOfClans.ETL.Services.Integration;
 public abstract class IntegrationServiceBaseApi
 {
     private readonly HttpClient _httpClient;
-    protected readonly string _baseUrl = $"https://localhost:7016/api/v1";
+    //protected readonly string _baseUrl = $"https://localhost:7016/api/v1";
+    protected readonly string _baseUrl = $"https://clashofclans-1-bwjm.onrender.com/api/v1";
 
     public IntegrationServiceBaseApi()
     {
@@ -63,7 +64,7 @@ public abstract class IntegrationServiceBaseApi
         {
             Method = method,
             Content = stringContent,
-            RequestUri = new Uri(new Uri("https://localhost:7016"), relativeUri)
+            RequestUri = new Uri(new Uri("https://clashofclans-1-bwjm.onrender.com"), relativeUri)
         };
     }
     private static async Task<ResponseIntegrationApi<T>> ParseReponse<T>(HttpResponseMessage response)
