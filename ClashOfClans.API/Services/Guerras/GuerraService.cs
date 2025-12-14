@@ -1,10 +1,5 @@
-﻿using ClashOfClans.API.Application.Commands.Guerras;
-using ClashOfClans.API.Core.CommandResults;
-using ClashOfClans.API.Data;
-using ClashOfClans.API.DTOs;
+﻿using ClashOfClans.API.DTOs.Guerras;
 using ClashOfClans.API.Model.Guerras;
-using Microsoft.EntityFrameworkCore;
-using System.Threading;
 
 namespace ClashOfClans.API.Services.Guerras;
 

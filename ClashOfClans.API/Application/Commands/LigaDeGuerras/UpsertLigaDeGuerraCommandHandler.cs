@@ -1,6 +1,6 @@
 ﻿using ClashOfClans.API.Core.CommandResults;
 using ClashOfClans.API.Data;
-using ClashOfClans.API.DTOs;
+using ClashOfClans.API.DTOs.Guerras;
 using ClashOfClans.API.Model.Guerras;
 using ClashOfClans.API.Model.LigaDeClans;
 using ClashOfClans.API.Services.Guerras;
@@ -9,14 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ClashOfClans.API.Application.Commands.LigaDeGuerras
 {
-    public class LigaDeGuerraRequest : IRequest<CommandResult<bool>>
-    {
-        public required string ClanTag { get; set; }
-        public required string Status { get; set; }
-        public required string Temporada { get; set; }
-        public List<ClanEmGuerraDTO> Clans { get; set; } = [];
-        public List<LigaGuerraRodadaRequest> Rodadas { get; set; } = [];
-    }
+    public record LigaDeGuerraRequest(string ClanTag, string Status, string Temporada, List<ClanEmGuerraDTO> Clans, List<LigaGuerraRodadaRequest> Rodadas) : IRequest<CommandResult<bool>>;
+
     public class UpsertLigaDeGuerraCommandHandler(ClashOfClansContext context, GuerraService guerraService) : IRequestHandler<LigaDeGuerraRequest, CommandResult<bool>>
     {
         public async Task<CommandResult<bool>> Handle(LigaDeGuerraRequest request, CancellationToken cancellationToken)
