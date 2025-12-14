@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ClashOfClans.API.Data.Mappings;
+namespace ClashOfClans.API.Data.Mappings.Clans;
 
 public class MembroMapping : IEntityTypeConfiguration<Membro>
 {

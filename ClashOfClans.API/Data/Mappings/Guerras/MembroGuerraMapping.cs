@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ClashOfClans.API.Data.Mappings.Guerras;
 
-public class GuerraMapping : IEntityTypeConfiguration<Guerra>
+public class MembroGuerraMapping : IEntityTypeConfiguration<MembroEmGuerra>
 {
-    public void Configure(EntityTypeBuilder<Guerra> builder)
+    public void Configure(EntityTypeBuilder<MembroEmGuerra> builder)
     {
-        builder.ToTable("guerra");
+        builder.ToTable("membro_em_guerra");
         builder.HasQueryFilter(p => p.FoiRemovido != null);
         builder.HasKey(c => c.Id);
     }

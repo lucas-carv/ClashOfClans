@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ClashOfClans.API.Data.Mappings.Guerras;
+namespace ClashOfClans.API.Data.Mappings.Relatorios;
 
 public class MembroGuerraResumoMapping : IEntityTypeConfiguration<MembroGuerraResumo>
 {
