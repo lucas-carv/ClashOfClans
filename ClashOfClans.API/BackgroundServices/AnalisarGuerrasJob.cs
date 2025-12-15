@@ -55,17 +55,20 @@ public class AnalisarGuerrasJob(ClashOfClansContext context, ILogger<AnalisarGue
 
         IEnumerable<int> guerrasIds = ultimasDuasGuerras.Select(g => g.Id);
 
-        var membrosDaGuerra = await _context.Guerras
-       .AsNoTracking()
-       .Where(g => guerrasIds.Contains(g.Id))
-       .SelectMany(g => g.ClanEmGuerra.MembrosEmGuerra.Select(m => new
-       {
-           GuerraId = g.Id,
-           m.Tag,
-           m.Nome,
-           QuantidadeAtaques = m.Ataques.Count
-       }))
-       .ToListAsync(cancellationToken);
+        var membrosDaGuerra = await (
+            from m in _context.MembrosEmGuerra.AsNoTracking()
+            join c in _context.ClansEmGuerra on m.ClanEmGuerraId equals c.Id
+            join g in _context.Guerras on c.GuerraId equals g.Id
+            where guerrasIds.Contains(g.Id)
+                  && m.FoiRemovido != null
+            select new
+            {
+                GuerraId = g.Id,
+                m.Tag,
+                m.Nome,
+                QuantidadeAtaques = m.Ataques.Count
+            }
+        ).ToListAsync(cancellationToken);
 
         List<MembroGuerraResumo> membros = [.. membrosDaGuerra
             .GroupBy(m => m.Tag)

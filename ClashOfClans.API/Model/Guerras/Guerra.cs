@@ -8,6 +8,7 @@ public class Guerra : Entity, IAggregateRoot
     public string Status { get; set; } = string.Empty;
     public DateTime InicioGuerra { get; init; }
     public DateTime FimGuerra { get; private set; }
+    public int ClanEmGuerraId { get; set; }
     public ClanEmGuerra ClanEmGuerra { get; set; }
     public string TipoGuerra { get; init; } = "Normal";
     public string GuerraTag { get; private set; } = string.Empty;

@@ -8,6 +8,8 @@ public class MembroEmGuerra : Entity
     public string Nome { get; init; }
     public int CentroVilaLevel { get; set; }
     // posição no mapa // será que coloca aqui ??
+    public int ClanEmGuerraId { get; set; }
+    public ClanEmGuerra ClanEmGuerra { get; set; }
     public List<GuerraMembroAtaque> Ataques { get; set; } = [];
     private MembroEmGuerra() { }
     public MembroEmGuerra(string tag, string nome)

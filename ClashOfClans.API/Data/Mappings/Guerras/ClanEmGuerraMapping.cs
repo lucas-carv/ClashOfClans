@@ -12,9 +12,10 @@ public class ClanEmGuerraMapping : IEntityTypeConfiguration<ClanEmGuerra>
         builder.HasQueryFilter(p => p.FoiRemovido != null);
         builder.HasKey(c => c.Id);
 
-        builder.HasOne(gc => gc.Guerra)
-           .WithOne(g => g.ClanEmGuerra)
-           .HasForeignKey<ClanEmGuerra>(gc => gc.GuerraId);
+        builder.HasOne(c => c.Guerra)
+            .WithMany() 
+            .HasForeignKey(c => c.GuerraId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder
             .HasIndex(p => new { p.GuerraId, p.Tag })
