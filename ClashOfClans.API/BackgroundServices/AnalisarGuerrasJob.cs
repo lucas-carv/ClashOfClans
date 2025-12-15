@@ -55,20 +55,25 @@ public class AnalisarGuerrasJob(ClashOfClansContext context, ILogger<AnalisarGue
 
         IEnumerable<int> guerrasIds = ultimasDuasGuerras.Select(g => g.Id);
 
-        var membrosDaGuerra = await (
-            from m in _context.MembrosEmGuerra.AsNoTracking()
-            join c in _context.ClansEmGuerra on m.ClanEmGuerraId equals c.Id
-            join g in _context.Guerras on c.GuerraId equals g.Id
-            where guerrasIds.Contains(g.Id)
-                  && m.FoiRemovido != null
-            select new
+        var membrosDaGuerra = await _context.MembrosEmGuerra
+            .AsNoTracking()
+            .Join(_context.ClansEmGuerra,
+                m => m.ClanEmGuerraId,
+                c => c.Id,
+                (m, c) => new { Membro = m, Clan = c })
+            .Join(_context.Guerras,
+                mc => mc.Clan.GuerraId,
+                g => g.Id,
+                (mc, g) => new { mc.Membro, Clan = mc.Clan, Guerra = g })
+            .Where(x => guerrasIds.Contains(x.Guerra.Id) && x.Membro.FoiRemovido != null)
+            .Select(x => new
             {
-                GuerraId = g.Id,
-                m.Tag,
-                m.Nome,
-                QuantidadeAtaques = m.Ataques.Count
-            }
-        ).ToListAsync(cancellationToken);
+                GuerraId = x.Guerra.Id,
+                x.Membro.Tag,
+                x.Membro.Nome,
+                QuantidadeAtaques = x.Membro.Ataques.Count
+            })
+            .ToListAsync(cancellationToken);
 
         List<MembroGuerraResumo> membros = [.. membrosDaGuerra
             .GroupBy(m => m.Tag)

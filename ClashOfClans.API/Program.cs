@@ -1,4 +1,5 @@
 ﻿using ClashOfClans.API.BackgroundServices;
+using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans;
 using ClashOfClans.API.Data;
 using ClashOfClans.API.Services.Guerras;
 using Microsoft.EntityFrameworkCore;
@@ -38,10 +39,12 @@ builder.Services.AddDbContext<ClashOfClansContext>(options =>
 });
 
 builder.Services.AddScoped<GuerraService>();
+builder.Services.AddScoped<ClashOfClansService>();
 builder.Services.AddQuartz(q =>
 {
     var jobKey = new JobKey("AnalisarGuerrasJob");
     var jobKey2 = new JobKey("DetectarMembrosInativosEmGuerrasJob");
+    var jobKey3 = new JobKey("BuscarClanJob");
     q.AddJob<AnalisarGuerrasJob>(opts => opts.WithIdentity(jobKey));
 
     q.AddTrigger(t => t
@@ -57,6 +60,16 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(t => t
          .ForJob(jobKey2)
          .WithIdentity("DetectarMembrosInativosEmGuerrasTrigger")
+         .StartNow() // executa logo na inicialização
+         .WithSimpleSchedule(s => s
+             .WithIntervalInMinutes(5)
+             .RepeatForever())); // repete para sempre
+
+    q.AddJob<BuscarClanJob>(opts => opts.WithIdentity(jobKey3));
+
+    q.AddTrigger(t => t
+         .ForJob(jobKey3)
+         .WithIdentity("BuscarClanTrigger")
          .StartNow() // executa logo na inicialização
          .WithSimpleSchedule(s => s
              .WithIntervalInMinutes(5)
