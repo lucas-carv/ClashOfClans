@@ -1,8 +1,13 @@
 ﻿namespace ClashOfClans.API.DTOs.Guerras;
-public record ClanEmGuerraDTO
+public class ClanEmGuerraDTO
 {
-    public required string Tag { get; init; }
-    public required string Nome { get; set; }
+    public string Tag { get; init; }
+    public string Nome { get; set; }
     public int ClanLevel { get; set; }
     public IEnumerable<MembroEmGuerraDTO> Membros { get; set; } = [];
+
+    public ClanEmGuerraDTO()
+    {
+
+    }
 }
