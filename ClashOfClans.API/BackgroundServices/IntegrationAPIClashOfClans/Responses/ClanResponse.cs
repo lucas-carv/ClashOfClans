@@ -1,13 +1,13 @@
 ﻿namespace ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Responses;
 
-public record ClashClanResponse
+public record ClanResponse
 {
     public required string Tag { get; init; }
     public required string Name { get; init; }
-    public IEnumerable<ClanMemberListDTO> MemberList { get; set; } = [];
+    public IEnumerable<MemberListDTO> MemberList { get; set; } = [];
 }
 
-public record ClanMemberListDTO
+public record MemberListDTO
 {
     public required string Tag { get; init; }
     public required string Name { get; init; }

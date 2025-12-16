@@ -1,11 +1,9 @@
-﻿using System.Globalization;
-using System.Runtime.InteropServices;
-using MediatR;
+﻿using MediatR;
 using Quartz;
-using Newtonsoft.Json;
 using ClashOfClans.API.Application.Commands.Guerras;
 using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Responses;
 using ClashOfClans.API.DTOs.Guerras;
+using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Services;
 
 namespace ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans;
 

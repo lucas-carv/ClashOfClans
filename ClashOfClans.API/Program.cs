@@ -1,5 +1,6 @@
 ﻿using ClashOfClans.API.BackgroundServices;
 using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans;
+using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Services;
 using ClashOfClans.API.Data;
 using ClashOfClans.API.Services.Guerras;
 using Microsoft.EntityFrameworkCore;
