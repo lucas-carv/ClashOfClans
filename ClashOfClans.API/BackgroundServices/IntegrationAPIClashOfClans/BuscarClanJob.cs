@@ -10,6 +10,7 @@ using MediatR;
 using ClashOfClans.API.DTOs;
 using ClashOfClans.API.Model.Clans;
 using Microsoft.EntityFrameworkCore;
+using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Responses;
 
 namespace ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans;
 
@@ -48,18 +49,6 @@ public class BuscarClanJob(ClashOfClansService clashOfClansService, ClashOfClans
     }
 }
 
-public record ClashClanResponse
-{
-    public required string Tag { get; init; }
-    public required string Name { get; init; }
-    public List<ClanMemberList> MemberList { get; set; } = [];
-}
-
-public class ClanMemberList
-{
-    public required string Tag { get; init; }
-    public required string Name { get; init; }
-}
 public class ClashOfClansService : ClashOfClansBaseApiService
 {
     internal async Task<ResponseClashOfClans<ClashClanResponse>> BuscarClan(string tag)
@@ -69,11 +58,11 @@ public class ClashOfClansService : ClashOfClansBaseApiService
         ResponseClashOfClans<ClashClanResponse> result = await SendRequest<ClashClanResponse>(request);
         return result;
     }
-    public async Task<War> BuscarGuerra(string tag)
+    public async Task<WarResponse> BuscarGuerra(string tag)
     {
         string uri = $"/v1/clans/{tag}/currentwar";
         var request = CreateRequest<string>(null, HttpMethod.Get, uri);
-        var result = await SendRequest<War>(request);
+        var result = await SendRequest<WarResponse>(request);
         return result.ResponseData!;
     }
 

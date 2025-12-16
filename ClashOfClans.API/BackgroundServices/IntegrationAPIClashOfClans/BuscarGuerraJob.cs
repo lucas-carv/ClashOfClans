@@ -1,18 +1,17 @@
-﻿using ClashOfClans.API.Application.Commands.Guerras;
-using ClashOfClans.API.Data;
-using ClashOfClans.API.DTOs.Guerras;
-using MediatR;
-using Newtonsoft.Json;
-using Quartz;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Runtime.InteropServices;
+using MediatR;
+using Quartz;
+using Newtonsoft.Json;
+using ClashOfClans.API.Application.Commands.Guerras;
+using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Responses;
+using ClashOfClans.API.DTOs.Guerras;
 
 namespace ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans;
 
-public class BuscarGuerraJob(ClashOfClansService clashOfClansService, ClashOfClansContext context, IMediator mediator) : IJob
+public class BuscarGuerraJob(ClashOfClansService clashOfClansService, IMediator mediator) : IJob
 {
     private readonly ClashOfClansService _clashOfClansService = clashOfClansService;
-    private readonly ClashOfClansContext _context = context;
 
     private readonly IMediator _mediator = mediator;
     public async Task Execute(IJobExecutionContext context)
@@ -20,7 +19,7 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService, ClashOfCla
         string tag = "#2L0UC9R8P";
         string encodedTag = Uri.EscapeDataString(tag);
 
-        War war = await _clashOfClansService.BuscarGuerra(encodedTag);
+        WarResponse war = await _clashOfClansService.BuscarGuerra(encodedTag);
         if (war is null)
         {
             Console.WriteLine($"Guerra não encontrada na API");
@@ -54,45 +53,6 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService, ClashOfCla
     }
 }
 
-public class War
-{
-    public StatusGuerra State { get; set; }
-    [JsonConverter(typeof(CustomDateTimeConverter))]
-    public DateTime StartTime { get; set; }
-    [JsonConverter(typeof(CustomDateTimeConverter))]
-    public DateTime EndTime { get; set; }
-    public ClanWar Clan { get; set; } = new();
-}
-
-public enum StatusGuerra
-{
-    NotInWar,
-    WarEnded,
-    Preparation,
-    InWar
-}
-
-public class ClanWar
-{
-    public string Tag { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
-    public List<MembersWarDTO> Members { get; set; } = [];
-}
-
-public class MembersWarDTO
-{
-    public string Tag { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
-    public List<AttacksDTO> Attacks { get; set; } = [];
-
-}
-public class AttacksDTO
-{
-    public string AttackerTag { get; set; }
-    public string DefenderTag { get; set; }
-    public int Stars { get; set; }
-
-}
 public class CustomDateTimeConverter : JsonConverter<DateTime>
 {
     public override DateTime ReadJson(JsonReader reader, Type objectType, DateTime existingValue, bool hasExistingValue, JsonSerializer serializer)
