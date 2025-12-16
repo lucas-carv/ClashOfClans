@@ -69,13 +69,13 @@ public class ClashOfClansService : ClashOfClansBaseApiService
         ResponseClashOfClans<ClashClanResponse> result = await SendRequest<ClashClanResponse>(request);
         return result;
     }
-    //public async Task<War> BuscarGuerra(string tag)
-    //{
-    //    string uri = $"/v1/clans/{tag}/currentwar";
-    //    var request = CreateRequest<string>(null, HttpMethod.Get, uri);
-    //    var result = await SendRequest<War>(request);
-    //    return result.ResponseData!;
-    //}
+    public async Task<War> BuscarGuerra(string tag)
+    {
+        string uri = $"/v1/clans/{tag}/currentwar";
+        var request = CreateRequest<string>(null, HttpMethod.Get, uri);
+        var result = await SendRequest<War>(request);
+        return result.ResponseData!;
+    }
 
 
     //public async Task<ClanWarLeagueGroup> BuscarGrupoLiga(string clanTag)
@@ -106,7 +106,9 @@ public class ClashOfClansBaseApiService
 
         
 
+        //local
         //_httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjMzOTBmOGFhLWZhYWMtNGZhYi1hMWNlLWI3OWYyZjhiZjkzMCIsImlhdCI6MTc2NTgwMzAyMCwic3ViIjoiZGV2ZWxvcGVyL2YzM2YwYjI5LWM0NGItODk0Yi02MTY4LWI3YjNlNjUyNmI5YyIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjE4OS40OS43MS4yNDMiXSwidHlwZSI6ImNsaWVudCJ9XX0.GHuEW3TC5jvK2z91Cl1miRc1PmUN8wgPwugwmySkeya6Ciljwsl46ECsu8AKDa67yMFHTY58yepEo3jg2BBbtQ");
+        //produção
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjI5ODRkNjA0LThiYjItNGMwZi04OGNkLTRiMGZkMjkyOTcwYiIsImlhdCI6MTc2NTg0ODc2MCwic3ViIjoiZGV2ZWxvcGVyL2YzM2YwYjI5LWM0NGItODk0Yi02MTY4LWI3YjNlNjUyNmI5YyIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjc0LjIyMC40OS4yNTMiXSwidHlwZSI6ImNsaWVudCJ9XX0.kdOhfMy0gwEXImfEZLO-HlxEiyLgB6n6BYiRFRvdF2zqOJbfvYEttgjbqPYjlpxvZkHf4aJdxUpfsXDwfAbJHg");
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
     }
