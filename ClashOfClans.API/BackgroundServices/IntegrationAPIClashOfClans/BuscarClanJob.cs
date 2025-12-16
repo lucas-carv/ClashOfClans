@@ -25,10 +25,10 @@ public class BuscarClanJob(ClashOfClansService clashOfClansService, ClashOfClans
         string tag = "#2L0UC9R8P";
         string encodedTag = Uri.EscapeDataString(tag);
 
-        ClashClanResponse clanClashResponse = await _clashOfClansService.BuscarClan(encodedTag);
-        if (clanClashResponse is null)
+        ResponseClashOfClans<ClashClanResponse> clanClashResponse = await _clashOfClansService.BuscarClan(encodedTag);
+        if (clanClashResponse.ResponseData is null)
         {
-            Console.WriteLine("Falha ao obter clan");
+            Console.WriteLine($"Falha ao obter clan {string.Join(",", clanClashResponse.Erros)}");
             return;
         }
 
@@ -36,14 +36,14 @@ public class BuscarClanJob(ClashOfClansService clashOfClansService, ClashOfClans
 
         if (clan is not null)
         {
-            var request = new AtualizarClanRequest(clanClashResponse.Tag, clanClashResponse.Name, clanClashResponse.MemberList.Select(m => new MembroClanDTO() { Nome = m.Name, Tag = m.Tag }));
+            var request = new AtualizarClanRequest(clanClashResponse.ResponseData.Tag, clanClashResponse.ResponseData.Name, clanClashResponse.ResponseData.MemberList.Select(m => new MembroClanDTO() { Nome = m.Name, Tag = m.Tag }));
 
             CommandResult<AtualizarClanResponse> resultadoAtualizacao = await _mediator.Send(request);
             return;
         }
 
         Console.WriteLine($"{DateTime.Now} - Criando Clan");
-        CriarClanRequest clanInputModel = new(clanClashResponse.Tag, clanClashResponse.Name, clanClashResponse.MemberList.Select(c => new MembroClanDTO() { Nome = c.Name, Tag = c.Tag }));
+        CriarClanRequest clanInputModel = new(clanClashResponse.ResponseData.Tag, clanClashResponse.ResponseData.Name, clanClashResponse.ResponseData.MemberList.Select(c => new MembroClanDTO() { Nome = c.Name, Tag = c.Tag }));
         CommandResult<CriarClanResponse> resultadoCriacao = await _mediator.Send(clanInputModel);
     }
 }
@@ -62,12 +62,12 @@ public class ClanMemberList
 }
 public class ClashOfClansService : ClashOfClansBaseApiService
 {
-    internal async Task<ClashClanResponse> BuscarClan(string tag)
+    internal async Task<ResponseClashOfClans<ClashClanResponse>> BuscarClan(string tag)
     {
         string uri = $"/v1/clans/{tag}";
         var request = CreateRequest<string>(null, HttpMethod.Get, uri);
-        var result = await SendRequest<ClashClanResponse>(request);
-        return result.ResponseData!;
+        ResponseClashOfClans<ClashClanResponse> result = await SendRequest<ClashClanResponse>(request);
+        return result;
     }
     //public async Task<War> BuscarGuerra(string tag)
     //{
