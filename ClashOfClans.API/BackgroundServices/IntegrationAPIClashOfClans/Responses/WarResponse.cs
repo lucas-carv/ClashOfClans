@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using ClashOfClans.API.Common;
+using Newtonsoft.Json;
 
 namespace ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Responses;
 

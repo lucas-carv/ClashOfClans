@@ -1,5 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 
+namespace ClashOfClans.API.Common;
+
 public static class HorarioBrasil
 {
     private static readonly TimeZoneInfo FusoBrasil = GetTimeZone();

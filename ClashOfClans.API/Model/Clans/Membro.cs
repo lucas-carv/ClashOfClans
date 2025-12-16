@@ -1,4 +1,5 @@
-﻿using ClashOfClans.API.Core;
+﻿using ClashOfClans.API.Common;
+using ClashOfClans.API.Core;
 
 namespace ClashOfClans.API.Model.Clans;
 

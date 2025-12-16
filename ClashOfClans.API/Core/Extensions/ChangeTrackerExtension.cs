@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
+using ClashOfClans.API.Common;
 
 namespace ClashOfClans.API.Core.Extensions;
 
