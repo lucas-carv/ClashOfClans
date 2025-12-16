@@ -10,12 +10,12 @@ public class ClashOfClansService : ClashOfClansBaseApiService
         ResponseClashOfClans<ClanResponse> result = await SendRequest<ClanResponse>(request);
         return result;
     }
-    public async Task<WarResponse> BuscarGuerra(string tag)
+    public async Task<ResponseClashOfClans<WarResponse>> BuscarGuerra(string tag)
     {
         string uri = $"/v1/clans/{tag}/currentwar";
         var request = CreateRequest<string>(null, HttpMethod.Get, uri);
         var result = await SendRequest<WarResponse>(request);
-        return result.ResponseData!;
+        return result;
     }
 
 

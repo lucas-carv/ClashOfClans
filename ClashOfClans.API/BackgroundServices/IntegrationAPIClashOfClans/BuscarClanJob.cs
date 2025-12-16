@@ -1,11 +1,10 @@
-﻿using Quartz;
+﻿using MediatR;
+using Quartz;
+using Microsoft.EntityFrameworkCore;
 using ClashOfClans.API.Data;
 using ClashOfClans.API.Application.Commands.Clans;
-using ClashOfClans.API.Core.CommandResults;
-using MediatR;
 using ClashOfClans.API.DTOs;
 using ClashOfClans.API.Model.Clans;
-using Microsoft.EntityFrameworkCore;
 using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Responses;
 using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Services;
 
@@ -24,25 +23,51 @@ public class BuscarClanJob(ClashOfClansService clashOfClansService, ClashOfClans
         string encodedTag = Uri.EscapeDataString(tag);
 
         ResponseClashOfClans<ClanResponse> clanClashResponse = await _clashOfClansService.BuscarClan(encodedTag);
-        if (clanClashResponse.ResponseData is null)
+        if (!clanClashResponse.IsValid)
         {
-            Console.WriteLine($"Falha ao obter clan {string.Join(",", clanClashResponse.Erros)}");
+            Console.WriteLine($"Falha ao obter clan da API {string.Join(",", clanClashResponse.Erros)}");
+            return;
+        }
+
+        ClanResponse? clanResponse = clanClashResponse.ResponseData;
+        if (clanResponse is null)
+        {
+            Console.WriteLine($"Clan não encontrado");
             return;
         }
 
         Clan? clan = await _context.Clans.FirstOrDefaultAsync(c => c.Tag == tag);
-
         if (clan is not null)
         {
-            var request = new AtualizarClanRequest(clanClashResponse.ResponseData.Tag, clanClashResponse.ResponseData.Name, clanClashResponse.ResponseData.MemberList.Select(m => new MembroClanDTO() { Nome = m.Name, Tag = m.Tag }));
+            Console.WriteLine($"{DateTime.Now} - Atualizando Clan");
+            AtualizarClanRequest atualizarClan = new(
+                clanResponse.Tag,
+                clanResponse.Name,
+                clanResponse.MemberList
+                    .Select(m =>
+                        new MembroClanDTO()
+                        {
+                            Nome = m.Name,
+                            Tag = m.Tag
+                        }));
 
-            CommandResult<AtualizarClanResponse> resultadoAtualizacao = await _mediator.Send(request);
+            await _mediator.Send(atualizarClan);
             return;
         }
 
         Console.WriteLine($"{DateTime.Now} - Criando Clan");
-        CriarClanRequest clanInputModel = new(clanClashResponse.ResponseData.Tag, clanClashResponse.ResponseData.Name, clanClashResponse.ResponseData.MemberList.Select(c => new MembroClanDTO() { Nome = c.Name, Tag = c.Tag }));
-        CommandResult<CriarClanResponse> resultadoCriacao = await _mediator.Send(clanInputModel);
+        CriarClanRequest criarClan = new(
+            clanResponse.Tag,
+            clanResponse.Name,
+            clanResponse.MemberList
+                .Select(c =>
+                    new MembroClanDTO()
+                    {
+                        Nome = c.Name,
+                        Tag = c.Tag
+                    }));
+
+        await _mediator.Send(criarClan);
     }
 }
 
