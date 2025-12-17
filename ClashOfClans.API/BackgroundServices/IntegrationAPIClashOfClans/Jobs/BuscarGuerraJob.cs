@@ -15,6 +15,7 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService, IMediator 
 
     public async Task Execute(IJobExecutionContext context)
     {
+        Console.WriteLine("Iniciando job de buscar guerra");
         string tag = "#2L0UC9R8P";
         string encodedTag = Uri.EscapeDataString(tag);
 
@@ -57,6 +58,7 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService, IMediator 
         UpsertGuerraRequest upsertGuerraRequest = new(war.State.ToString(), war.StartTime, war.EndTime, "Normal", clan);
 
         await _mediator.Send(upsertGuerraRequest);
+        Console.WriteLine("Finalizando job de buscar guerra");
     }
 }
 public static class BuscarGuerraJobConfiguration
@@ -70,7 +72,7 @@ public static class BuscarGuerraJobConfiguration
             .ForJob(jobKey)
             .WithIdentity($"{nameof(BuscarGuerraJob)}-trigger")
             .StartAt(DateBuilder.FutureDate(1, IntervalUnit.Minute))
-            .WithSimpleSchedule(x => x.WithIntervalInMinutes(5)
+            .WithSimpleSchedule(x => x.WithIntervalInMinutes(10)
             .RepeatForever())
             );
     }
