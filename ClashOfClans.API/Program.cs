@@ -44,7 +44,7 @@ builder.Services.AddQuartz(q =>
 {
     //q.AddBuscarClanJob();
     q.AddBuscarGuerraJob();
-    //q.AddAnalisarGuerras();
+    q.AddAnalisarGuerras();
     //q.AddDetectarMembrosInativosJob();
 });
 
