@@ -5,8 +5,9 @@ using ClashOfClans.API.Application.Commands.Guerras;
 using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Responses;
 using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Services;
 
-namespace ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans;
+namespace ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Jobs;
 
+[DisallowConcurrentExecution]
 public class BuscarGuerraJob(ClashOfClansService clashOfClansService, IMediator mediator) : IJob
 {
     private readonly ClashOfClansService _clashOfClansService = clashOfClansService;
@@ -56,5 +57,20 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService, IMediator 
         UpsertGuerraRequest upsertGuerraRequest = new(war.State.ToString(), war.StartTime, war.EndTime, "Normal", clan);
 
         await _mediator.Send(upsertGuerraRequest);
+    }
+}
+public static class BuscarGuerraJobConfiguration
+{
+    public static void AddBuscarGuerraJob(this IServiceCollectionQuartzConfigurator configurator)
+    {
+        JobKey jobKey = new(nameof(BuscarGuerraJob));
+        configurator.AddJob<BuscarGuerraJob>(opts => opts.WithIdentity(jobKey));
+
+        configurator.AddTrigger(opts => opts
+            .ForJob(jobKey)
+            .WithIdentity($"{nameof(BuscarGuerraJob)}-trigger")
+            .WithSimpleSchedule(x => x.WithIntervalInMinutes(5)
+            .RepeatForever())
+            );
     }
 }

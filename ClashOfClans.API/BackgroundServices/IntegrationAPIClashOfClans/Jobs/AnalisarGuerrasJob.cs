@@ -3,7 +3,7 @@ using ClashOfClans.API.Model;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
-namespace ClashOfClans.API.BackgroundServices;
+namespace ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Jobs;
 
 [DisallowConcurrentExecution]
 public class AnalisarGuerrasJob(ClashOfClansContext context, ILogger<AnalisarGuerrasJob> logger) : IJob
@@ -64,7 +64,7 @@ public class AnalisarGuerrasJob(ClashOfClansContext context, ILogger<AnalisarGue
             .Join(_context.Guerras,
                 mc => mc.Clan.GuerraId,
                 g => g.Id,
-                (mc, g) => new { mc.Membro, Clan = mc.Clan, Guerra = g })
+                (mc, g) => new { mc.Membro, mc.Clan, Guerra = g })
             .Where(x => guerrasIds.Contains(x.Guerra.Id) && x.Membro.FoiRemovido != null)
             .Select(x => new
             {
@@ -84,5 +84,21 @@ public class AnalisarGuerrasJob(ClashOfClansContext context, ILogger<AnalisarGue
             })];
 
         return membros;
+    }
+}
+
+public static class AnalisarGuerrasJobConfiguration
+{
+    public static void AddAnalisarGuerras(this IServiceCollectionQuartzConfigurator configurator)
+    {
+        JobKey jobKey = new(nameof(AnalisarGuerrasJob));
+        configurator.AddJob<AnalisarGuerrasJob>(opts => opts.WithIdentity(jobKey));
+
+        configurator.AddTrigger(opts => opts
+            .ForJob(jobKey)
+            .WithIdentity($"{nameof(AnalisarGuerrasJob)}-trigger")
+            .WithSimpleSchedule(x => x.WithIntervalInMinutes(5)
+            .RepeatForever())
+            );
     }
 }

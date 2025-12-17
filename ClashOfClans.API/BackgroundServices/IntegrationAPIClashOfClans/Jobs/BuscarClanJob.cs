@@ -8,8 +8,9 @@ using ClashOfClans.API.Model.Clans;
 using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Responses;
 using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Services;
 
-namespace ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans;
+namespace ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Jobs;
 
+[DisallowConcurrentExecution]
 public class BuscarClanJob(ClashOfClansService clashOfClansService, ClashOfClansContext context, IMediator mediator) : IJob
 {
     private readonly ClashOfClansService _clashOfClansService = clashOfClansService;
@@ -70,7 +71,21 @@ public class BuscarClanJob(ClashOfClansService clashOfClansService, ClashOfClans
         await _mediator.Send(criarClan);
     }
 }
+public static class BuscarClanJobConfiguration
+{
+    public static void AddBuscarClanJob(this IServiceCollectionQuartzConfigurator configurator)
+    {
+        JobKey jobKey = new(nameof(BuscarClanJob));
+        configurator.AddJob<BuscarClanJob>(opts => opts.WithIdentity(jobKey));
 
+        configurator.AddTrigger(opts => opts
+            .ForJob(jobKey)
+            .WithIdentity($"{nameof(BuscarClanJob)}-trigger")
+            .WithSimpleSchedule(x => x.WithIntervalInMinutes(5)
+            .RepeatForever())
+            );
+    }
+}
 
 public class ClanWarLeagueGroup
 {

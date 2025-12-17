@@ -5,7 +5,7 @@ using ClashOfClans.API.Model.Guerras;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
-namespace ClashOfClans.API.BackgroundServices;
+namespace ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Jobs;
 
 public class DetectarMembrosInativosEmGuerrasJob(ClashOfClansContext context) : IJob
 {
@@ -16,7 +16,7 @@ public class DetectarMembrosInativosEmGuerrasJob(ClashOfClansContext context) : 
         CancellationToken cancellationToken = context.CancellationToken;
 
         var limite = DateTime.Now.AddDays(-2);
-        
+
         List<string> clansTags = await _context.Guerras
             .AsNoTracking()
             .Where(g => g.Status == "WarEnded" && g.FimGuerra >= limite)
@@ -35,11 +35,11 @@ public class DetectarMembrosInativosEmGuerrasJob(ClashOfClansContext context) : 
                 .Take(5)
                 .ToListAsync(cancellationToken);
 
-            if (ultimasCincoGuerras.Count < 5) 
+            if (ultimasCincoGuerras.Count < 5)
                 continue;
 
             DateTime dataLimiteEntrada = ultimasCincoGuerras
-                .Min(g => g.InicioGuerra); 
+                .Min(g => g.InicioGuerra);
 
             List<Membro> membrosElegiveis = await _context.Clans
                 .Where(c => c.Tag == clanTag)
@@ -78,5 +78,20 @@ public class DetectarMembrosInativosEmGuerrasJob(ClashOfClansContext context) : 
             _context.MembrosInativosGuerras.AddRange(novosRegistros);
             await _context.Commit(cancellationToken);
         }
+    }
+}
+public static class DetectarMembrosInativosEmGuerrasJobConfiguration
+{
+    public static void AddDetectarMembrosInativosJob(this IServiceCollectionQuartzConfigurator configurator)
+    {
+        JobKey jobKey = new(nameof(DetectarMembrosInativosEmGuerrasJob));
+        configurator.AddJob<DetectarMembrosInativosEmGuerrasJob>(opts => opts.WithIdentity(jobKey));
+
+        configurator.AddTrigger(opts => opts
+            .ForJob(jobKey)
+            .WithIdentity($"{nameof(DetectarMembrosInativosEmGuerrasJob)}-trigger")
+            .WithSimpleSchedule(x => x.WithIntervalInHours(2)
+            .RepeatForever())
+            );
     }
 }
