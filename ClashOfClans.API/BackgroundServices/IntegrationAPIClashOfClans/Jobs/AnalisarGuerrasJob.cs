@@ -13,6 +13,8 @@ public class AnalisarGuerrasJob(ClashOfClansContext context, ILogger<AnalisarGue
 
     public async Task Execute(IJobExecutionContext context)
     {
+        Console.WriteLine("Iniciando job de analisar ataque dos membros na guerra");
+
         CancellationToken cancellationToken = context.CancellationToken;
 
         List<string> clansTags = await _context.Guerras
@@ -38,6 +40,7 @@ public class AnalisarGuerrasJob(ClashOfClansContext context, ILogger<AnalisarGue
             }
             await _context.Commit(cancellationToken);
         }
+        Console.WriteLine("Finalizando job de analise de ataques);
     }
 
     public async Task<List<MembroGuerraResumo>> ObterAtaquesDeMembros(string clanTag, CancellationToken cancellationToken)
