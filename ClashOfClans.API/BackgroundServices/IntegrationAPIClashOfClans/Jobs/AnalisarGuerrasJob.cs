@@ -40,7 +40,7 @@ public class AnalisarGuerrasJob(ClashOfClansContext context, ILogger<AnalisarGue
             }
             await _context.Commit(cancellationToken);
         }
-        Console.WriteLine("Finalizando job de analise de ataques);
+        Console.WriteLine("Finalizando job de analise de ataques");
     }
 
     public async Task<List<MembroGuerraResumo>> ObterAtaquesDeMembros(string clanTag, CancellationToken cancellationToken)
