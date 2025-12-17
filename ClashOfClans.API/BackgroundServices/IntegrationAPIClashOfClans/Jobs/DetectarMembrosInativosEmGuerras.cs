@@ -90,6 +90,7 @@ public static class DetectarMembrosInativosEmGuerrasJobConfiguration
         configurator.AddTrigger(opts => opts
             .ForJob(jobKey)
             .WithIdentity($"{nameof(DetectarMembrosInativosEmGuerrasJob)}-trigger")
+            .StartAt(DateBuilder.FutureDate(1, IntervalUnit.Minute))
             .WithSimpleSchedule(x => x.WithIntervalInHours(2)
             .RepeatForever())
             );

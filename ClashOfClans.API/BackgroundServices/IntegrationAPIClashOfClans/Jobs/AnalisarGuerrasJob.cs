@@ -97,6 +97,7 @@ public static class AnalisarGuerrasJobConfiguration
         configurator.AddTrigger(opts => opts
             .ForJob(jobKey)
             .WithIdentity($"{nameof(AnalisarGuerrasJob)}-trigger")
+            .StartAt(DateBuilder.FutureDate(1, IntervalUnit.Minute))
             .WithSimpleSchedule(x => x.WithIntervalInMinutes(5)
             .RepeatForever())
             );

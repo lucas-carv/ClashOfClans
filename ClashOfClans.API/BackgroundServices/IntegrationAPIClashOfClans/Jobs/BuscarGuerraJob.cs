@@ -69,6 +69,7 @@ public static class BuscarGuerraJobConfiguration
         configurator.AddTrigger(opts => opts
             .ForJob(jobKey)
             .WithIdentity($"{nameof(BuscarGuerraJob)}-trigger")
+            .StartAt(DateBuilder.FutureDate(1, IntervalUnit.Minute))
             .WithSimpleSchedule(x => x.WithIntervalInMinutes(5)
             .RepeatForever())
             );

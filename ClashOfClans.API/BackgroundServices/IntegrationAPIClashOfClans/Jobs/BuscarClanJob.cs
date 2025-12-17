@@ -81,6 +81,7 @@ public static class BuscarClanJobConfiguration
         configurator.AddTrigger(opts => opts
             .ForJob(jobKey)
             .WithIdentity($"{nameof(BuscarClanJob)}-trigger")
+            .StartAt(DateBuilder.FutureDate(1, IntervalUnit.Minute))
             .WithSimpleSchedule(x => x.WithIntervalInMinutes(5)
             .RepeatForever())
             );
