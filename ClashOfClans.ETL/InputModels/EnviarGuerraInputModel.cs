@@ -1,14 +1,14 @@
 ﻿namespace ClashOfClans.ETL.InputModels;
 
-public class EnviarGuerraInputModel
+public record EnviarGuerraInputModel
 {
-    public string Status { get; init; }
+    public required string Status { get; init; }
     public DateTime InicioGuerra { get; init; }
     public DateTime FimGuerra { get; init; }
-    public string TipoGuerra { get; init; }
-    public ClanGuerraDTO Clan { get; init; }
+    public required string TipoGuerra { get; init; }
+    public required ClanGuerraDTO Clan { get; init; }
 }
-public class ClanGuerraDTO
+public record ClanGuerraDTO
 {
     public required string Tag { get; init; }
     public required string Nome { get; init; }
@@ -16,7 +16,7 @@ public class ClanGuerraDTO
     public IEnumerable<MembroGuerraDTO> Membros { get;  set; } = [];
 }
 
-public class MembroGuerraDTO
+public record MembroGuerraDTO
 {
     public required string Tag { get; init; }
     public required string Nome { get; init; }
@@ -24,7 +24,7 @@ public class MembroGuerraDTO
     public IEnumerable<AtaquesDTO> Ataques { get; set; } = [];
 
 }
-public class AtaquesDTO
+public record AtaquesDTO
 {
     public required string AtacanteTag { get; init; }
     public required string DefensorTag { get; init; }

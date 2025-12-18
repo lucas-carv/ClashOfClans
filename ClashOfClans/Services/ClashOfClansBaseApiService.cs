@@ -8,8 +8,8 @@ namespace ClashOfClans.Services;
 
 public abstract class ClashOfClansBaseApiService
 {
-    //private Uri _baseUri = new Uri("https://api.clashofclans.com/v1/");
-    protected Uri _baseUri = new Uri("https://localhost:7016/api/v1");
+    private Uri _baseUri = new Uri("https://api.clashofclans.com/v1/");
+    //protected Uri _baseUri = new Uri("https://localhost:7016/api/v1");
     private readonly HttpClient _httpClient;
     public ClashOfClansBaseApiService()
     {
