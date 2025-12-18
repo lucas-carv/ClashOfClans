@@ -1,10 +1,9 @@
 ﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 
 namespace ClashOfClans.ETL.Models;
 
-public class War
+public record War
 {
     public StatusGuerra State { get; set; }
     [JsonConverter(typeof(CustomDateTimeConverter))]
@@ -13,7 +12,26 @@ public class War
     public DateTime EndTime { get; set; }
     public ClanWar Clan { get; set; } = new();
 }
+public record ClanWar
+{
+    public string Tag { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public List<MembersWarDTO> Members { get; set; } = [];
+}
 
+public record MembersWarDTO
+{
+    public string Tag { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public List<AttacksDTO> Attacks { get; set; } = [];
+
+}
+public record AttacksDTO
+{
+    public required string AttackerTag { get; set; }
+    public required string DefenderTag { get; set; }
+    public int Stars { get; set; }
+}
 public enum StatusGuerra
 {
     NotInWar,
@@ -22,27 +40,6 @@ public enum StatusGuerra
     InWar
 }
 
-public class ClanWar
-{
-    public string Tag { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
-    public List<MembersWarDTO> Members { get; set; } = [];
-}
-
-public class MembersWarDTO
-{
-    public string Tag { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
-    public List<AttacksDTO> Attacks { get; set; } = [];
-
-}
-public class AttacksDTO
-{
-    public string AttackerTag { get; set; }
-    public string DefenderTag { get; set; }
-    public int Stars { get; set; }
-
-}
 public class CustomDateTimeConverter : JsonConverter<DateTime>
 {
     public override DateTime ReadJson(JsonReader reader, Type objectType, DateTime existingValue, bool hasExistingValue, JsonSerializer serializer)

@@ -1,13 +1,13 @@
 ﻿namespace ClashOfClans.ETL.InputModels;
 
-public class CriarClanInputModel
+public record CriarClanInputModel
 {
     public required string Tag { get; init; }
     public required string Nome { get; init; }
     public IEnumerable<MembroDTO> Membros { get; set; } = [];
 }
 
-public class MembroDTO
+public record MembroDTO
 {
     public required string Tag { get; init; }
     public required string Nome { get; init; }
