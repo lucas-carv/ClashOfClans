@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System.Globalization;
+﻿using ClashOfClans.ETL.Common;
+using Newtonsoft.Json;
 
 namespace ClashOfClans.ETL.Models;
 
@@ -38,33 +38,4 @@ public enum StatusGuerra
     WarEnded,
     Preparation,
     InWar
-}
-
-public class CustomDateTimeConverter : JsonConverter<DateTime>
-{
-    public override DateTime ReadJson(JsonReader reader, Type objectType, DateTime existingValue, bool hasExistingValue, JsonSerializer serializer)
-    {
-        if (reader.TokenType == JsonToken.String)
-        {
-            var s = (string)reader.Value;
-            // tenta parsear no formato esperado
-            if (DateTime.TryParseExact(
-                s,
-                "yyyyMMdd'T'HHmmss.fff'Z'",
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.AdjustToUniversal, // pega UTC
-                out var dtUtc))
-            {
-                var dtLocal = dtUtc.ToLocalTime(); // converte para o fuso da máquina
-                return dtLocal;
-            }
-        }
-        return DateTime.MinValue;
-    }
-
-    public override void WriteJson(JsonWriter writer, DateTime value, JsonSerializer serializer)
-    {
-        // escreve no mesmo formato
-        writer.WriteValue(value.ToUniversalTime().ToString("yyyyMMdd'T'HHmmss.fff'Z'"));
-    }
 }
