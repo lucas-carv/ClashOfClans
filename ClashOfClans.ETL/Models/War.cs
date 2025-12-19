@@ -10,19 +10,19 @@ public record War
     public DateTime StartTime { get; set; }
     [JsonConverter(typeof(CustomDateTimeConverter))]
     public DateTime EndTime { get; set; }
-    public ClanWar Clan { get; set; } = new();
+    public required ClanWar Clan { get; set; }
 }
 public record ClanWar
 {
-    public string Tag { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
+    public required string Tag { get; set; } 
+    public required string Name { get; set; } 
     public List<MembersWarDTO> Members { get; set; } = [];
 }
 
 public record MembersWarDTO
 {
-    public string Tag { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
+    public required string Tag { get; set; } 
+    public required string Name { get; set; } 
     public List<AttacksDTO> Attacks { get; set; } = [];
 
 }
