@@ -8,13 +8,13 @@ public static class HorarioBrasil
 
     private static TimeZoneInfo GetTimeZone()
     {
-        // Windows usa um ID, Linux (Render) usa outro
+        // Windows
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             return TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
         }
 
-        // Linux / Docker / Render
+        // Linux / Docker
         return TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo");
     }
 

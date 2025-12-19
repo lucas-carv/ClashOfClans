@@ -43,7 +43,7 @@ builder.Services.AddScoped<ClashOfClansService>();
 builder.Services.AddQuartz(q =>
 {
     //q.AddBuscarClanJob();
-    q.AddBuscarGuerraJob();
+    //q.AddBuscarGuerraJob();
     q.AddAnalisarGuerras();
     //q.AddDetectarMembrosInativosJob();
 });
