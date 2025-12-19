@@ -1,5 +1,5 @@
 ﻿using ClashOfClans.ETL.InputModels;
-using ClashOfClans.ETL.Models;
+using ClashOfClans.ETL.Models.Wars;
 using ClashOfClans.ETL.Services;
 using ClashOfClans.ETL.Services.Integration;
 using Quartz;
@@ -16,7 +16,7 @@ public class EnviarGuerraJob(ClashOfClansService clashOfClansService, Integratio
         string tag = "#2L0UC9R8P";
         string encodedTag = Uri.EscapeDataString(tag);
 
-        War war = await _clashOfClansService.BuscarGuerra(encodedTag);
+        WarResponse war = await _clashOfClansService.BuscarGuerra(encodedTag);
         if (war is null)
         {
             Console.WriteLine($"Guerra não encontrada na API");
@@ -39,7 +39,7 @@ public class EnviarGuerraJob(ClashOfClansService clashOfClansService, Integratio
         Console.WriteLine($"{DateTime.Now} - Guerra enviada com sucesso");
     }
 
-    private static EnviarGuerraInputModel CriarGuerraInputModel(War war)
+    private static EnviarGuerraInputModel CriarGuerraInputModel(WarResponse war)
     {
         EnviarGuerraInputModel inputModel = new()
         {

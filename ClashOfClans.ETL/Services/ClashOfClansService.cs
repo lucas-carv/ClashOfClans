@@ -1,5 +1,6 @@
 ﻿using ClashOfClans.ETL.Models;
 using ClashOfClans.ETL.Models.LigaDeClans;
+using ClashOfClans.ETL.Models.Wars;
 
 namespace ClashOfClans.ETL.Services;
 
@@ -12,11 +13,11 @@ public class ClashOfClansService : ClashOfClansBaseApiService
         var result = await SendRequest<Clan>(request);
         return result.ResponseData!;
     }
-    public async Task<War> BuscarGuerra(string tag)
+    public async Task<WarResponse> BuscarGuerra(string tag)
     {
         string uri = $"/v1/clans/{tag}/currentwar";
         var request = CreateRequest<string>(null, HttpMethod.Get, uri);
-        var result = await SendRequest<War>(request);
+        var result = await SendRequest<WarResponse>(request);
         return result.ResponseData!;
     }
 

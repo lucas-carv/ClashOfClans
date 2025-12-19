@@ -1,4 +1,5 @@
 ﻿using ClashOfClans.ETL.Common;
+using ClashOfClans.ETL.Models.Wars;
 using ClashOfClans.ETL.Services.Integration;
 using Newtonsoft.Json;
 
@@ -37,6 +38,6 @@ public class ClanWarLeague
     public DateTime StartTime { get; set; }
     [JsonConverter(typeof(CustomDateTimeConverter))]
     public DateTime EndTime { get; set; }
-    public ClanWar Clan { get; set; }
-    public ClanWar Opponent { get; set; }
+    public ClanWarDTO Clan { get; set; }
+    public ClanWarDTO Opponent { get; set; }
 }
