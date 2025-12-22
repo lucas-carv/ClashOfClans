@@ -79,7 +79,7 @@ namespace ClashOfClans.API.Application.Commands.LigaDeGuerras
                 }
                 else
                 {
-                    guerraService.AtualizarGuerra(guerra, rodada.Status, rodada.InicioGuerra, rodada.FimGuerra, clan);
+                    guerraService.AtualizarGuerra(guerra, rodada.Status, rodada.FimGuerra, clan);
                     guerra.DefinirGuerraTag(rodada.GuerraTag);
                 }
             }

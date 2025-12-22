@@ -36,8 +36,7 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context, GuerraServi
             return responseCriacao;
         }
 
-        Guerra guerra = guerraService.AtualizarGuerra(guerraExistente, request.Status, request.InicioGuerra, request.FimGuerra, request.Clan);
-        context.Update(guerra);
+        Guerra guerra = guerraService.AtualizarGuerra(guerraExistente, request.Status, request.FimGuerra, request.Clan);
         await context.Commit(cancellationToken);
 
         UpsertGuerraResponse responseAtualizacao = MapearResponse(guerra);

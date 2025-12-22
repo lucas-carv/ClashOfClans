@@ -19,7 +19,7 @@ public class GuerraService
         Guerra novaGuerra = new(status, inicioGuerra, fimGuerra, tipoGuerra, clanEmGuerra);
         return novaGuerra;
     }
-    public Guerra AtualizarGuerra(Guerra guerraExistente, string status, DateTime inicioGuerra, DateTime fimGuerra, ClanEmGuerraDTO clan)
+    public Guerra AtualizarGuerra(Guerra guerraExistente, string status, DateTime fimGuerra, ClanEmGuerraDTO clan)
     {
         guerraExistente.Status = status;
         if (!guerraExistente.FimGuerra.Equals(fimGuerra))

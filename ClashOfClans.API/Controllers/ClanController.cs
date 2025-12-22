@@ -13,12 +13,10 @@ public class ClanController(IMediator mediator, ClashOfClansContext context) : C
 {
     private readonly IMediator _mediator = mediator;
 
-
-    [HttpGet()]
+    [HttpGet]
     public async Task<IActionResult> ObterClans()
     {
         var clans = await context.Clans.Include(c => c.Membros.Where(m => m.Situacao == SituacaoMembro.Ativo)).ToListAsync();
-
         return Ok(clans);
     }
 
