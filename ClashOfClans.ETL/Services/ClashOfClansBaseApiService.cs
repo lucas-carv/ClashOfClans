@@ -8,7 +8,7 @@ namespace ClashOfClans.ETL.Services;
 
 public class ClashOfClansBaseApiService
 {
-    private Uri _baseUri = new("https://api.clashofclans.com/v1/");
+    private readonly Uri _baseUri = new("https://api.clashofclans.com/v1/");
     private readonly HttpClient _httpClient;
     public ClashOfClansBaseApiService()
     {
