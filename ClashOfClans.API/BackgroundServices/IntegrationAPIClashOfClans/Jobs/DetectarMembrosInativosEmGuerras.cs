@@ -35,7 +35,7 @@ public class DetectarMembrosInativosEmGuerrasJob(ClashOfClansContext context) : 
                 .Take(5)
                 .ToListAsync(cancellationToken);
 
-            if (ultimasCincoGuerras.Count <= 5)
+            if (ultimasCincoGuerras.Count == 5)
                 continue;
 
             DateTime dataLimiteEntrada = ultimasCincoGuerras
@@ -90,7 +90,7 @@ public static class DetectarMembrosInativosEmGuerrasJobConfiguration
         configurator.AddTrigger(opts => opts
             .ForJob(jobKey)
             .WithIdentity($"{nameof(DetectarMembrosInativosEmGuerrasJob)}-trigger")
-            .StartAt(DateBuilder.FutureDate(1, IntervalUnit.Minute))
+            .StartNow()
             .WithSimpleSchedule(x => x.WithIntervalInHours(2)
             .RepeatForever())
             );
