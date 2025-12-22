@@ -1,5 +1,5 @@
 ﻿using ClashOfClans.ETL.InputModels;
-using ClashOfClans.ETL.Models.LigaDeClans;
+using ClashOfClans.ETL.Models.LeagueClans;
 using ClashOfClans.ETL.Services;
 using ClashOfClans.ETL.Services.Integration;
 using Quartz;
@@ -15,7 +15,7 @@ public class BuscarLigaDeClansJob(ClashOfClansService clashOfClansService) : IJo
         string tag = "#2L0UC9R8P";
         string encodedTag = Uri.EscapeDataString(tag);
 
-        ClanWarLeagueGroup clanWarLeagueGroup = await _clashOfClansService.BuscarGrupoLiga(encodedTag);
+        ClanWarLeagueGroupResponse clanWarLeagueGroup = await _clashOfClansService.BuscarGrupoLiga(encodedTag);
         if (clanWarLeagueGroup is null)
         {
             Console.WriteLine("Falha ao obter grupo da liga");
@@ -31,7 +31,7 @@ public class BuscarLigaDeClansJob(ClashOfClansService clashOfClansService) : IJo
             foreach (var round in rounds.WarTags)
             {
                 string encodedWarTag = Uri.EscapeDataString(round);
-                ClanWarLeague clanWarLeague = await _clashOfClansService.BuscarGuerraDaLiga(encodedWarTag);
+                ClanWarLeagueDTO clanWarLeague = await _clashOfClansService.BuscarGuerraDaLiga(encodedWarTag);
                 if (clanWarLeague.Clan is null)
                 {
                     continue;
