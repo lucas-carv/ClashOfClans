@@ -42,7 +42,7 @@ public class IntegrationService : IntegrationServiceBaseApi
     }
 
 }
-public class UpsertGuerraResponse(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanEmGuerraDTO Clan);
+public record UpsertGuerraResponse(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanEmGuerraDTO Clan);
 public record ClanEmGuerraDTO
 {
     public required string Tag { get; init; }

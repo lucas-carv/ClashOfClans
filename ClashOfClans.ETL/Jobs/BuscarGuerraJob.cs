@@ -35,7 +35,12 @@ public class EnviarGuerraJob(ClashOfClansService clashOfClansService, Integratio
         }
 
         Console.WriteLine($"{DateTime.Now} - Enviando guerra");
-        await _integrationService.EnviarGuerra(guerraInputModel);
+        UpsertGuerraResponse result = await _integrationService.EnviarGuerra(guerraInputModel);
+        if (result is null)
+        {
+            Console.WriteLine($"{DateTime.Now} - Falha no processo de upsert de guerra");
+            return;
+        }
         Console.WriteLine($"{DateTime.Now} - Guerra enviada com sucesso");
     }
 
