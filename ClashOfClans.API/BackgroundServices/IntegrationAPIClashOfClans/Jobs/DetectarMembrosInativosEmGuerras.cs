@@ -35,7 +35,7 @@ public class DetectarMembrosInativosEmGuerrasJob(ClashOfClansContext context) : 
                 .Take(5)
                 .ToListAsync(cancellationToken);
 
-            if (ultimasCincoGuerras.Count == 5)
+            if (ultimasCincoGuerras.Count < 5)
                 continue;
 
             DateTime dataLimiteEntrada = ultimasCincoGuerras
@@ -46,7 +46,7 @@ public class DetectarMembrosInativosEmGuerrasJob(ClashOfClansContext context) : 
                 .SelectMany(c => c.Membros)
                 .Where(m =>
                     m.Situacao == SituacaoMembro.Ativo &&
-                    m.DataEntrada <= dataLimiteEntrada
+                    m.DataEntrada >= dataLimiteEntrada
                 )
                 .ToListAsync(cancellationToken);
 
