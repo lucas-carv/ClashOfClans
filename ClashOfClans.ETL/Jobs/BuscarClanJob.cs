@@ -1,5 +1,5 @@
 ﻿using ClashOfClans.ETL.InputModels;
-using ClashOfClans.ETL.Models;
+using ClashOfClans.ETL.Models.Clans;
 using ClashOfClans.ETL.Services;
 using ClashOfClans.ETL.Services.Integration;
 using Quartz;

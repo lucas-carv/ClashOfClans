@@ -1,4 +1,4 @@
-﻿using ClashOfClans.ETL.Models;
+﻿using ClashOfClans.ETL.Models.Clans;
 using ClashOfClans.ETL.Models.LeagueClans;
 using ClashOfClans.ETL.Models.Wars;
 
