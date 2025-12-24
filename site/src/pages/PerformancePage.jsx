@@ -17,7 +17,29 @@ const PerformancePage = () => {
         setError(null);
         try {
             const data = await getMemberPerformance(clanTag, qtdGuerras, qtdMinimoGuerras, qtdMaximoGuerras);
-            setPerformanceData(data);
+            // Transform data to friendly headers
+            const formattedData = data.map(item => {
+                const newItem = {};
+                // Map specific known keys
+                if (item.name) newItem['Nome'] = item.name;
+                if (item.tag) newItem['Tag'] = item.tag;
+                if (item.role) newItem['Cargo'] = item.role;
+                if (item.MediaDestruicao !== undefined) newItem['Média Destruição'] = `${item.MediaDestruicao}%`;
+                if (item.QuantidadeGuerras !== undefined) newItem['Qtd Guerras'] = item.QuantidadeGuerras;
+
+                // Copy remaining keys if needed, or stick to a fixed set. 
+                // For now, let's include everything else that isn't already mapped if we want full visibility,
+                // OR just the ones we care about. Let's start with a mix: explicit first, then others.
+                Object.keys(item).forEach(key => {
+                    const normalizedKey = key.toLowerCase();
+                    if (!['name', 'tag', 'role', 'mediadestruicao', 'quantidadeguerras'].includes(normalizedKey)) {
+                        // Optional: Capitalize first letter of unknown keys
+                        newItem[key] = item[key];
+                    }
+                });
+                return newItem;
+            });
+            setPerformanceData(formattedData);
         } catch (err) {
             console.error(err);
             setError('Falha ao carregar dados de desempenho.');
@@ -34,32 +56,36 @@ const PerformancePage = () => {
         <div className="section-container">
             <h2>Desempenho dos Membros</h2>
 
-            <div className="input-group" style={{ marginBottom: '1rem' }}>
-                <input
-                    type="text"
-                    value={clanTag}
-                    onChange={(e) => setClanTag(e.target.value)}
-                    placeholder="Tag do Clan (ex: #2L0UC9R8P)"
-                    style={{ padding: '0.5rem', marginRight: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', color: 'black' }}
-                />
-            </div>
-            <div className="input-group" style={{ marginBottom: '1rem' }}>
-                <input
-                    type="text"
-                    value={qtdMinimoGuerras}
-                    onChange={(e) => setQtdMinimoGuerras(e.target.value)}
-                    placeholder="0"
-                    style={{ padding: '0.5rem', marginRight: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', color: 'black' }}
-                />
-            </div>
-            <div className="input-group" style={{ marginBottom: '1rem' }}>
-                <input
-                    type="text"
-                    value={qtdMaximoGuerras}
-                    onChange={(e) => setQtdMaximoGuerras(e.target.value)}
-                    placeholder="0"
-                    style={{ padding: '0.5rem', marginRight: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', color: 'black' }}
-                />
+            <div className="input-group" style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                <div style={{ flex: '1 1 200px' }}>
+                    <input
+                        type="text"
+                        className="input-field"
+                        value={clanTag}
+                        onChange={(e) => setClanTag(e.target.value)}
+                        placeholder="Tag do Clan (ex: #2L0UC9R8P)"
+                    />
+                </div>
+                <div style={{ flex: '1 1 100px' }}>
+                    <input
+                        type="text"
+                        className="input-field"
+                        value={qtdMinimoGuerras}
+                        onChange={(e) => setQtdMinimoGuerras(e.target.value)}
+                        placeholder="Mín Guerras"
+                        title="Quantidade Mínima de Guerras"
+                    />
+                </div>
+                <div style={{ flex: '1 1 100px' }}>
+                    <input
+                        type="text"
+                        className="input-field"
+                        value={qtdMaximoGuerras}
+                        onChange={(e) => setQtdMaximoGuerras(e.target.value)}
+                        placeholder="Max Guerras"
+                        title="Quantidade Máxima de Guerras"
+                    />
+                </div>
             </div>
 
             <button onClick={fetchPerformance}>Buscar</button>

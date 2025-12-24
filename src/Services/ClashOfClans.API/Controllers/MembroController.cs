@@ -58,6 +58,7 @@ namespace ClashOfClans.API.Controllers
                     TotalAtaques = g.Count(),
                     TotalEstrelas = g.Sum(x => x.Estrelas),
                     MediaEstrelas = g.Sum(x => x.Estrelas) / (double)g.Count(),
+                    MediaDestruicao = g.Sum(x => x.PercentualDestruicao) / g.Count(),
                     QuantidadeGuerras = g
                         .Select(x => x.MembroEmGuerra.ClanEmGuerra.GuerraId)
                         .Distinct()
@@ -75,13 +76,16 @@ namespace ClashOfClans.API.Controllers
             }
             var desempenho = await query
                 .OrderByDescending(x => x.MediaEstrelas)
+                .OrderByDescending(x => x.MediaDestruicao)
                 .Select(x => new DesempenhoMembroViewModel
                 {
                     MembroTag = x.Tag,
                     Nome = x.Nome,
                     TotalAtaques = x.TotalAtaques,
                     TotalEstrelas = x.TotalEstrelas,
-                    MediaEstrelas = x.MediaEstrelas
+                    MediaEstrelas = Math.Round(x.MediaEstrelas, 2),
+                    MediaDestruicao = Math.Round(x.MediaDestruicao, 2),
+                    QuantidadeGuerras = x.QuantidadeGuerras
                 })
                 .ToListAsync();
             return Ok(desempenho);
@@ -102,5 +106,7 @@ namespace ClashOfClans.API.Controllers
         public int TotalAtaques { get; set; }
         public int TotalEstrelas { get; set; }
         public double MediaEstrelas { get; set; }
+        public decimal MediaDestruicao { get; set; }
+        public int QuantidadeGuerras { get; set; }
     }
 }
