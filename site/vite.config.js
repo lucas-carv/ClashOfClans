@@ -7,8 +7,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        //target: 'https://clashofclans-1-bwjm.onrender.com',
-        target: 'https://localhost:7016',
+        target: 'https://clashofclans-1-bwjm.onrender.com',
+        //target: 'https://localhost:7016',
         changeOrigin: true,
         secure: false,
       },
