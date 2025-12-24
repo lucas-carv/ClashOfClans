@@ -9,8 +9,8 @@ namespace ClashOfClans.ETL.Services.Integration;
 public abstract class IntegrationServiceBaseApi
 {
     private readonly HttpClient _httpClient;
-    //protected readonly string _baseUrl = $"https://localhost:7016/api/v1";
-    protected readonly string _baseUrl = $"https://clashofclans-1-bwjm.onrender.com/api/v1";
+    protected readonly string _baseUrl = $"https://localhost:7016/api/v1";
+    //protected readonly string _baseUrl = $"https://clashofclans-1-bwjm.onrender.com/api/v1";
 
     public IntegrationServiceBaseApi()
     {

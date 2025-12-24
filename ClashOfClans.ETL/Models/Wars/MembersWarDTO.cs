@@ -4,6 +4,7 @@ public record MembersWarDTO
 {
     public required string Tag { get; set; } 
     public required string Name { get; set; } 
-    public List<AttacksDTO> Attacks { get; set; } = [];
-
+    public int TownhallLevel { get; set; }
+    public int MapPosition { get; set; }
+    public IEnumerable<AttacksDTO> Attacks { get; set; } = [];
 }

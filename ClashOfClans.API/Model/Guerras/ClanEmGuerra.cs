@@ -16,13 +16,13 @@ public class ClanEmGuerra : Entity
         Nome = nome;
     }
 
-    public MembroEmGuerra AdicionarMembro(string tag, string nome)
+    public MembroEmGuerra AdicionarMembro(string tag, string nome, int posicaoMapa)
     {
         var membroExiste = MembrosEmGuerra.FirstOrDefault(m => m.Tag == tag);
         if (membroExiste is not null)
             return membroExiste;
 
-        MembroEmGuerra membroGuerra = new(tag, nome);
+        MembroEmGuerra membroGuerra = new(tag, nome, posicaoMapa);
         MembrosEmGuerra.Add(membroGuerra);
         return membroGuerra;
     }

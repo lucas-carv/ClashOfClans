@@ -53,11 +53,13 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context, GuerraServi
                 Tag = m.Tag,
                 Nome = m.Nome,
                 CentroVilaLevel = m.CentroVilaLevel,
+                PosicaoMapa = m.PosicaoMapa,
                 Ataques = m.Ataques.Select(a => new AtaquesDTO
                 {
                     AtacanteTag = a.AtacanteTag,
                     DefensorTag = a.DefensorTag,
-                    Estrelas = a.Estrelas
+                    Estrelas = a.Estrelas,
+                    PercentualDestruicao = a.PercentualDestruicao
                 })
             })
         };

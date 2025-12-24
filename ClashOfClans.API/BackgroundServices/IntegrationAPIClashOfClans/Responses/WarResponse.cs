@@ -24,6 +24,7 @@ public record MembersWarDTO
     public required string Tag { get; set; }
     public required string Name { get; set; } 
     public IEnumerable<AttacksDTO> Attacks { get; set; } = [];
+    public required int MapPosition { get; set; }
 
 }
 public record AttacksDTO
@@ -31,6 +32,7 @@ public record AttacksDTO
     public required string AttackerTag { get; set; }
     public required string DefenderTag { get; set; }
     public required int Stars { get; set; }
+    public required decimal DestructionPercentage { get; set; }
 }
 public enum StatusGuerra
 {

@@ -67,12 +67,14 @@ public class EnviarGuerraJob(ClashOfClansService clashOfClansService, Integratio
                 {
                     Nome = m.Name,
                     Tag = m.Tag,
-                    CentroVilaLevel = 0,
+                    CentroVilaLevel = m.TownhallLevel,
+                    PosicaoMapa = m.MapPosition,
                     Ataques = m.Attacks.Select(a => new AtaquesDTO()
                     {
                         Estrelas = a.Stars,
                         AtacanteTag = a.AttackerTag,
-                        DefensorTag = a.DefenderTag
+                        DefensorTag = a.DefenderTag,
+                        PercentualDestruicao = a.DestructionPercentage
                     })
                 }),
             }

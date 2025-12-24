@@ -7,10 +7,9 @@ public class GuerraMembroAtaque : Entity
     public string AtacanteTag { get; init; }
     public string DefensorTag { get; init; }
     public int Estrelas { get; set; }
+    public decimal PercentualDestruicao { get; set; }
     public int MembroEmGuerraId { get; }
     public MembroEmGuerra MembroEmGuerra { get; }
-    // posição mapa atacante
-    // posição mapa defensor
     private GuerraMembroAtaque() { }
     public GuerraMembroAtaque(string atacanteTag, string defensorTag)
     {
@@ -18,8 +17,9 @@ public class GuerraMembroAtaque : Entity
         DefensorTag = defensorTag;
     }
 
-    public void AtualizarEstrelas(int estrelas)
+    public void AtualizarAtaque(int estrelas, decimal percentualDestruicao)
     {
         Estrelas = estrelas;
+        PercentualDestruicao = percentualDestruicao;
     }
 }

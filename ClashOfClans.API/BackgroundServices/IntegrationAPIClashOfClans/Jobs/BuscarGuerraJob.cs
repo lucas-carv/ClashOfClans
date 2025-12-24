@@ -46,11 +46,13 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService, IMediator 
                 CentroVilaLevel = 0,
                 Nome = m.Name,
                 Tag = m.Tag,
+                PosicaoMapa = m.MapPosition,
                 Ataques = m.Attacks.Select(a => new AtaquesDTO()
                 {
                     Estrelas = a.Stars,
                     AtacanteTag = a.AttackerTag,
-                    DefensorTag = a.DefenderTag
+                    DefensorTag = a.DefenderTag,
+                    PercentualDestruicao = a.DestructionPercentage
                 })
             })
         };

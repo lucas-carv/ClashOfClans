@@ -10,10 +10,10 @@ public class GuerraService
         ClanEmGuerra clanEmGuerra = new(clan.Tag, clan.Nome);
         foreach (var membro in clan.Membros)
         {
-            MembroEmGuerra membroEmGuerra = clanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome);
+            MembroEmGuerra membroEmGuerra = clanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome, membro.PosicaoMapa);
             foreach (var ataque in membro.Ataques)
             {
-                membroEmGuerra.AtualizarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas);
+                membroEmGuerra.AtualizarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas, ataque.PercentualDestruicao);
             }
         }
         Guerra novaGuerra = new(status, inicioGuerra, fimGuerra, tipoGuerra, clanEmGuerra);
@@ -28,11 +28,11 @@ public class GuerraService
         }
         foreach (var membro in clan.Membros)
         {
-            MembroEmGuerra membroEmGuerra = guerraExistente.ClanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome);
+            MembroEmGuerra membroEmGuerra = guerraExistente.ClanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome, membro.PosicaoMapa);
 
             foreach (var ataque in membro.Ataques)
             {
-                membroEmGuerra.AtualizarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas);
+                membroEmGuerra.AtualizarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas, ataque.PercentualDestruicao);
             }
         }
         return guerraExistente;
