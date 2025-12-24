@@ -12,15 +12,14 @@ WORKDIR /src
 COPY . .
 
 # Restaura os pacotes da API (ajuste o caminho se o nome da pasta/projeto mudar)
-RUN dotnet restore "ClashOfClans.API/ClashOfClans.API.csproj"
+RUN dotnet restore "src/Services/ClashOfClans.API/ClashOfClans.API.csproj"
 
 # Publica a API
-RUN dotnet publish "ClashOfClans.API/ClashOfClans.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "src/Services/ClashOfClans.API/ClashOfClans.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Imagem final
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
-# DLL que você confirmou que é esse nome 👇
 ENTRYPOINT ["dotnet", "ClashOfClans.API.dll"]
