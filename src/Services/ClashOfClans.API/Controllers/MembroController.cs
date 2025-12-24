@@ -29,13 +29,13 @@ namespace ClashOfClans.API.Controllers
 
 
         [HttpGet("clanTag/{clanTag}/desempenho")]
-        public async Task<IActionResult> ObterDesempenhoDeMembros(string clanTag, int quantidadeGuerras = 10, int? minimoGuerras = null, int? maximoGuerras = null)
+        public async Task<IActionResult> ObterDesempenhoDeMembros(string clanTag, int minimoGuerras = 0, int maximoGuerras = 10)
         {
             var ultimasGuerrasIds = await context.Guerras
                 .AsNoTracking()
                 .Where(g => g.ClanEmGuerra.Tag == clanTag)
                 .OrderByDescending(g => g.DataCriacao)
-                .Take(quantidadeGuerras)
+                .Take(maximoGuerras)
                 .Select(g => g.Id)
                 .ToListAsync();
 
@@ -63,17 +63,11 @@ namespace ClashOfClans.API.Controllers
                         .Select(x => x.MembroEmGuerra.ClanEmGuerra.GuerraId)
                         .Distinct()
                         .Count()
-                });
+                }).Where(x =>
+                    x.QuantidadeGuerras >= minimoGuerras &&
+                    x.QuantidadeGuerras <= maximoGuerras
+                );
 
-            if (minimoGuerras.HasValue)
-            {
-                query = query.Where(x => x.QuantidadeGuerras >= minimoGuerras.Value);
-            }
-
-            if (maximoGuerras.HasValue)
-            {
-                query = query.Where(x => x.QuantidadeGuerras <= maximoGuerras.Value);
-            }
             var desempenho = await query
                 .OrderByDescending(x => x.MediaEstrelas)
                 .OrderByDescending(x => x.MediaDestruicao)

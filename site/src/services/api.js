@@ -19,12 +19,11 @@ export const getClans = async () => {
     }
 };
 
-export const getMemberPerformance = async (clanTag, quantidadeGuerras = 100, qtdMinimoGuerras = null, qtdMaximoGuerras = null) => {
+export const getMemberPerformance = async (clanTag, qtdMinimoGuerras, qtdMaximoGuerras) => {
     try {
         // Ensure the tag is URL encoded properly if it isn't already
         const encodedTag = encodeURIComponent(clanTag);
-        const response = await api.get(`/membro/clanTag/${encodedTag}/desempenho?
-                quantidadeGuerras=${quantidadeGuerras}&minimoGuerras=${qtdMinimoGuerras}&maximoGuerras=${qtdMaximoGuerras}`);
+        const response = await api.get(`/membro/clanTag/${encodedTag}/desempenho?minimoGuerras=${qtdMinimoGuerras}&maximoGuerras=${qtdMaximoGuerras}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching member performance:', error);
