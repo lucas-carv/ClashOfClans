@@ -11,23 +11,23 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Cors", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
     .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowVercel", policy =>
-    {
-        policy
-            .WithOrigins(
-                "https://clash-of-clans-pi.vercel.app"
-            )
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-});
 
 //var assembly = AppDomain.CurrentDomain.Load("ClashOfClans.API");
 //AssemblyScanner.FindValidatorsInAssembly(assembly).ForEach(result => builder.Services.AddScoped(result.InterfaceType, result.ValidatorType));
@@ -68,14 +68,18 @@ builder.Services.AddQuartzHostedService(o =>
 
 var app = builder.Build();
 
+app.UseCors("Cors");
+
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
 app.UseSwagger();
 app.UseSwaggerUI();
 //}
-
-app.UseHttpsRedirection();
+//if (!app.Environment.IsDevelopment())
+//{
+//    app.UseHttpsRedirection();
+//}
 
 app.UseAuthorization();
 
