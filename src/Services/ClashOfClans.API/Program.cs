@@ -16,6 +16,19 @@ builder.Services
     .AddSwaggerGen()
     .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowVercel", policy =>
+    {
+        policy
+            .WithOrigins(
+                "https://clash-of-clans-pi.vercel.app"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 //var assembly = AppDomain.CurrentDomain.Load("ClashOfClans.API");
 //AssemblyScanner.FindValidatorsInAssembly(assembly).ForEach(result => builder.Services.AddScoped(result.InterfaceType, result.ValidatorType));
 //builder.Services.AddMediatR(assembly);
