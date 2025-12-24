@@ -28,8 +28,14 @@ public class EnviarGuerraJob(ClashOfClansService clashOfClansService, Integratio
 
         EnviarGuerraInputModel guerraInputModel = CriarGuerraInputModel(war);
 
-        var clanIntegracao = await _integrationService.ObterClanPorTag(encodedTag);
-        if (clanIntegracao is null)
+        ResponseIntegrationApi<CriarClanInputModel> response = await _integrationService.ObterClanPorTag(encodedTag);
+        if (!response.IsValid)
+        {
+            Console.WriteLine($"{DateTime.Now} - Falha ao obter clan da API {string.Join(",", response.Erros)}");
+            return;
+        }
+
+        if (response.ResponseData is null)
         {
             Console.WriteLine("Clan ainda não integrado");
             return;

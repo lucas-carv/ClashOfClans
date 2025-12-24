@@ -19,12 +19,11 @@ public class IntegrationService : IntegrationServiceBaseApi
         return response.IsValid;
     }
 
-    public async Task<CriarClanInputModel> ObterClanPorTag(string tag)
+    public async Task<ResponseIntegrationApi<CriarClanInputModel>> ObterClanPorTag(string tag)
     {
-        //string uri = $"https://localhost:7016/api/v1/clan/{tag}";
         string uri = $"{_baseUrl}/clan/{tag}";
-        var response = await Send<CriarClanInputModel>(HttpMethod.Get, uri);
-        return response.ResponseData;
+        ResponseIntegrationApi<CriarClanInputModel> response = await Send<CriarClanInputModel>(HttpMethod.Get, uri);
+        return response;
     }
 
     public async Task<UpsertGuerraResponse> EnviarGuerra(EnviarGuerraInputModel guerra)

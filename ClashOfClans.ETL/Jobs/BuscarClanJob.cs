@@ -35,8 +35,13 @@ public class BuscarClanJob(ClashOfClansService clashOfClansService) : IJob
             })
         };
 
-        CriarClanInputModel clanIntegrado = await integrationService.ObterClanPorTag(encodedTag);
-        if (clanIntegrado is not null)
+        var response = await integrationService.ObterClanPorTag(encodedTag);
+        if (!response.IsValid)
+        {
+            Console.WriteLine($"{DateTime.Now} - Falha ao obter clan \n{string.Join(",", response.Erros)}");
+            return;
+        }
+        if (response.ResponseData is not null)
         {
             Console.WriteLine($"{DateTime.Now} - Atualizando Clan");
             await integrationService.AtualizarClan(clanInputModel);

@@ -46,7 +46,7 @@ public class DetectarMembrosInativosEmGuerrasJob(ClashOfClansContext context) : 
                 .SelectMany(c => c.Membros)
                 .Where(m =>
                     m.Situacao == SituacaoMembro.Ativo &&
-                    m.DataEntrada >= dataLimiteEntrada
+                    m.DataEntrada <= dataLimiteEntrada
                 )
                 .ToListAsync(cancellationToken);
 
