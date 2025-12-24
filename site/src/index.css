@@ -164,3 +164,13 @@
  .input-field::placeholder {
    color: rgba(255, 255, 255, 0.4);
  }
+
+ .input-label {
+   display: block;
+   margin-bottom: 0.5rem;
+   font-size: 0.85rem;
+   font-weight: 500;
+   color: var(--primary-color);
+   text-transform: uppercase;
+   letter-spacing: 0.5px;
+ }

@@ -14,7 +14,23 @@ function Home() {
     setError(null);
     try {
       const data = await getClans();
-      setClans(data);
+      // Transform data to friendly headers
+      const formattedData = data.map(item => {
+        const newItem = {};
+        Object.keys(item).forEach(key => {
+          const normalizedKey = key.toLowerCase();
+
+          if (normalizedKey === 'guerrasparticipadasseq') {
+            newItem['Sequência de Guerras Participadas'] = item[key];
+          } else if (normalizedKey === 'quantidadeataques') {
+            newItem['Quantidade de Ataques'] = item[key];
+          } else {
+            newItem[key] = item[key];
+          }
+        });
+        return newItem;
+      });
+      setClans(formattedData);
     } catch (err) {
       console.error(err);
       setError('Falha ao carregar dados do Clash of Clans. Verifique sua conexão ou a API.');
@@ -29,7 +45,7 @@ function Home() {
 
   return (
     <>
-      <h2>Info do Clã</h2>
+      <h2>Resumo de ataque de membros</h2>
       {loading && <div className="loading">Carregando Clãs...</div>}
 
       {error && (
@@ -52,7 +68,7 @@ function App() {
       <div className="App">
         <h1>Clash of Clans Explorer</h1>
         <nav style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-          <Link to="/" style={{ color: 'var(--primary-color)', textDecoration: 'none', fontWeight: 'bold' }}>HOME</Link>
+          <Link to="/" style={{ color: 'var(--primary-color)', textDecoration: 'none', fontWeight: 'bold' }}>RESUMO</Link>
           <Link to="/performance" style={{ color: 'var(--primary-color)', textDecoration: 'none', fontWeight: 'bold' }}>DESEMPENHO</Link>
         </nav>
 

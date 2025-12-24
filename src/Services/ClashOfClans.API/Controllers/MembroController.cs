@@ -70,7 +70,6 @@ namespace ClashOfClans.API.Controllers
 
             var desempenho = await query
                 .OrderByDescending(x => x.MediaEstrelas)
-                .OrderByDescending(x => x.MediaDestruicao)
                 .Select(x => new DesempenhoMembroViewModel
                 {
                     MembroTag = x.Tag,

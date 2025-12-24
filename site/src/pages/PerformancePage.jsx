@@ -8,7 +8,6 @@ const PerformancePage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [clanTag, setClanTag] = useState('#2L0UC9R8P'); // Default or state driven
-    const [qtdGuerras, setQtdGuerras] = useState('10');
     const [qtdMinimoGuerras, setQtdMinimoGuerras] = useState('5');
     const [qtdMaximoGuerras, setQtdMaximoGuerras] = useState('10');
 
@@ -16,17 +15,28 @@ const PerformancePage = () => {
         setLoading(true);
         setError(null);
         try {
-            const data = await getMemberPerformance(clanTag, qtdGuerras, qtdMinimoGuerras, qtdMaximoGuerras);
+            const data = await getMemberPerformance(clanTag, qtdMinimoGuerras, qtdMaximoGuerras);
             const formattedData = data.map(item => {
                 const newItem = {};
-                if (item.name) newItem['Nome'] = item.name;
-                if (item.MediaDestruicao) newItem['Média Destruição'] = item.MediaDestruicao;
-                if (item.QuantidadeGuerras) newItem['Qtd Guerras'] = item.QuantidadeGuerras;
 
                 Object.keys(item).forEach(key => {
                     const normalizedKey = key.toLowerCase();
-                    if (!['name', 'role'].includes(normalizedKey)) {
-                        newItem[key] = item[key];
+
+                    if (normalizedKey === 'quantidadeguerras') {
+                        newItem['Qtd Guerras'] = item[key];
+                    } else if (normalizedKey === 'mediaestrelas') {
+                        newItem['Média Estrelas'] = item[key];
+                    } else if (normalizedKey === 'mediadestruicao') {
+                        newItem['Média Destruição'] = item[key];
+                    } else if (normalizedKey === 'totalataques') {
+                        newItem['Total Ataques'] = item[key];
+                    } else if (normalizedKey === 'totalestrelas') {
+                        newItem['Total Estrelas'] = item[key];
+                    } else {
+                        // Generic formatter for other keys (e.g. Tag, etc)
+                        const readableKey = key.replace(/([A-Z])/g, ' $1').trim();
+                        const titleCaseKey = readableKey.charAt(0).toUpperCase() + readableKey.slice(1);
+                        newItem[titleCaseKey] = item[key];
                     }
                 });
                 return newItem;
@@ -48,34 +58,35 @@ const PerformancePage = () => {
         <div className="section-container">
             <h2>Desempenho dos Membros</h2>
 
-            <div className="input-group" style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <div className="input-group" style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
                 <div style={{ flex: '1 1 200px' }}>
+                    <label className="input-label">Tag do Clan</label>
                     <input
                         type="text"
                         className="input-field"
                         value={clanTag}
                         onChange={(e) => setClanTag(e.target.value)}
-                        placeholder="Tag do Clan (ex: #2L0UC9R8P)"
+                        placeholder="#2L0UC9R8P"
                     />
                 </div>
                 <div style={{ flex: '1 1 100px' }}>
+                    <label className="input-label">Mín. Guerras</label>
                     <input
                         type="text"
                         className="input-field"
                         value={qtdMinimoGuerras}
                         onChange={(e) => setQtdMinimoGuerras(e.target.value)}
-                        placeholder="Mín Guerras"
-                        title="Quantidade Mínima de Guerras"
+                        placeholder="5"
                     />
                 </div>
                 <div style={{ flex: '1 1 100px' }}>
+                    <label className="input-label">Max. Guerras</label>
                     <input
                         type="text"
                         className="input-field"
                         value={qtdMaximoGuerras}
                         onChange={(e) => setQtdMaximoGuerras(e.target.value)}
-                        placeholder="Max Guerras"
-                        title="Quantidade Máxima de Guerras"
+                        placeholder="10"
                     />
                 </div>
             </div>
