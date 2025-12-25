@@ -26,11 +26,11 @@ public class IntegrationService : IntegrationServiceBaseApi
         return response;
     }
 
-    public async Task<UpsertGuerraResponse> EnviarGuerra(EnviarGuerraInputModel guerra)
+    public async Task<ResponseIntegrationApi<UpsertGuerraResponse>> EnviarGuerra(EnviarGuerraInputModel guerra)
     {
         string uri = $"{_baseUrl}/guerra/criar";
         var response = await Send<UpsertGuerraResponse, EnviarGuerraInputModel>(guerra, HttpMethod.Put, uri);
-        return response.ResponseData;
+        return response;
     }
 
     public async Task<bool> EnviarLigaDeClan(LigaDeGuerra ligaDeGuerra)
