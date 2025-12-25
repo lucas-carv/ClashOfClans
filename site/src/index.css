@@ -174,3 +174,46 @@
    text-transform: uppercase;
    letter-spacing: 0.5px;
  }
+
+ /* Mobile Responsiveness */
+ @media (max-width: 600px) {
+   #root {
+     padding: 1rem;
+   }
+
+   h1 {
+     font-size: 2rem;
+     margin-bottom: 1.5rem;
+   }
+
+   h2 {
+     font-size: 1.5rem;
+   }
+
+   /* Stack inputs vertically on mobile */
+   .input-group {
+     flex-direction: column;
+     align-items: stretch !important;
+   }
+
+   /* Override inline styles for flex sizing to ensure full width */
+   .input-group>div {
+     flex: 1 1 100% !important;
+     width: 100%;
+   }
+
+   /* Compact table for small screens */
+   .data-table th,
+   .data-table td {
+     padding: 0.5rem 0.25rem;
+     font-size: 0.75rem;
+     white-space: nowrap;
+     /* Prevent wrapping inside cells to keep rows neat, scrolling handled by container */
+   }
+
+   /* Make buttons full width for easier tapping */
+   button {
+     width: 100%;
+     margin-top: 0.5rem;
+   }
+ }
