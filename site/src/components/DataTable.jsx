@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-const DataTable = ({ data }) => {
+const DataTable = ({ data, rowStyle }) => {
     if (!data || data.length === 0) {
         return (
             <div className="empty-state">
@@ -25,7 +25,7 @@ const DataTable = ({ data }) => {
                 </thead>
                 <tbody>
                     {data.map((row, index) => (
-                        <tr key={index}>
+                        <tr key={index} style={rowStyle ? rowStyle(row) : {}}>
                             {headers.map((header) => (
                                 <td key={`${index}-${header}`}>
                                     {typeof row[header] === 'object' ? JSON.stringify(row[header]) : row[header]}

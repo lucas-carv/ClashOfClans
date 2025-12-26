@@ -12,8 +12,13 @@ namespace ClashOfClans.API.Controllers
         public async Task<IActionResult> ObterMembrosPorClanTag(string clanTag)
         {
             var membros = await context.MembrosGuerrasResumo
-                .Where(m => m.ClanTag == clanTag &&
-                       context.Membros.Any(mem => mem.Tag == m.MembroTag && mem.Situacao == SituacaoMembro.Ativo)).OrderBy(m => m.QuantidadeAtaques).ThenByDescending(m => m.GuerrasParticipadasSeq)
+                    .Where(m => m.ClanTag == clanTag &&
+                        context.Membros
+                        .Any(mem => mem.Tag == m.MembroTag && 
+                             mem.Situacao == SituacaoMembro.Ativo
+                             && m.QuantidadeAtaques <= 2))
+                    .OrderBy(m => m.QuantidadeAtaques)
+                    .ThenByDescending(m => m.GuerrasParticipadasSeq)
                 .ToListAsync();
 
             List<MembroViewModel> membrosViewModel = membros.Select(m => new MembroViewModel
@@ -35,7 +40,7 @@ namespace ClashOfClans.API.Controllers
                 .AsNoTracking()
                 .Where(g => g.ClanEmGuerra.Tag == clanTag)
                 .OrderByDescending(g => g.DataCriacao)
-                .Take(maximoGuerras)
+                .Take(5)
                 .Select(g => g.Id)
                 .ToListAsync();
 
@@ -63,10 +68,11 @@ namespace ClashOfClans.API.Controllers
                         .Select(x => x.MembroEmGuerra.ClanEmGuerra.GuerraId)
                         .Distinct()
                         .Count()
-                }).Where(x =>
-                    x.QuantidadeGuerras >= minimoGuerras &&
-                    x.QuantidadeGuerras <= maximoGuerras
-                );
+                });
+                //.Where(x =>
+                //    x.QuantidadeGuerras >= minimoGuerras &&
+                //    x.QuantidadeGuerras <= maximoGuerras
+                //);
 
             var desempenho = await query
                 .OrderByDescending(x => x.MediaEstrelas)

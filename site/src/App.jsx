@@ -21,7 +21,7 @@ function Home() {
           const normalizedKey = key.toLowerCase();
 
           if (normalizedKey === 'guerrasparticipadasseq') {
-            newItem['Sequência de Guerras Participadas'] = item[key];
+            newItem['Quantidade de Guerras'] = item[key];
           } else if (normalizedKey === 'quantidadeataques') {
             newItem['Quantidade de Ataques'] = item[key];
           } else {
@@ -45,8 +45,8 @@ function Home() {
 
   return (
     <>
-      <h2>Resumo de ataque de membros</h2>
-      {loading && <div className="loading">Carregando Clãs...</div>}
+      <h2>Análise duas últimas guerras</h2>
+      {loading && <div className="loading">Carregando Ataques...</div>}
 
       {error && (
         <div className="error">
@@ -56,7 +56,10 @@ function Home() {
       )}
 
       {!loading && !error && (
-        <DataTable data={clans} />
+        <DataTable
+          data={clans}
+          rowStyle={(row) => (row['Quantidade de Ataques'] === 0 && row['Quantidade de Guerras'] === 2) ? { border: '2px solid #ff6b6b' } : {}}
+        />
       )}
     </>
   );
@@ -66,10 +69,10 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <h1>Clash of Clans Explorer</h1>
-        <nav style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-          <Link to="/" style={{ color: 'var(--primary-color)', textDecoration: 'none', fontWeight: 'bold' }}>RESUMO</Link>
-          <Link to="/performance" style={{ color: 'var(--primary-color)', textDecoration: 'none', fontWeight: 'bold' }}>DESEMPENHO</Link>
+        <h1>Clash of Clans</h1>
+        <nav className="nav-menu">
+          <Link to="/" className="nav-button">ATAQUE DE MEMBROS</Link>
+          <Link to="/performance" className="nav-button">DESEMPENHO</Link>
         </nav>
 
         <Routes>

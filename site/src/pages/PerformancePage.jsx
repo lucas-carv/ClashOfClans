@@ -24,6 +24,8 @@ const PerformancePage = () => {
 
                     if (normalizedKey === 'quantidadeguerras') {
                         newItem['Qtd Guerras'] = item[key];
+                    } else if (normalizedKey === 'membrotag') {
+                        return;
                     } else if (normalizedKey === 'mediaestrelas') {
                         newItem['Média Estrelas'] = item[key];
                     } else if (normalizedKey === 'mediadestruicao') {
@@ -56,19 +58,11 @@ const PerformancePage = () => {
 
     return (
         <div className="section-container">
-            <h2>Desempenho dos Membros</h2>
+            <h2>Desempenho dos Membros nas últimas 5 guerras</h2>
 
+            {/*
             <div className="input-group" style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
-                <div style={{ flex: '1 1 200px' }}>
-                    <label className="input-label">Tag do Clan</label>
-                    <input
-                        type="text"
-                        className="input-field"
-                        value={clanTag}
-                        onChange={(e) => setClanTag(e.target.value)}
-                        placeholder="#2L0UC9R8P"
-                    />
-                </div>
+
                 <div style={{ flex: '1 1 100px' }}>
                     <label className="input-label">Mín. Guerras</label>
                     <input
@@ -90,7 +84,7 @@ const PerformancePage = () => {
                     />
                 </div>
             </div>
-
+*/}
             <button onClick={fetchPerformance}>Buscar</button>
             {loading && <div className="loading">Carregando desempenho...</div>}
 
