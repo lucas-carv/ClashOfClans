@@ -28,13 +28,12 @@ public class CustomDateTimeConverter : JsonConverter<DateTime>
     }
     private static TimeZoneInfo GetTimeZone()
     {
-        // Windows usa um ID, Linux (Render) usa outro
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             return TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
         }
 
-        // Linux / Docker / Render
+        // Linux / Docker
         return TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo");
     }
     public override void WriteJson(JsonWriter writer, DateTime value, JsonSerializer serializer)

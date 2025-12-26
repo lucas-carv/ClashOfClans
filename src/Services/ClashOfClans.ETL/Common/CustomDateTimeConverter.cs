@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Globalization;
+using System.Runtime.InteropServices;
 
 namespace ClashOfClans.ETL.Common;
 public class CustomDateTimeConverter : JsonConverter<DateTime>
@@ -17,13 +18,26 @@ public class CustomDateTimeConverter : JsonConverter<DateTime>
                 DateTimeStyles.AdjustToUniversal, // pega UTC
                 out var dtUtc))
             {
-                var dtLocal = dtUtc.ToLocalTime(); // converte para o fuso da máquina
-                return dtLocal;
+                TimeZoneInfo FusoBrasil = GetTimeZone();
+
+                var dataConvertida = TimeZoneInfo.ConvertTimeFromUtc(dtUtc, FusoBrasil);
+                return dataConvertida;
             }
         }
         return DateTime.MinValue;
     }
 
+    private static TimeZoneInfo GetTimeZone()
+    {
+        // Windows usa um ID, Linux (Render) usa outro
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            return TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
+        }
+
+        // Linux / Docker / Render
+        return TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo");
+    }
     public override void WriteJson(JsonWriter writer, DateTime value, JsonSerializer serializer)
     {
         // escreve no mesmo formato
