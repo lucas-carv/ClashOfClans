@@ -27,7 +27,7 @@ const DataTable = ({ data, rowStyle }) => {
                     {data.map((row, index) => (
                         <tr key={index} style={rowStyle ? rowStyle(row) : {}}>
                             {headers.map((header) => (
-                                <td key={`${index}-${header}`} data-label={header.toUpperCase()}>
+                                <td key={`${index}-${header}`}>
                                     {typeof row[header] === 'object' ? JSON.stringify(row[header]) : row[header]}
                                 </td>
                             ))}
