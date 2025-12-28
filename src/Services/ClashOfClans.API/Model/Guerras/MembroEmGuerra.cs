@@ -19,11 +19,12 @@ public class MembroEmGuerra : Entity
         PosicaoMapa = posicaoMapa;
     }
 
-    public void AtualizarAtaque(string atacanteTag, string defensorTag, int estrelas, decimal percentualDestruicao)
+    public void AdicionarAtaque(string atacanteTag, string defensorTag, int estrelas, decimal percentualDestruicao)
     {
         GuerraMembroAtaque? ataque = Ataques.FirstOrDefault(a => a.AtacanteTag == atacanteTag && a.DefensorTag == defensorTag);
         if (ataque is not null)
         {
+            //apagar essa tratativa para testar depois
             ataque.AtualizarAtaque(estrelas, percentualDestruicao);
             return;
         }

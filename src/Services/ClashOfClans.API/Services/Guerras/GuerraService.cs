@@ -13,7 +13,7 @@ public class GuerraService
             MembroEmGuerra membroEmGuerra = clanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome, membro.PosicaoMapa);
             foreach (var ataque in membro.Ataques)
             {
-                membroEmGuerra.AtualizarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas, ataque.PercentualDestruicao);
+                membroEmGuerra.AdicionarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas, ataque.PercentualDestruicao);
             }
         }
         Guerra novaGuerra = new(status, inicioGuerra, fimGuerra, tipoGuerra, clanEmGuerra);
@@ -32,7 +32,7 @@ public class GuerraService
 
             foreach (var ataque in membro.Ataques)
             {
-                membroEmGuerra.AtualizarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas, ataque.PercentualDestruicao);
+                membroEmGuerra.AdicionarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas, ataque.PercentualDestruicao);
             }
         }
         return guerraExistente;
