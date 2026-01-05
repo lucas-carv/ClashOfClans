@@ -34,9 +34,8 @@ namespace ClashOfClans.API.Controllers
         }
 
 
-        [HttpGet("clanTag/desempenho")]
-        //[HttpGet("clanTag/{clanTag}/desempenho")]
-        public async Task<IActionResult> ObterDesempenhoDeMembros(string clanTag = "#2L0UC9R8P", int minimoGuerras = 0, int maximoGuerras = 10)
+        [HttpGet("clanTag/{clanTag}/desempenho")]
+        public async Task<IActionResult> ObterDesempenhoDeMembros(string clanTag, int minimoGuerras = 0, int maximoGuerras = 10)
         {
             var ultimasGuerrasIds = await context.Guerras
                 .AsNoTracking()
