@@ -150,15 +150,15 @@ namespace ClashOfClans.API.Controllers
 
     public class MembroViewModel
     {
-        public string Tag { get; set; }
-        public string Nome { get; set; }
+        public required string Tag { get; set; }
+        public required string Nome { get; set; }
         public int GuerrasParticipadasSeq { get; set; }
         public int QuantidadeAtaques { get; set; }
     }
     public class DesempenhoMembroViewModel
     {
-        public string MembroTag { get; set; }
-        public string Nome { get; set; }
+        public required string MembroTag { get; set; }
+        public required string Nome { get; set; }
         public int TotalAtaques { get; set; }
         public int TotalEstrelas { get; set; }
         public double MediaEstrelas { get; set; }
