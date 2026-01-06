@@ -145,7 +145,6 @@ namespace ClashOfClans.API.Controllers
                     QuantidadeGuerras = x.QuantidadeGuerras
                 }).ToList();
             return Ok(desempenho);
-            return Ok();
         }
     }
 
