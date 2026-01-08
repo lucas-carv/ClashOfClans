@@ -58,7 +58,7 @@ namespace ClashOfClans.API.Controllers
                 .Join(context.Membros,
                     p => p.MembroEmGuerra.Tag,
                     membro => membro.Tag,
-                    (p, membro) => new { p.MembroEmGuerra, p.Clan, p.Guerra, Membro = membro})
+                    (p, membro) => new { p.MembroEmGuerra, p.Clan, p.Guerra, Membro = membro })
                 .Where(x => ultimasGuerrasIds.Contains(x.Guerra.Id) && x.Membro.Situacao.Equals(SituacaoMembro.Ativo))
                 .Select(x => new
                 {
@@ -78,8 +78,8 @@ namespace ClashOfClans.API.Controllers
                 MembroTag = x.Key.MembroTag,
                 Nome = x.Key.Nome,
                 TotalAtaques = x.Sum(a => a.TotalAtaques),
-                MediaDestruicao = x.Average(a => a.TotalDestruicao),
-                MediaEstrelas = x.Average(a => a.TotalAtaques == 0 ? 0 : (double)a.QuantidadeEstrelas / a.TotalAtaques),
+                MediaDestruicao = Math.Round(x.Average(a => a.TotalDestruicao), 2),
+                MediaEstrelas = Math.Round(x.Average(a => a.TotalAtaques == 0 ? 0 : (double)a.QuantidadeEstrelas / a.TotalAtaques), 2),
                 QuantidadeGuerras = x.Count(),
                 TotalEstrelas = x.Sum(a => a.QuantidadeEstrelas)
             })
