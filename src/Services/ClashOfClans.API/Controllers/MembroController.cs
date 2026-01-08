@@ -50,31 +50,30 @@ namespace ClashOfClans.API.Controllers
                 .Join(context.ClansEmGuerra,
                     m => m.ClanEmGuerraId,
                     c => c.Id,
-                    (m, c) => new { Membro = m, Clan = c })
+                    (m, c) => new { MembroEmGuerra = m, Clan = c })
                 .Join(context.Guerras,
                     mc => mc.Clan.GuerraId,
                     g => g.Id,
-                    (mc, g) => new { mc.Membro, mc.Clan, Guerra = g })
+                    (mc, g) => new { mc.MembroEmGuerra, mc.Clan, Guerra = g })
                 .Join(context.Membros,
-                    p => p.Membro.Tag,
+                    p => p.MembroEmGuerra.Tag,
                     membro => membro.Tag,
-                    (p, membro) => new { p.Membro, p.Clan, p.Guerra, Membros = membro})
-                .Where(x => ultimasGuerrasIds.Contains(x.Guerra.Id) && x.Membros.Situacao.Equals(SituacaoMembro.Ativo))
+                    (p, membro) => new { p.MembroEmGuerra, p.Clan, p.Guerra, Membro = membro})
+                .Where(x => ultimasGuerrasIds.Contains(x.Guerra.Id) && x.Membro.Situacao.Equals(SituacaoMembro.Ativo))
                 .Select(x => new
                 {
                     GuerraId = x.Guerra.Id,
-                    MembroTag = x.Membro.Tag,
-                    Nome = x.Membro.Nome,
-                    QuantidadeEstrelas = x.Membro.Ataques.Sum(p => p.Estrelas),
-                    TotalDestruicao = x.Membro.Ataques.Sum(a => a.PercentualDestruicao),
-                    TotalAtaques = x.Membro.Ataques.Count
+                    MembroTag = x.MembroEmGuerra.Tag,
+                    Nome = x.MembroEmGuerra.Nome,
+                    QuantidadeEstrelas = x.MembroEmGuerra.Ataques.Sum(p => p.Estrelas),
+                    TotalDestruicao = x.MembroEmGuerra.Ataques.Sum(a => a.PercentualDestruicao),
+                    TotalAtaques = x.MembroEmGuerra.Ataques.Count
                 })
                 .ToListAsync();
 
-            //teste
-            var desempenho2 = membrosDaGuerra.GroupBy(m => new { m.MembroTag, m.Nome });
+            var membrosAgrupados = membrosDaGuerra.GroupBy(m => new { m.MembroTag, m.Nome });
 
-            var desempenho = desempenho2.Select(x => new DesempenhoMembroViewModel()
+            var desempenho = membrosAgrupados.Select(x => new DesempenhoMembroViewModel()
             {
                 MembroTag = x.Key.MembroTag,
                 Nome = x.Key.Nome,
@@ -89,83 +88,6 @@ namespace ClashOfClans.API.Controllers
                 .ThenByDescending(a => a.MediaDestruicao)
                 .ThenByDescending(a => a.MediaEstrelas);
 
-            //var guerras = await context.Guerras
-            //     .AsNoTracking()
-            //     .Where(g => ultimasGuerrasIds.Contains(g.Id))
-            //     .Select(g => new
-            //     {
-            //         g.Id,
-            //         Membros = g.ClanEmGuerra.MembrosEmGuerra
-            //             .Select(m => new
-            //             {
-            //                 m.Id,
-            //                 m.Tag,
-            //                 m.Nome
-            //             })
-            //             .ToList()
-            //     })
-            //     .ToListAsync();
-
-            //var membroIds = guerras
-            //    .SelectMany(g => g.Membros)
-            //    .Select(m => m.Id)
-            //    .Distinct()
-            //    .ToList();
-
-            //var ataques = await context.GuerraMembroAtaques
-            //    .AsNoTracking()
-            //    .Where(a => membroIds.Contains(a.MembroEmGuerraId))
-            //    .Select(a => new
-            //    {
-            //        a.MembroEmGuerraId,
-            //        a.Estrelas,
-            //        a.PercentualDestruicao
-            //    })
-            //    .ToListAsync();
-
-            //var dados =
-            //     from g in guerras
-            //     from m in g.Membros
-            //     join a in ataques on m.Id equals a.MembroEmGuerraId
-            //     select new
-            //     {
-            //         GuerraId = g.Id,
-            //         m.Tag,
-            //         m.Nome,
-            //         a.Estrelas,
-            //         a.PercentualDestruicao
-            //     };
-
-            //var resultado = dados
-            //    .GroupBy(x => new { x.Tag, x.Nome })
-            //    .Select(g => new
-            //    {
-            //        g.Key.Tag,
-            //        g.Key.Nome,
-            //        TotalAtaques = g.Count(),              // máx 10
-            //        TotalEstrelas = g.Sum(x => x.Estrelas),
-            //        MediaEstrelas = g.Average(x => x.Estrelas),
-            //        MediaDestruicao = g.Average(x => x.PercentualDestruicao),
-            //        QuantidadeGuerras = g
-            //            .Select(x => x.GuerraId)
-            //            .Distinct()
-            //            .Count()
-            //    })
-            //    .ToList();
-
-
-            //var desempenho = resultado
-            //    .OrderByDescending(x => x.MediaEstrelas)
-            //    .Select(x => new DesempenhoMembroViewModel
-            //    {
-            //        MembroTag = x.Tag,
-            //        Nome = x.Nome,
-            //        TotalAtaques = x.TotalAtaques,
-            //        TotalEstrelas = x.TotalEstrelas,
-            //        MediaEstrelas = Math.Round(x.MediaEstrelas, 2),
-            //        MediaDestruicao = Math.Round(x.MediaDestruicao, 2),
-            //        QuantidadeGuerras = x.QuantidadeGuerras
-            //    }).ToList();
             return Ok(desempenho);
         }
     }
