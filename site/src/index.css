@@ -235,14 +235,10 @@ button:hover {
 
   .data-table th,
   .data-table td {
-    padding: 0.75rem 0.5rem;
+    padding: 0.75rem 1rem;
     font-size: 0.8rem;
-    white-space: normal;
-    /* Allow text wrapping */
-    word-break: break-word;
-    /* Ensure long words don't break layout */
+    white-space: nowrap;
     text-align: center;
-    /* Center align for better balance on small screens */
   }
 
   .data-table th {
