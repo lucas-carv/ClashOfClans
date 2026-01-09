@@ -15,9 +15,11 @@ public class CustomDateTimeConverter : JsonConverter<DateTime>
                 s,
                 "yyyyMMdd'T'HHmmss.fff'Z'",
                 CultureInfo.InvariantCulture,
-                DateTimeStyles.AdjustToUniversal, // pega UTC
+                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, // pega UTC
                 out var dtUtc))
             {
+
+
                 TimeZoneInfo FusoBrasil = GetTimeZone();
 
                 var dataConvertida = TimeZoneInfo.ConvertTimeFromUtc(dtUtc, FusoBrasil);

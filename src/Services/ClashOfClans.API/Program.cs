@@ -1,4 +1,5 @@
 ﻿using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Jobs;
+using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Jobs.Guerras;
 using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Services;
 using ClashOfClans.API.Data;
 using ClashOfClans.API.Services.Guerras;
@@ -59,6 +60,7 @@ builder.Services.AddQuartz(q =>
     q.AddBuscarGuerraJob();
     q.AddAnalisarGuerras();
     q.AddDetectarMembrosInativosJob();
+    q.AddObterWarLog();
 });
 
 builder.Services.AddQuartzHostedService(o =>

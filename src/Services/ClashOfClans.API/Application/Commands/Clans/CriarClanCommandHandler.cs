@@ -18,7 +18,7 @@ public class CriarClanCommandHandler(ClashOfClansContext context) : IRequestHand
         bool clanExiste = await _context.Clans.AnyAsync(c => c.Tag == command.Tag, cancellationToken: cancellationToken);
         if (clanExiste)
         {
-            return ValidationErrors.Clan.ClanJaExiste;
+            return ValidationErrors.ClanValidationErros.ClanJaExiste;
         }
 
         Clan clan = new(command.Tag, command.Nome);

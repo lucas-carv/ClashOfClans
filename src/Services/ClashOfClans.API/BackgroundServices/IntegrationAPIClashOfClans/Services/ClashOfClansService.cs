@@ -17,21 +17,11 @@ public class ClashOfClansService : ClashOfClansBaseApiService
         var result = await SendRequest<WarResponse>(request);
         return result;
     }
-
-
-    //public async Task<ClanWarLeagueGroup> BuscarGrupoLiga(string clanTag)
-    //{
-    //    string uri = $"/v1/clans/{clanTag}/currentwar/leaguegroup";
-    //    var request = CreateRequest<string>(null, HttpMethod.Get, uri);
-    //    var result = await SendRequest<ClanWarLeagueGroup>(request);
-    //    return result.ResponseData!;
-    //}
-
-    //public async Task<ClanWarLeague> BuscarGuerraDaLiga(string guerraTag)
-    //{
-    //    string uri = $"/v1/clanwarleagues/wars/{guerraTag}";
-    //    var request = CreateRequest<string>(null, HttpMethod.Get, uri);
-    //    var result = await SendRequest<ClanWarLeague>(request);
-    //    return result.ResponseData!;
-    //}
+    public async Task<ResponseClashOfClans<WarLogResponse>> BuscarWarLog(string tag)
+    {
+        string uri = $"/v1/clans/{tag}/warlog?limit=10";
+        var request = CreateRequest<string>(null, HttpMethod.Get, uri);
+        var result = await SendRequest<WarLogResponse>(request);
+        return result;
+    }
 }

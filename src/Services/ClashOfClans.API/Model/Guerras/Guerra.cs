@@ -44,7 +44,7 @@ public class Guerra : Entity, IAggregateRoot
     {
         ArgumentNullException.ThrowIfNull(clanEmGuerra);
         if (inicioGuerra > fimGuerra)
-            return ValidationErrors.Guerra.InicioMaiorQueFinal;
+            return ValidationErrors.GuerraValidationErros.InicioMaiorQueFinal;
 
         Guerra guerra = new(status, inicioGuerra, fimGuerra, tipoGuerra, clanEmGuerra);
         return guerra;

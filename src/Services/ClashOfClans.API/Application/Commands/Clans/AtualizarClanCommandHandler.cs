@@ -18,7 +18,7 @@ public class AtualizarClanCommandHandler(ClashOfClansContext context) : IRequest
             .FirstOrDefaultAsync(c => c.Tag == request.Tag, cancellationToken: cancellationToken);
         if (clan is null)
         {
-            return ValidationErrors.Clan.ClanNaoExiste;
+            return ValidationErrors.ClanValidationErros.ClanNaoExiste;
         }
 
         IEnumerable<MembroClanDTO> membrosParaAdicionar = request.Membros

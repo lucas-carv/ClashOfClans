@@ -17,7 +17,7 @@ namespace ClashOfClans.API.Application.Commands.LigaDeGuerras
         {
             bool clanExiste = await context.Clans.AnyAsync(c => c.Tag == request.ClanTag, cancellationToken: cancellationToken);
             if (!clanExiste)
-                return ValidationErrors.Clan.ClanNaoExiste;
+                return ValidationErrors.ClanValidationErros.ClanNaoExiste;
 
             LigaDeGuerra? ligaDeGuerra = await context.LigaDeGuerras
                 .Include(l => l.Rodadas!)

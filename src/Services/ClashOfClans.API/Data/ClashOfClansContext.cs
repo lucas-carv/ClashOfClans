@@ -19,6 +19,7 @@ public class ClashOfClansContext(DbContextOptions<ClashOfClansContext> options) 
     public DbSet<GuerraMembroAtaque> GuerraMembroAtaques { get; set; }
     public DbSet<MembroEmGuerra> MembrosEmGuerra { get; set; }
     public DbSet<LigaDeGuerra> LigaDeGuerras { get; set; }
+    public DbSet<LogGuerra> LogsGuerras { get; set; }
     public async Task Commit(CancellationToken cancellationToken)
     {
         if (!ChangeTracker.HasChanges())

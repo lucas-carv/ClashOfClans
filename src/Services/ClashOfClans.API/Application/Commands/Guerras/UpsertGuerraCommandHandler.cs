@@ -16,7 +16,7 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context, GuerraServi
         bool clanExiste = await context.Clans.AnyAsync(c => c.Tag == request.Clan.Tag, cancellationToken: cancellationToken);
         if (!clanExiste)
         {
-            return ValidationErrors.Clan.ClanNaoExiste;
+            return ValidationErrors.ClanValidationErros.ClanNaoExiste;
         }
 
         Guerra? guerraExistente = await context.Guerras.Include(g => g.ClanEmGuerra).ThenInclude(c => c.MembrosEmGuerra).ThenInclude(m => m.Ataques)
