@@ -32,12 +32,38 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
         return Ok(guerrasViewModel);
     }
 
+    [HttpGet("log/clanTag/{clanTag}")]
+    public async Task<IActionResult> ObterLogs(string clanTag)
+    {
+        var logs = await context.LogsGuerras.Include(a => a.Clan).Include(a => a.Oponente)
+            .Where(g => g.Clan.Tag == clanTag)
+            .OrderByDescending(g => g.FimGuerra)
+            .ToListAsync();
+       var resultado =  logs.Select(l => new LogGuerraViewModel
+        {
+            ClanNome = l.Clan.Nome,
+            EstrelasClan = l.Clan.Estrelas,
+            EstrelasOponente = l.Oponente.Estrelas,
+            OponenteNome = l.Oponente.Nome,
+            Resultado = l.Resultado
+        });
+        return Ok(resultado);
+    }
     [HttpPut("criar")]
     public async Task<IActionResult> UpsertGuerra([FromBody] UpsertGuerraRequest request)
     {
         var resultado = await _mediator.Send(request);
         return resultado.ToActionResult(this);
     }
+}
+
+public class LogGuerraViewModel
+{
+    public string Resultado { get; set; }
+    public string ClanNome { get; set; }
+    public int EstrelasClan { get; set; }
+    public string OponenteNome { get; set; }
+    public int EstrelasOponente { get; set; }
 }
 
 public class GuerraViewModel

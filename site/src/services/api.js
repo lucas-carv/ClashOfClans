@@ -31,3 +31,14 @@ export const obterDesempenhoDeMembros = async (clanTag) => {
         throw error;
     }
 };
+
+export const obterLogsDeGuerra = async (clanTag) => {
+    try {
+        const encodedTag = encodeURIComponent(clanTag);
+        const response = await api.get(`/api/v1/guerra/log/clanTag/${encodedTag}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching war logs:', error);
+        throw error;
+    }
+};
