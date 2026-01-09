@@ -83,6 +83,7 @@ public class BuscarLigaDeClansJob(ClashOfClansService clashOfClansService) : IJo
                     CentroVilaLevel = m.TownHallLevel,
                     Nome = m.Name,
                     Tag = m.Tag,
+                    PosicaoMapa = 0,
                     Ataques = ataques.Where(a => a.AtacanteTag == m.Tag)
                 }).ToList(),
             }).ToList()

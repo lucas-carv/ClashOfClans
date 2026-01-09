@@ -69,7 +69,7 @@ namespace ClashOfClans.API.Application.Commands.LigaDeGuerras
                         .FirstOrDefaultAsync(g => g.ClanEmGuerra.Tag == rodada.ClanTag && g.GuerraTag == rodada.GuerraTag,
                                              cancellationToken);
                 ClanEmGuerraDTO clan = request.Clans.First(c => c.Tag == rodada.ClanTag);
-
+                
                 if (guerra is null)
                 {
                     guerra = guerraService.CriarGuerra(rodada.Status, rodada.InicioGuerra, rodada.FimGuerra, rodada.TipoGuerra, clan);
@@ -108,12 +108,12 @@ namespace ClashOfClans.API.Application.Commands.LigaDeGuerras
     public record LigaGuerraRodadaRequest
     {
         public string Status { get; set; }
-        public int Dia { get; init; }
-        public string GuerraTag { get; init; }
-        public string ClanTag { get; init; }
-        public string ClanTagOponente { get; init; }
+        public int Dia { get; set; }
+        public string GuerraTag { get; set; }
+        public string ClanTag { get; set; }
+        public string ClanTagOponente { get; set; }
         public string TipoGuerra { get; set; }
-        public DateTime InicioGuerra { get; init; }
-        public DateTime FimGuerra { get; init; }
+        public DateTime InicioGuerra { get; set; }
+        public DateTime FimGuerra { get; set; }
     }
 }
