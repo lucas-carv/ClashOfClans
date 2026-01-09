@@ -1,25 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import DataTable from './components/DataTable';
-import PerformancePage from './pages/PerformancePage';
-import { getClans } from './services/api';
+import PerformancePage from './pages/DesempenhoPage';
+import { obterResumoDeMembros } from './services/api';
 
 function Home() {
-  const [clans, setClans] = useState([]);
+  const [resumoMembros, setResumoMembros] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const clanTag = '#2L0UC9R8P';
 
   const fetchData = async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getClans();
-      // Transform data to friendly headers
+      const data = await obterResumoDeMembros(clanTag);
       const formattedData = data.map(item => {
         const newItem = {};
         Object.keys(item).forEach(key => {
           const normalizedKey = key.toLowerCase();
-
           if (normalizedKey === 'guerrasparticipadasseq') {
             newItem['Quantidade de Guerras'] = item[key];
           } else if (normalizedKey === 'quantidadeataques') {
@@ -30,7 +29,7 @@ function Home() {
         });
         return newItem;
       });
-      setClans(formattedData);
+      setResumoMembros(formattedData);
     } catch (err) {
       console.error(err);
       setError('Falha ao carregar dados do Clash of Clans. Verifique sua conexão ou a API.');
@@ -57,7 +56,7 @@ function Home() {
 
       {!loading && !error && (
         <DataTable
-          data={clans}
+          data={resumoMembros}
           rowStyle={(row) => (row['Quantidade de Ataques'] === 0 && row['Quantidade de Guerras'] === 2) ? { border: '2px solid #ff6b6b' } : {}}
         />
       )}

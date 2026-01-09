@@ -9,15 +9,14 @@ namespace ClashOfClans.API.Controllers
     [Route("api/v1/membro")]
     public class MembroController(ClashOfClansContext context) : ControllerBase
     {
-        [HttpGet("clanTag/{clanTag}")]
+        [HttpGet("clanTag/{clanTag}/resumo")]
         public async Task<IActionResult> ObterMembrosPorClanTag(string clanTag)
         {
             var membros = await context.MembrosGuerrasResumo
                     .Where(m => m.ClanTag == clanTag &&
                         context.Membros
                         .Any(mem => mem.Tag == m.MembroTag &&
-                             mem.Situacao == SituacaoMembro.Ativo
-                             && m.QuantidadeAtaques <= 2))
+                             mem.Situacao == SituacaoMembro.Ativo))
                     .OrderBy(m => m.QuantidadeAtaques)
                     .ThenByDescending(m => m.GuerrasParticipadasSeq)
                 .ToListAsync();
@@ -35,7 +34,7 @@ namespace ClashOfClans.API.Controllers
 
 
         [HttpGet("clanTag/{clanTag}/desempenho")]
-        public async Task<IActionResult> ObterDesempenhoDeMembros(string clanTag, int minimoGuerras, int maximoGuerras)
+        public async Task<IActionResult> ObterDesempenhoDeMembros(string clanTag)
         {
             var ultimasGuerrasIds = await context.Guerras
                 .AsNoTracking()
@@ -71,12 +70,12 @@ namespace ClashOfClans.API.Controllers
                 })
                 .ToListAsync();
 
-            var membrosAgrupados = membrosDaGuerra.GroupBy(m => new { m.MembroTag, m.Nome });
+            var membrosAgrupados = membrosDaGuerra.GroupBy(m => m.MembroTag);
 
             var desempenho = membrosAgrupados.Select(x => new DesempenhoMembroViewModel()
             {
-                MembroTag = x.Key.MembroTag,
-                Nome = x.Key.Nome,
+                MembroTag = x.Key,
+                Nome = x.First().Nome,
                 TotalAtaques = x.Sum(a => a.TotalAtaques),
                 MediaDestruicao = Math.Round(x.Average(a => a.TotalDestruicao), 2),
                 MediaEstrelas = Math.Round(x.Average(a => a.TotalAtaques == 0 ? 0 : (double)a.QuantidadeEstrelas / a.TotalAtaques), 2),

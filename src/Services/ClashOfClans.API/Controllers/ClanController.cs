@@ -16,15 +16,21 @@ public class ClanController(IMediator mediator, ClashOfClansContext context) : C
     [HttpGet]
     public async Task<IActionResult> ObterClans()
     {
-        var clans = await context.Clans.Include(c => c.Membros.Where(m => m.Situacao == SituacaoMembro.Ativo)).ToListAsync();
-        return Ok(clans);
+        var clans = await context.Clans.ToListAsync();
+        var clansViewModels = clans.Select(c => new ClanViewModel
+        {
+            Tag = c.Tag,
+            Nome = c.Nome
+        });
+
+        return Ok(clansViewModels);
     }
 
     [HttpGet("{tag}")]
     public async Task<IActionResult> ObterPorTag(string tag)
     {
         Clan? clan = await context.Clans
-            .Include(c => 
+            .Include(c =>
                 c.Membros
                 .Where(m => m.Situacao == SituacaoMembro.Ativo))
             .FirstOrDefaultAsync(c => c.Tag == tag);
@@ -44,4 +50,10 @@ public class ClanController(IMediator mediator, ClashOfClansContext context) : C
         CommandResult<AtualizarClanResponse> resultado = await _mediator.Send(request);
         return resultado.ToActionResult(this);
     }
+}
+
+public class ClanViewModel
+{
+    public string Tag { get; init; }
+    public string Nome { get; init; }
 }

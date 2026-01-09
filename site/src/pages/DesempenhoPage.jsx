@@ -1,21 +1,19 @@
 
 import React, { useEffect, useState, startTransition } from 'react';
 import DataTable from '../components/DataTable';
-import { getMemberPerformance } from '../services/api';
+import { obterDesempenhoDeMembros } from '../services/api';
 
 const PerformancePage = () => {
     const [performanceData, setPerformanceData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [clanTag, setClanTag] = useState('#2L0UC9R8P'); // Default or state driven
-    const [qtdMinimoGuerras, setQtdMinimoGuerras] = useState('5');
-    const [qtdMaximoGuerras, setQtdMaximoGuerras] = useState('10');
+    const clanTag = '#2L0UC9R8P';
 
     const fetchPerformance = async () => {
         setLoading(true);
         setError(null);
         try {
-            const data = await getMemberPerformance(clanTag, qtdMinimoGuerras, qtdMaximoGuerras);
+            const data = await obterDesempenhoDeMembros(clanTag);
             const formattedData = data.map(item => {
                 const newItem = {};
 
@@ -35,7 +33,6 @@ const PerformancePage = () => {
                     } else if (normalizedKey === 'totalestrelas') {
                         newItem['Total Estrelas'] = item[key];
                     } else {
-                        // Generic formatter for other keys (e.g. Tag, etc)
                         const readableKey = key.replace(/([A-Z])/g, ' $1').trim();
                         const titleCaseKey = readableKey.charAt(0).toUpperCase() + readableKey.slice(1);
                         newItem[titleCaseKey] = item[key];
@@ -59,32 +56,6 @@ const PerformancePage = () => {
     return (
         <div className="section-container">
             <h2>Desempenho dos Membros nas últimas 5 guerras</h2>
-
-            {/*
-            <div className="input-group" style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
-
-                <div style={{ flex: '1 1 100px' }}>
-                    <label className="input-label">Mín. Guerras</label>
-                    <input
-                        type="text"
-                        className="input-field"
-                        value={qtdMinimoGuerras}
-                        onChange={(e) => setQtdMinimoGuerras(e.target.value)}
-                        placeholder="5"
-                    />
-                </div>
-                <div style={{ flex: '1 1 100px' }}>
-                    <label className="input-label">Max. Guerras</label>
-                    <input
-                        type="text"
-                        className="input-field"
-                        value={qtdMaximoGuerras}
-                        onChange={(e) => setQtdMaximoGuerras(e.target.value)}
-                        placeholder="10"
-                    />
-                </div>
-            </div>
-*/}
             <button onClick={fetchPerformance}>Buscar</button>
             {loading && <div className="loading">Carregando desempenho...</div>}
 

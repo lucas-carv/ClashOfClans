@@ -10,9 +10,10 @@ const api = axios.create({
 });
 
 
-export const getClans = async () => {
+export const obterResumoDeMembros = async (clanTag) => {
     try {
-        const response = await api.get('/api/v1/membro/clanTag/%232L0UC9R8P');
+        const encodedTag = encodeURIComponent(clanTag);
+        const response = await api.get(`/api/v1/membro/clanTag/${encodedTag}/resumo`);
         return response.data;
     } catch (error) {
         console.error('Error fetching clans:', error);
@@ -20,11 +21,10 @@ export const getClans = async () => {
     }
 };
 
-export const getMemberPerformance = async (clanTag, qtdMinimoGuerras, qtdMaximoGuerras) => {
+export const obterDesempenhoDeMembros = async (clanTag) => {
     try {
-        // Ensure the tag is URL encoded properly if it isn't already
         const encodedTag = encodeURIComponent(clanTag);
-        const response = await api.get(`/api/v1/membro/clanTag/${encodedTag}/desempenho?minimoGuerras=${qtdMinimoGuerras}&maximoGuerras=${qtdMaximoGuerras}`);
+        const response = await api.get(`/api/v1/membro/clanTag/${encodedTag}/desempenho`);
         return response.data;
     } catch (error) {
         console.error('Error fetching member performance:', error);
