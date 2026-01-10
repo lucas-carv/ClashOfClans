@@ -23,7 +23,7 @@ public class BuscarLigaDeClansJob(ClashOfClansService clashOfClansService) : IJo
         }
         IntegrationService integrationService = new();
         List<LigaGuerraRodada> rodadas = [];
-        List<AtaquesDTO> ataques = new();
+        List<AtaquesDTO> ataques = [];
         int dia = 1;
 
         foreach (var rounds in clanWarLeagueGroup.Rounds)
@@ -72,21 +72,21 @@ public class BuscarLigaDeClansJob(ClashOfClansService clashOfClansService) : IJo
             Status = clanWarLeagueGroup.State,
             Temporada = clanWarLeagueGroup.Season,
             Rodadas = rodadas,
-            Clans = clanWarLeagueGroup.Clans.Select(c => new ClanEmGuerraDTO()
+            Clans = [.. clanWarLeagueGroup.Clans.Select(c => new ClanEmGuerraDTO()
             {
                 ClanLevel = c.ClanLevel,
                 Nome = c.Name,
                 Tag = c.Tag,
 
-                Membros = c.Members.Select(m => new MembroEmGuerraDTO()
+                Membros = [.. c.Members.Select(m => new MembroEmGuerraDTO()
                 {
                     CentroVilaLevel = m.TownHallLevel,
                     Nome = m.Name,
                     Tag = m.Tag,
                     PosicaoMapa = 0,
                     Ataques = ataques.Where(a => a.AtacanteTag == m.Tag)
-                }).ToList(),
-            }).ToList()
+                })],
+            })]
         };
 
         await integrationService.EnviarLigaDeClan(ligaDeGuerra);
