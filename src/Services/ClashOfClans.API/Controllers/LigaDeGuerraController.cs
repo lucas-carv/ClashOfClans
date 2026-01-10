@@ -8,6 +8,12 @@ namespace ClashOfClans.API.Controllers;
 public class LigaDeGuerraController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPost("criar")]
     public async Task<IActionResult> CriarGuerra([FromBody] LigaDeGuerraRequest request)
     {
