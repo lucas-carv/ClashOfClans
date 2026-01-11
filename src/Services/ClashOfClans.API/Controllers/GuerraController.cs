@@ -12,6 +12,11 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
 {
     private readonly IMediator _mediator = mediator;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="clanTag"></param>
+    /// <returns></returns>
     [HttpGet("clanTag/{clanTag}")]
     public async Task<IActionResult> ObterGuerras(string clanTag)
     {
@@ -32,6 +37,11 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
         return Ok(guerrasViewModel);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="clanTag"></param>
+    /// <returns></returns>
     [HttpGet("log/clanTag/{clanTag}")]
     public async Task<IActionResult> ObterLogs(string clanTag)
     {
@@ -49,6 +59,12 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
         });
         return Ok(resultado);
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPut("criar")]
     public async Task<IActionResult> UpsertGuerra([FromBody] UpsertGuerraRequest request)
     {

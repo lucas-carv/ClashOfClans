@@ -13,6 +13,10 @@ public class ClanController(IMediator mediator, ClashOfClansContext context) : C
 {
     private readonly IMediator _mediator = mediator;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     public async Task<IActionResult> ObterClans()
     {
@@ -26,6 +30,11 @@ public class ClanController(IMediator mediator, ClashOfClansContext context) : C
         return Ok(clansViewModels);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="tag"></param>
+    /// <returns></returns>
     [HttpGet("{tag}")]
     public async Task<IActionResult> ObterPorTag(string tag)
     {
@@ -37,6 +46,11 @@ public class ClanController(IMediator mediator, ClashOfClansContext context) : C
         return Ok(clan);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPost("criar")]
     public async Task<IActionResult> CriarClan([FromBody] CriarClanRequest request)
     {
@@ -44,6 +58,11 @@ public class ClanController(IMediator mediator, ClashOfClansContext context) : C
         return resultado.ToActionResult(this);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPut("atualizar")]
     public async Task<IActionResult> AtualizarClan([FromBody] AtualizarClanRequest request)
     {

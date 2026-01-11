@@ -9,6 +9,13 @@ namespace ClashOfClans.API.Controllers
     [Route("api/v1/membro")]
     public class MembroController(ClashOfClansContext context) : ControllerBase
     {
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="clanTag"></param>
+        /// <returns></returns>
         [HttpGet("clanTag/{clanTag}/resumo")]
         public async Task<IActionResult> ObterMembrosPorClanTag(string clanTag)
         {
@@ -32,7 +39,11 @@ namespace ClashOfClans.API.Controllers
             return Ok(membrosViewModel);
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="clanTag"></param>
+        /// <returns></returns>
         [HttpGet("clanTag/{clanTag}/desempenho")]
         public async Task<IActionResult> ObterDesempenhoDeMembros(string clanTag)
         {
