@@ -32,10 +32,10 @@ public class ClanController(IMediator mediator, ClashOfClansContext context) : C
     }
 
     /// <summary>
-    /// 
+    /// Obtém clan por tag
     /// </summary>
-    /// <param name="tag"></param>
-    /// <returns></returns>
+    /// <response code="200">Retorna um clan</response>
+    [ProducesResponseType(typeof(Clan), StatusCodes.Status200OK)]
     [HttpGet("{tag}")]
     public async Task<IActionResult> ObterPorTag(string tag)
     {
