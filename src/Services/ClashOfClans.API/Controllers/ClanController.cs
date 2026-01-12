@@ -14,14 +14,15 @@ public class ClanController(IMediator mediator, ClashOfClansContext context) : C
     private readonly IMediator _mediator = mediator;
 
     /// <summary>
-    /// 
+    /// Obtém clans
     /// </summary>
-    /// <returns></returns>
+    /// <response code="200">Retorna os clans cadastrados</response>
+    [ProducesResponseType(typeof(List<ClanViewModel>), StatusCodes.Status200OK)]
     [HttpGet]
     public async Task<IActionResult> ObterClans()
     {
         var clans = await context.Clans.ToListAsync();
-        var clansViewModels = clans.Select(c => new ClanViewModel
+        IEnumerable<ClanViewModel> clansViewModels = clans.Select(c => new ClanViewModel
         {
             Tag = c.Tag,
             Nome = c.Nome
