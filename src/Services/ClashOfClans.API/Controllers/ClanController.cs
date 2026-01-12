@@ -48,10 +48,10 @@ public class ClanController(IMediator mediator, ClashOfClansContext context) : C
     }
 
     /// <summary>
-    /// 
+    /// Cria um clan
     /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
+    /// <response code="200">Cria o clan e retorna o response</response>
+    [ProducesResponseType(typeof(CriarClanResponse), StatusCodes.Status200OK)]
     [HttpPost("criar")]
     public async Task<IActionResult> CriarClan([FromBody] CriarClanRequest request)
     {
