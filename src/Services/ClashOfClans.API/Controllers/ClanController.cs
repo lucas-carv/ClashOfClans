@@ -60,10 +60,10 @@ public class ClanController(IMediator mediator, ClashOfClansContext context) : C
     }
 
     /// <summary>
-    /// 
+    /// Atualiza um clan
     /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
+    /// <response code="200">Atualiza um clan e retorna o response</response>
+    [ProducesResponseType(typeof(AtualizarClanResponse), StatusCodes.Status200OK)]
     [HttpPut("atualizar")]
     public async Task<IActionResult> AtualizarClan([FromBody] AtualizarClanRequest request)
     {
