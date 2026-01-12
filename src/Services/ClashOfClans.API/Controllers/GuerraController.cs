@@ -61,10 +61,10 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
     }
 
     /// <summary>
-    /// 
+    /// Cria ou atualiza uma guerra
     /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
+    /// <response code="200">Cria ou atualiza uma guerra e retorna o response</response>
+    [ProducesResponseType(typeof(UpsertGuerraResponse), StatusCodes.Status200OK)]
     [HttpPut("criar")]
     public async Task<IActionResult> UpsertGuerra([FromBody] UpsertGuerraRequest request)
     {
