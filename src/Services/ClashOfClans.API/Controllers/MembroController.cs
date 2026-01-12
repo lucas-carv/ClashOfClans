@@ -12,12 +12,12 @@ namespace ClashOfClans.API.Controllers
 
 
         /// <summary>
-        /// 
+        /// Obtém o resumo de ataque dos membros do clan
         /// </summary>
-        /// <param name="clanTag"></param>
-        /// <returns></returns>
+        /// <response code="200">Retorna o resumo de ataque dos membros</response>
+        [ProducesResponseType(typeof(List<MembroViewModel>), StatusCodes.Status200OK)]
         [HttpGet("clanTag/{clanTag}/resumo")]
-        public async Task<IActionResult> ObterMembrosPorClanTag(string clanTag)
+        public async Task<IActionResult> ObterResumoMembrosPorClanTag(string clanTag)
         {
             var membros = await context.MembrosGuerrasResumo
                     .Where(m => m.ClanTag == clanTag &&
