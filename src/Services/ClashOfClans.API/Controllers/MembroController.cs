@@ -2,15 +2,12 @@
 using ClashOfClans.API.Model.Clans;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
 
 namespace ClashOfClans.API.Controllers
 {
     [Route("api/v1/membro")]
     public class MembroController(ClashOfClansContext context) : ControllerBase
     {
-
-
         /// <summary>
         /// Obtém o resumo de ataque dos membros do clan
         /// </summary>
@@ -40,14 +37,14 @@ namespace ClashOfClans.API.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Obtém o desempenho dos membros
         /// </summary>
-        /// <param name="clanTag"></param>
-        /// <returns></returns>
+        /// <response code="200">Retorna o desempenho dos membros</response>
+        [ProducesResponseType(typeof(List<DesempenhoMembroViewModel>), StatusCodes.Status200OK)]
         [HttpGet("clanTag/{clanTag}/desempenho")]
         public async Task<IActionResult> ObterDesempenhoDeMembros(string clanTag)
         {
-            var ultimasGuerrasIds = await context.Guerras
+            List<int> ultimasGuerrasIds = await context.Guerras
                 .AsNoTracking()
                 .Where(g => g.ClanEmGuerra.Tag == clanTag && g.Status == "WarEnded" && g.TipoGuerra == "Normal")
                 .OrderByDescending(g => g.FimGuerra)
@@ -83,7 +80,7 @@ namespace ClashOfClans.API.Controllers
 
             var membrosAgrupados = membrosDaGuerra.GroupBy(m => m.MembroTag);
 
-            var desempenho = membrosAgrupados.Select(x => new DesempenhoMembroViewModel()
+            List<DesempenhoMembroViewModel> desempenho = membrosAgrupados.Select(x => new DesempenhoMembroViewModel()
             {
                 MembroTag = x.Key,
                 Nome = x.First().Nome,
@@ -96,7 +93,8 @@ namespace ClashOfClans.API.Controllers
                 .OrderByDescending(a => a.QuantidadeGuerras)
                 .ThenByDescending(a => a.TotalAtaques)
                 .ThenByDescending(a => a.MediaDestruicao)
-                .ThenByDescending(a => a.MediaEstrelas);
+                .ThenByDescending(a => a.MediaEstrelas)
+                .ToList();
 
             return Ok(desempenho);
         }
