@@ -3,6 +3,7 @@
 namespace ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Services;
 public class ClashOfClansService : ClashOfClansBaseApiService
 {
+    public ClashOfClansService(HttpClient httpClient) : base(httpClient) { }
     internal async Task<ResponseClashOfClans<ClanResponse>> BuscarClan(string tag)
     {
         string uri = $"/v1/clans/{tag}";

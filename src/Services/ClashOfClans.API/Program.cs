@@ -5,6 +5,7 @@ using ClashOfClans.API.Data;
 using ClashOfClans.API.Services.Guerras;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
+using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +29,6 @@ builder.Services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
     .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
-
 
 //var assembly = AppDomain.CurrentDomain.Load("ClashOfClans.API");
 //AssemblyScanner.FindValidatorsInAssembly(assembly).ForEach(result => builder.Services.AddScoped(result.InterfaceType, result.ValidatorType));
@@ -61,6 +61,20 @@ builder.Services.AddQuartz(q =>
     q.AddAnalisarGuerras();
     q.AddDetectarMembrosInativosJob();
     q.AddObterWarLog();
+});
+
+builder.Services.AddHttpClient<ClashOfClansService>((sp, client) =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+
+    var baseUrl = config["ClashOfClans:BaseUrl"];
+    var token = config["ClashOfClans:Token"];
+
+    if (string.IsNullOrWhiteSpace(token))
+        throw new Exception("TOKEN DO CLASH NÃO FOI CARREGADO");
+
+    client.BaseAddress = new Uri(baseUrl!);
+    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 });
 
 builder.Services.AddQuartzHostedService(o =>
