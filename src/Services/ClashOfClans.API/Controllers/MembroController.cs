@@ -85,7 +85,7 @@ namespace ClashOfClans.API.Controllers
                 MembroTag = x.Key,
                 Nome = x.First().Nome,
                 TotalAtaques = x.Sum(a => a.TotalAtaques),
-                MediaDestruicao = Math.Round(x.Average(a => a.TotalDestruicao), 2),
+                MediaDestruicao = Math.Round(x.Average(a => a.TotalAtaques == 0 ? 0 : (double)a.TotalDestruicao/ a.TotalAtaques), 2),
                 MediaEstrelas = Math.Round(x.Average(a => a.TotalAtaques == 0 ? 0 : (double)a.QuantidadeEstrelas / a.TotalAtaques), 2),
                 QuantidadeGuerras = x.Count(),
                 TotalEstrelas = x.Sum(a => a.QuantidadeEstrelas)
@@ -114,7 +114,7 @@ namespace ClashOfClans.API.Controllers
         public int TotalAtaques { get; set; }
         public int TotalEstrelas { get; set; }
         public double MediaEstrelas { get; set; }
-        public decimal MediaDestruicao { get; set; }
+        public double MediaDestruicao { get; set; }
         public int QuantidadeGuerras { get; set; }
     }
 }
