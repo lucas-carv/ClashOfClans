@@ -1,6 +1,7 @@
 ﻿using ClashOfClans.API.Application.Commands.Guerras;
 using ClashOfClans.API.Data;
 using ClashOfClans.API.Model.Guerras;
+using ClashOfClans.API.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
