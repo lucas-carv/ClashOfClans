@@ -1,6 +1,4 @@
-﻿using ClashOfClans.API.Core;
-
-namespace ClashOfClans.API.Model;
+﻿namespace ClashOfClans.API.Model;
 
 public class MembroGuerraResumo 
 {
