@@ -37,11 +37,12 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
         return Ok(guerrasViewModel);
     }
 
+
     /// <summary>
-    /// 
+    /// Obtém logs de guerras por tag do clan
     /// </summary>
-    /// <param name="clanTag"></param>
-    /// <returns></returns>
+    /// <response code="200">Retorna os logs de guerras pela tag do clan</response>
+    [ProducesResponseType(typeof(IEnumerable<LogGuerraViewModel>), StatusCodes.Status200OK)]
     [HttpGet("log/clanTag/{clanTag}")]
     public async Task<IActionResult> ObterLogs(string clanTag)
     {
@@ -49,7 +50,7 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
             .Where(g => g.Clan.Tag == clanTag)
             .OrderByDescending(g => g.FimGuerra)
             .ToListAsync();
-       var resultado =  logs.Select(l => new LogGuerraViewModel
+        IEnumerable<LogGuerraViewModel> resultado = logs.Select(l => new LogGuerraViewModel
         {
             ClanNome = l.Clan.Nome,
             EstrelasClan = l.Clan.Estrelas,
