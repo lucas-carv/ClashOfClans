@@ -2,6 +2,7 @@
 using ClashOfClans.API.Core.CommandResults;
 using ClashOfClans.API.Data;
 using ClashOfClans.API.Model.Clans;
+using ClashOfClans.API.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -70,10 +71,4 @@ public class ClanController(IMediator mediator, ClashOfClansContext context) : C
         CommandResult<AtualizarClanResponse> resultado = await _mediator.Send(request);
         return resultado.ToActionResult(this);
     }
-}
-
-public class ClanViewModel
-{
-    public string Tag { get; init; }
-    public string Nome { get; init; }
 }
