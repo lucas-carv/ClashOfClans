@@ -13,10 +13,10 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
     private readonly IMediator _mediator = mediator;
 
     /// <summary>
-    /// 
+    /// Obtém guerras por tag do clan
     /// </summary>
-    /// <param name="clanTag"></param>
-    /// <returns></returns>
+    /// <response code="200">Retorna os guerras pela tag do clan</response>
+    [ProducesResponseType(typeof(List<GuerraViewModel>), StatusCodes.Status200OK)]
     [HttpGet("clanTag/{clanTag}")]
     public async Task<IActionResult> ObterGuerras(string clanTag)
     {
@@ -27,7 +27,7 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
             .OrderByDescending(g => g.FimGuerra)
             .ToListAsync();
 
-        var guerrasViewModel = guerras.Select(g => new GuerraViewModel
+        IEnumerable<GuerraViewModel> guerrasViewModel = guerras.Select(g => new GuerraViewModel
         {
             FimGuerra = g.FimGuerra,
             InicioGuerra = g.InicioGuerra,
