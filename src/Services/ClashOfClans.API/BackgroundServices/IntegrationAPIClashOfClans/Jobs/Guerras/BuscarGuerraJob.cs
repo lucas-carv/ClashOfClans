@@ -22,14 +22,14 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService, IMediator 
         ResponseClashOfClans<WarResponse>? response = await _clashOfClansService.BuscarGuerra(encodedTag);
         if (!response.IsValid)
         {
-            Console.WriteLine($"Erro ao obter guerra {string.Join(",", response.Erros)}");
+            Console.WriteLine($"ERRO - Erro ao obter guerra {string.Join(",", response.Erros)}");
             return;
         }
 
         WarResponse? war = response.ResponseData;
         if (war is null)
         {
-            Console.WriteLine("Guerra não encontrada na api");
+            Console.WriteLine("ERRO - Guerra não encontrada na api");
             return;
         }
 
@@ -44,7 +44,7 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService, IMediator 
             Tipo = TipoClanGuerra.Principal,
             Membros = war.Clan.Members.Select(m => new MembroEmGuerraDTO()
             {
-                CentroVilaLevel = 0,
+                CentroVilaLevel = m.TownhallLevel,
                 Nome = m.Name,
                 Tag = m.Tag,
                 PosicaoMapa = m.MapPosition,
