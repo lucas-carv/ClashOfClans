@@ -36,8 +36,11 @@ public class GuerraService
         {
             ClanEmGuerra? clanGuerra = guerraExistente.ClansEmGuerra.FirstOrDefault(c => c.Tag.Equals(clan.Tag));
             if (clanGuerra is null)
+            {
                 clanGuerra = new ClanEmGuerra(clan.Tag, clan.Nome, (TipoClanNaGuerra)clan.Tipo);
-            
+                guerraExistente.AdicionarClan(clanGuerra);
+            }
+
             foreach (var membro in clan.Membros)
             {
                 MembroEmGuerra membroEmGuerra = clanGuerra!.AdicionarMembro(membro.Tag, membro.Nome, membro.PosicaoMapa);
