@@ -15,79 +15,80 @@ namespace ClashOfClans.API.Application.Commands.LigaDeGuerras
     {
         public async Task<CommandResult<bool>> Handle(LigaDeGuerraRequest request, CancellationToken cancellationToken)
         {
-            bool clanExiste = await context.Clans.AnyAsync(c => c.Tag == request.ClanTag, cancellationToken: cancellationToken);
-            if (!clanExiste)
-                return ValidationErrors.ClanValidationErros.ClanNaoExiste;
+            return true; // manutenção
+            //bool clanExiste = await context.Clans.AnyAsync(c => c.Tag == request.ClanTag, cancellationToken: cancellationToken);
+            //if (!clanExiste)
+            //    return ValidationErrors.ClanValidationErros.ClanNaoExiste;
 
-            LigaDeGuerra? ligaDeGuerra = await context.LigaDeGuerras
-                .Include(l => l.Rodadas!)
-                .Include(l => l.Clans!).ThenInclude(c => c.Membros)
-                .FirstOrDefaultAsync(l => l.ClanTag == request.ClanTag && l.Temporada == request.Temporada, cancellationToken: cancellationToken);
+            //LigaDeGuerra? ligaDeGuerra = await context.LigaDeGuerras
+            //    .Include(l => l.Rodadas!)
+            //    .Include(l => l.Clans!).ThenInclude(c => c.Membros)
+            //    .FirstOrDefaultAsync(l => l.ClanTag == request.ClanTag && l.Temporada == request.Temporada, cancellationToken: cancellationToken);
 
-            if (ligaDeGuerra is null)
-            {
-                ligaDeGuerra = new(request.ClanTag, request.Status, request.Temporada);
+            //if (ligaDeGuerra is null)
+            //{
+            //    ligaDeGuerra = new(request.ClanTag, request.Status, request.Temporada);
 
-                foreach (var clan in request.Clans)
-                {
-                    LigaGuerraClan ligaGuerraClan = ligaDeGuerra.AdicionarClan(clan.Tag, clan.Nome, clan.ClanLevel);
+            //    foreach (var clan in request.Clans)
+            //    {
+            //        LigaGuerraClan ligaGuerraClan = ligaDeGuerra.AdicionarClan(clan.Tag, clan.Nome, clan.ClanLevel);
 
-                    foreach (var membro in clan.Membros)
-                    {
-                        ligaGuerraClan.AdicionarMembro(membro.Tag, membro.Nome, membro.CentroVilaLevel);
-                    }
-                }
-                foreach (var rodada in request.Rodadas)
-                {
-                    ligaDeGuerra.AdicionarRodada(rodada.Status, rodada.Dia, rodada.GuerraTag, rodada.ClanTag, rodada.ClanTagOponente, rodada.InicioGuerra, rodada.FimGuerra);
-                }
-                context.Add(ligaDeGuerra);
-            }
-            else
-            {
-                foreach (var clan in request.Clans)
-                {
-                    LigaGuerraClan ligaGuerraClan = ligaDeGuerra.AdicionarClan(clan.Tag, clan.Nome, clan.ClanLevel);
-                    ligaGuerraClan.AtualizarLevelClan(clan.ClanLevel);
+            //        foreach (var membro in clan.Membros)
+            //        {
+            //            ligaGuerraClan.AdicionarMembro(membro.Tag, membro.Nome, membro.CentroVilaLevel);
+            //        }
+            //    }
+            //    foreach (var rodada in request.Rodadas)
+            //    {
+            //        ligaDeGuerra.AdicionarRodada(rodada.Status, rodada.Dia, rodada.GuerraTag, rodada.ClanTag, rodada.ClanTagOponente, rodada.InicioGuerra, rodada.FimGuerra);
+            //    }
+            //    context.Add(ligaDeGuerra);
+            //}
+            //else
+            //{
+            //    foreach (var clan in request.Clans)
+            //    {
+            //        LigaGuerraClan ligaGuerraClan = ligaDeGuerra.AdicionarClan(clan.Tag, clan.Nome, clan.ClanLevel);
+            //        ligaGuerraClan.AtualizarLevelClan(clan.ClanLevel);
 
-                    foreach (var membro in clan.Membros)
-                    {
-                        ligaGuerraClan.AdicionarMembro(membro.Tag, membro.Nome, membro.CentroVilaLevel);
-                    }
-                    foreach (var rodada in request.Rodadas)
-                    {
-                        ligaDeGuerra.AdicionarRodada(rodada.Status, rodada.Dia, rodada.GuerraTag, rodada.ClanTag, rodada.ClanTagOponente, rodada.InicioGuerra, rodada.FimGuerra);
-                    }
-                }
-            }
-            foreach (var rodada in request.Rodadas)
-            {
-                Guerra? guerra = await context.Guerras
-                        .Include(g => g.ClanEmGuerra)
-                            .ThenInclude(c => c.MembrosEmGuerra)
-                                .ThenInclude(m => m.Ataques)
-                        .FirstOrDefaultAsync(g => g.ClanEmGuerra.Tag == rodada.ClanTag && g.GuerraTag == rodada.GuerraTag,
-                                             cancellationToken);
-                ClanEmGuerraDTO clan = request.Clans.First(c => c.Tag == rodada.ClanTag);
+            //        foreach (var membro in clan.Membros)
+            //        {
+            //            ligaGuerraClan.AdicionarMembro(membro.Tag, membro.Nome, membro.CentroVilaLevel);
+            //        }
+            //        foreach (var rodada in request.Rodadas)
+            //        {
+            //            ligaDeGuerra.AdicionarRodada(rodada.Status, rodada.Dia, rodada.GuerraTag, rodada.ClanTag, rodada.ClanTagOponente, rodada.InicioGuerra, rodada.FimGuerra);
+            //        }
+            //    }
+            //}
+            //foreach (var rodada in request.Rodadas)
+            //{
+            //    Guerra? guerra = await context.Guerras
+            //            .Include(g => g.ClanEmGuerra)
+            //                .ThenInclude(c => c.MembrosEmGuerra)
+            //                    .ThenInclude(m => m.Ataques)
+            //            .FirstOrDefaultAsync(g => g.ClanEmGuerra.Tag == rodada.ClanTag && g.GuerraTag == rodada.GuerraTag,
+            //                                 cancellationToken);
+            //    ClanEmGuerraDTO clan = request.Clans.First(c => c.Tag == rodada.ClanTag);
                 
-                if (guerra is null)
-                {
-                    guerra = guerraService.CriarGuerra(rodada.Status, rodada.InicioGuerra, rodada.FimGuerra, rodada.TipoGuerra, clan);
-                    guerra.DefinirGuerraTag(rodada.GuerraTag);
-                    context.Guerras.Add(guerra);
-                    continue;
-                }
-                else
-                {
-                    guerraService.AtualizarGuerra(guerra, rodada.Status, rodada.FimGuerra, clan);
-                    guerra.DefinirGuerraTag(rodada.GuerraTag);
-                }
-            }
+            //    if (guerra is null)
+            //    {
+            //        guerra = guerraService.CriarGuerra(rodada.Status, rodada.InicioGuerra, rodada.FimGuerra, rodada.TipoGuerra, clan);
+            //        guerra.DefinirGuerraTag(rodada.GuerraTag);
+            //        context.Guerras.Add(guerra);
+            //        continue;
+            //    }
+            //    else
+            //    {
+            //        guerraService.AtualizarGuerra(guerra, rodada.Status, rodada.FimGuerra, clan);
+            //        guerra.DefinirGuerraTag(rodada.GuerraTag);
+            //    }
+            //}
 
-            await context.Commit(cancellationToken);
+            //await context.Commit(cancellationToken);
 
-            bool response = true;
-            return response;
+            //bool response = true;
+            //return response;
         }
 
     }

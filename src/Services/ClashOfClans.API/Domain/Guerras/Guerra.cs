@@ -8,20 +8,22 @@ public class Guerra : Entity, IAggregateRoot
     public string Status { get; set; } = string.Empty;
     public DateTime InicioGuerra { get; init; }
     public DateTime FimGuerra { get; private set; }
-    public int ClanEmGuerraId { get; set; }
-    public ClanEmGuerra ClanEmGuerra { get; set; }
+    public List<ClanEmGuerra> ClansEmGuerra { get; set; } = [];
     public string TipoGuerra { get; init; } = "Normal";
     public string GuerraTag { get; private set; } = string.Empty;
-    //public ClanEmGuerra ClanEmGuerraOponente { get; init; }
 
     private Guerra() { }
-    public Guerra(string status, DateTime inicioGuerra, DateTime fimGuerra, string tipoGuerra, ClanEmGuerra clanEmGuerra)
+    public Guerra(string status, DateTime inicioGuerra, DateTime fimGuerra, string tipoGuerra)
     {
         Status = status;
         InicioGuerra = inicioGuerra;
         FimGuerra = fimGuerra;
         TipoGuerra = tipoGuerra;
-        ClanEmGuerra = clanEmGuerra;
+    }
+
+    public void AdicionarClan(ClanEmGuerra clan)
+    {
+        ClansEmGuerra.Add(clan);
     }
 
     public void DefinirGuerraTag(string guerraTag)
@@ -40,13 +42,17 @@ public class Guerra : Entity, IAggregateRoot
         FimGuerra = fimGuerra;
     }
 
-    public static Result<Guerra> Criar(string status, DateTime inicioGuerra, DateTime fimGuerra, string tipoGuerra, ClanEmGuerra clanEmGuerra)
+    public static Result<Guerra> Criar(string status, DateTime inicioGuerra, DateTime fimGuerra, string tipoGuerra, List<ClanEmGuerra> clans)
     {
-        ArgumentNullException.ThrowIfNull(clanEmGuerra);
         if (inicioGuerra > fimGuerra)
             return ValidationErrors.GuerraValidationErros.InicioMaiorQueFinal;
 
-        Guerra guerra = new(status, inicioGuerra, fimGuerra, tipoGuerra, clanEmGuerra);
+        Guerra guerra = new(status, inicioGuerra, fimGuerra, tipoGuerra);
+
+        foreach (var clan in clans)
+        {
+            guerra.AdicionarClan(clan);
+        }
         return guerra;
     }
 }

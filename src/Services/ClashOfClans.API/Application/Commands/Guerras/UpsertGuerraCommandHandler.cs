@@ -7,27 +7,39 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClashOfClans.API.Application.Commands.Guerras;
-public record UpsertGuerraRequest(string Status, DateTime InicioGuerra, DateTime FimGuerra, string TipoGuerra, ClanEmGuerraDTO Clan) : IRequest<CommandResult<UpsertGuerraResponse>>;
+
+public record UpsertGuerraRequest(string Status, DateTime InicioGuerra, DateTime FimGuerra, string TipoGuerra, List<ClanEmGuerraDTO> Clans) : IRequest<CommandResult<UpsertGuerraResponse>>;
 public record UpsertGuerraResponse(string Status, DateTime InicioGuerra, DateTime FimGuerra, ClanEmGuerraDTO Clan);
 public class UpsertGuerraCommandHandler(ClashOfClansContext context, GuerraService guerraService) : IRequestHandler<UpsertGuerraRequest, CommandResult<UpsertGuerraResponse>>
 {
     public async Task<CommandResult<UpsertGuerraResponse>> Handle(UpsertGuerraRequest request, CancellationToken cancellationToken)
     {
-        bool clanExiste = await context.Clans.AnyAsync(c => c.Tag == request.Clan.Tag, cancellationToken: cancellationToken);
+        var tagsClansPrincipais = request.Clans
+                .Where(c => c.Tipo == TipoClanGuerra.Principal)
+                .Select(c => c.Tag)
+                .ToList();
+
+        bool clanExiste = await context.Clans.AnyAsync(
+            c => tagsClansPrincipais.Contains(c.Tag),
+            cancellationToken
+        );
         if (!clanExiste)
         {
             return ValidationErrors.ClanValidationErros.ClanNaoExiste;
         }
+        var requestTags = request.Clans
+            .Select(c => c.Tag)
+            .ToList();
 
-        Guerra? guerraExistente = await context.Guerras.Include(g => g.ClanEmGuerra).ThenInclude(c => c.MembrosEmGuerra).ThenInclude(m => m.Ataques)
+        Guerra? guerraExistente = await context.Guerras.Include(g => g.ClansEmGuerra).ThenInclude(c => c.MembrosEmGuerra).ThenInclude(m => m.Ataques)
             .FirstOrDefaultAsync(
                 g =>
                     g.InicioGuerra == request.InicioGuerra &&
-                    g.ClanEmGuerra.Tag == request.Clan.Tag,
+                    g.ClansEmGuerra.Any(c => requestTags.Contains(c.Tag)),
                 cancellationToken: cancellationToken);
         if (guerraExistente is null)
         {
-            Guerra novaGuerra = guerraService.CriarGuerra(request.Status, request.InicioGuerra, request.FimGuerra, request.TipoGuerra, request.Clan);
+            Guerra novaGuerra = guerraService.CriarGuerra(request.Status, request.InicioGuerra, request.FimGuerra, request.TipoGuerra, request.Clans);
 
             context.Add(novaGuerra);
             await context.Commit(cancellationToken);
@@ -36,7 +48,7 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context, GuerraServi
             return responseCriacao;
         }
 
-        Guerra guerra = guerraService.AtualizarGuerra(guerraExistente, request.Status, request.FimGuerra, request.Clan);
+        Guerra guerra = guerraService.AtualizarGuerra(guerraExistente, request.Status, request.FimGuerra, request.Clans);
         await context.Commit(cancellationToken);
 
         UpsertGuerraResponse responseAtualizacao = MapearResponse(guerra);
@@ -47,21 +59,21 @@ public class UpsertGuerraCommandHandler(ClashOfClansContext context, GuerraServi
     {
         ClanEmGuerraDTO clanDTO = new()
         {
-            Tag = guerra.ClanEmGuerra.Tag,
-            Membros = guerra.ClanEmGuerra.MembrosEmGuerra.Select(m => new MembroEmGuerraDTO
-            {
-                Tag = m.Tag,
-                Nome = m.Nome,
-                CentroVilaLevel = m.CentroVilaLevel,
-                PosicaoMapa = m.PosicaoMapa,
-                Ataques = m.Ataques.Select(a => new AtaquesDTO
-                {
-                    AtacanteTag = a.AtacanteTag,
-                    DefensorTag = a.DefensorTag,
-                    Estrelas = a.Estrelas,
-                    PercentualDestruicao = a.PercentualDestruicao
-                })
-            })
+            //Tag = guerra.ClanEmGuerra.Tag,
+            //Membros = guerra.ClanEmGuerra.MembrosEmGuerra.Select(m => new MembroEmGuerraDTO
+            //{
+            //    Tag = m.Tag,
+            //    Nome = m.Nome,
+            //    CentroVilaLevel = m.CentroVilaLevel,
+            //    PosicaoMapa = m.PosicaoMapa,
+            //    Ataques = m.Ataques.Select(a => new AtaquesDTO
+            //    {
+            //        AtacanteTag = a.AtacanteTag,
+            //        DefensorTag = a.DefensorTag,
+            //        Estrelas = a.Estrelas,
+            //        PercentualDestruicao = a.PercentualDestruicao
+            //    })
+            //})
         };
 
         return new UpsertGuerraResponse(guerra.Status, guerra.InicioGuerra, guerra.FimGuerra, clanDTO);

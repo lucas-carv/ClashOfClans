@@ -7,13 +7,15 @@ public class ClanEmGuerra : Entity
     public string Tag { get; init; }
     public string Nome { get; set; }
     public List<MembroEmGuerra> MembrosEmGuerra { get; set; } = [];
-    public int GuerraId { get; }
-    public Guerra Guerra { get; }
+    public int GuerraId { get; private set; }
+    public Guerra Guerra { get; private set; }
+    public TipoClanNaGuerra Tipo { get; private set; }
     private ClanEmGuerra() { }
-    public ClanEmGuerra(string tag, string nome)
+    public ClanEmGuerra(string tag, string nome, TipoClanNaGuerra tipo)
     {
         Tag = tag;
         Nome = nome;
+        Tipo = tipo;
     }
 
     public MembroEmGuerra AdicionarMembro(string tag, string nome, int posicaoMapa)
@@ -26,4 +28,9 @@ public class ClanEmGuerra : Entity
         MembrosEmGuerra.Add(membroGuerra);
         return membroGuerra;
     }
+}
+public enum TipoClanNaGuerra
+{
+    Principal = 1,
+    Oponente = 2
 }

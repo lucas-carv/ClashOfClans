@@ -1,5 +1,7 @@
 ﻿using ClashOfClans.API.Data;
+using ClashOfClans.API.DTOs.Guerras;
 using ClashOfClans.API.Model;
+using ClashOfClans.API.Model.Guerras;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
@@ -17,10 +19,13 @@ public class AnalisarGuerrasJob(ClashOfClansContext context, ILogger<AnalisarGue
 
         CancellationToken cancellationToken = context.CancellationToken;
 
-        List<string> clansTags = await _context.Guerras
+        var clansTags = await _context.Guerras
             .AsNoTracking()
-            .Where(g => g.Status == "WarEnded")
-            .Select(g => g.ClanEmGuerra.Tag)
+            .Where(g => g.Status == "WarEnded" && g.TipoGuerra == "Normal")
+            .SelectMany(g =>
+                g.ClansEmGuerra
+                    .Where(c => c.Tipo.Equals(TipoClanNaGuerra.Principal))
+                    .Select(c => c.Tag))
             .Distinct()
             .ToListAsync(cancellationToken);
 
@@ -47,7 +52,7 @@ public class AnalisarGuerrasJob(ClashOfClansContext context, ILogger<AnalisarGue
     {
         var ultimasDuasGuerras = await _context.Guerras
             .AsNoTracking()
-            .Where(g => g.Status == "WarEnded" && g.ClanEmGuerra.Tag == clanTag)
+            .Where(g => g.Status == "WarEnded" && g.ClansEmGuerra.Any(c => c.Tag == clanTag))
             .OrderByDescending(g => g.FimGuerra)
             .Take(2)
             .Select(g => new { g.Id })

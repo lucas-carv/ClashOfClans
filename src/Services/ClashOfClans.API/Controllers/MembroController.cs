@@ -46,7 +46,7 @@ namespace ClashOfClans.API.Controllers
         {
             List<int> ultimasGuerrasIds = await context.Guerras
                 .AsNoTracking()
-                .Where(g => g.ClanEmGuerra.Tag == clanTag && g.Status == "WarEnded" && g.TipoGuerra == "Normal")
+                .Where(g => g.ClansEmGuerra.Any(c => c.Tag == clanTag && g.Status == "WarEnded" && g.TipoGuerra == "Normal"))
                 .OrderByDescending(g => g.FimGuerra)
                 .Take(5)
                 .Select(g => g.Id)

@@ -9,9 +9,10 @@ public class GuerraMapping : IEntityTypeConfiguration<Guerra>
 {
     public void Configure(EntityTypeBuilder<Guerra> builder)
     {
-        builder.HasOne(g => g.ClanEmGuerra)
-               .WithOne()
-               .HasForeignKey<ClanEmGuerra>(c => c.GuerraId);
+        builder.HasMany(g => g.ClansEmGuerra)
+               .WithOne(c => c.Guerra)
+               .HasForeignKey(c => c.GuerraId)
+               .OnDelete(DeleteBehavior.Cascade);
 
         builder.ToTable("guerra");
         builder.HasQueryFilter(p => p.FoiRemovido != null);

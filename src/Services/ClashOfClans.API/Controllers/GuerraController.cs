@@ -23,8 +23,8 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
     {
         var guerras = await context.Guerras
             .Where(g =>
-                g.ClanEmGuerra.Tag == clanTag &&
-                g.TipoGuerra.Equals("Normal"))
+                g.ClansEmGuerra.Any(c => c.Tag == clanTag &&
+                g.TipoGuerra.Equals("Normal")))
             .OrderByDescending(g => g.FimGuerra)
             .ToListAsync();
 

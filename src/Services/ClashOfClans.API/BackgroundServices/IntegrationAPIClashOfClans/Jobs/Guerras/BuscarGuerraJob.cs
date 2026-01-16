@@ -38,9 +38,10 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService, IMediator 
 
         ClanEmGuerraDTO clan = new()
         {
-            ClanLevel = 0,
+            ClanLevel = war.Clan.ClanLevel,
             Nome = war.Clan.Name,
             Tag = war.Clan.Tag,
+            Tipo = TipoClanGuerra.Principal,
             Membros = war.Clan.Members.Select(m => new MembroEmGuerraDTO()
             {
                 CentroVilaLevel = 0,
@@ -57,7 +58,36 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService, IMediator 
             })
         };
 
-        UpsertGuerraRequest upsertGuerraRequest = new(war.State.ToString(), war.StartTime, war.EndTime, "Normal", clan);
+        ClanEmGuerraDTO clanOponente = new()
+        {
+            ClanLevel = war.Opponent.ClanLevel,
+            Nome = war.Opponent.Name,
+            Tag = war.Opponent.Tag,
+            Tipo = TipoClanGuerra.Oponente,
+            Membros = war.Opponent.Members.Select(m => new MembroEmGuerraDTO()
+            {
+                CentroVilaLevel = m.TownhallLevel,
+                Nome = m.Name,
+                Tag = m.Tag,
+                PosicaoMapa = m.MapPosition,
+                Ataques = m.Attacks.Select(a => new AtaquesDTO()
+                {
+                    Estrelas = a.Stars,
+                    AtacanteTag = a.AttackerTag,
+                    DefensorTag = a.DefenderTag,
+                    PercentualDestruicao = a.DestructionPercentage
+                })
+            })
+        };
+
+        List<ClanEmGuerraDTO> clans = [clan, clanOponente];
+
+        UpsertGuerraRequest upsertGuerraRequest = new(
+            war.State.ToString(),
+            war.StartTime,
+            war.EndTime,
+            "Normal",
+            clans);
 
         await _mediator.Send(upsertGuerraRequest);
         Console.WriteLine("Finalizando job de buscar guerra");

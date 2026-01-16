@@ -5,9 +5,15 @@ public class ClanEmGuerraDTO
     public string Nome { get; set; }
     public int ClanLevel { get; set; }
     public IEnumerable<MembroEmGuerraDTO> Membros { get; set; } = [];
-
+    public TipoClanGuerra Tipo { get; set; }
     public ClanEmGuerraDTO()
     {
 
     }
+}
+
+public enum TipoClanGuerra
+{
+    Principal = 1,
+    Oponente = 2
 }

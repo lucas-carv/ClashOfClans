@@ -11,9 +11,11 @@ public record WarResponse
     [JsonConverter(typeof(CustomDateTimeConverter))]
     public required DateTime EndTime { get; set; }
     public required ClanWarDTO Clan { get; set; }
+    public required ClanWarDTO Opponent { get; set; }
 }
 public record ClanWarDTO
 {
+    public int ClanLevel { get; set; }
     public required string Tag { get; set; } 
     public required string Name { get; set; } 
     public IEnumerable<MembersWarDTO> Members { get; set; } = [];
@@ -25,6 +27,7 @@ public record MembersWarDTO
     public required string Name { get; set; } 
     public IEnumerable<AttacksDTO> Attacks { get; set; } = [];
     public required int MapPosition { get; set; }
+    public required int TownhallLevel { get; set; }
 
 }
 public record AttacksDTO

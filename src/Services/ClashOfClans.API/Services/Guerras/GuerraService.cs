@@ -5,34 +5,47 @@ namespace ClashOfClans.API.Services.Guerras;
 
 public class GuerraService
 {
-    public Guerra CriarGuerra(string status, DateTime inicioGuerra, DateTime fimGuerra, string tipoGuerra, ClanEmGuerraDTO clan)
+    public Guerra CriarGuerra(string status, DateTime inicioGuerra, DateTime fimGuerra, string tipoGuerra, List<ClanEmGuerraDTO> clans)
     {
-        ClanEmGuerra clanEmGuerra = new(clan.Tag, clan.Nome);
-        foreach (var membro in clan.Membros)
+        Guerra novaGuerra = new(status, inicioGuerra, fimGuerra, tipoGuerra);
+
+        foreach (var clan in clans)
         {
-            MembroEmGuerra membroEmGuerra = clanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome, membro.PosicaoMapa);
-            foreach (var ataque in membro.Ataques)
+            var clanEmGuerra = new ClanEmGuerra(clan.Tag, clan.Nome, (TipoClanNaGuerra)clan.Tipo);
+            foreach (var membro in clan.Membros)
             {
-                membroEmGuerra.AdicionarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas, ataque.PercentualDestruicao);
+                MembroEmGuerra membroEmGuerra = clanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome, membro.PosicaoMapa);
+                foreach (var ataque in membro.Ataques)
+                {
+                    membroEmGuerra.AdicionarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas, ataque.PercentualDestruicao);
+                }
             }
+            novaGuerra.AdicionarClan(clanEmGuerra);
         }
-        Guerra novaGuerra = new(status, inicioGuerra, fimGuerra, tipoGuerra, clanEmGuerra);
         return novaGuerra;
     }
-    public Guerra AtualizarGuerra(Guerra guerraExistente, string status, DateTime fimGuerra, ClanEmGuerraDTO clan)
+    public Guerra AtualizarGuerra(Guerra guerraExistente, string status, DateTime fimGuerra, List<ClanEmGuerraDTO> clans)
     {
         guerraExistente.Status = status;
         if (!guerraExistente.FimGuerra.Equals(fimGuerra))
         {
             guerraExistente.AlterarDataFinalGuerra(fimGuerra);
         }
-        foreach (var membro in clan.Membros)
-        {
-            MembroEmGuerra membroEmGuerra = guerraExistente.ClanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome, membro.PosicaoMapa);
 
-            foreach (var ataque in membro.Ataques)
+        foreach (var clan in clans)
+        {
+            ClanEmGuerra? clanGuerra = guerraExistente.ClansEmGuerra.FirstOrDefault(c => c.Tag.Equals(clan.Tag));
+            if (clanGuerra is null)
+                throw new Exception($"Falha ao obter a guerra com a tag {clan.Tag}");
+
+            foreach (var membro in clan.Membros)
             {
-                membroEmGuerra.AdicionarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas, ataque.PercentualDestruicao);
+                MembroEmGuerra membroEmGuerra = clanGuerra!.AdicionarMembro(membro.Tag, membro.Nome, membro.PosicaoMapa);
+
+                foreach (var ataque in membro.Ataques)
+                {
+                    membroEmGuerra.AdicionarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas, ataque.PercentualDestruicao);
+                }
             }
         }
         return guerraExistente;

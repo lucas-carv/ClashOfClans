@@ -1,4 +1,5 @@
 ﻿using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Jobs;
+using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Jobs.Configurations;
 using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Jobs.Guerras;
 using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Services;
 using ClashOfClans.API.Data;

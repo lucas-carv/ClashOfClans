@@ -20,17 +20,17 @@ public class DetectarMembrosInativosEmGuerrasJob(ClashOfClansContext context) : 
         List<string> clansTags = await _context.Guerras
             .AsNoTracking()
             .Where(g => g.Status == "WarEnded" && g.FimGuerra >= limite)
-            .Select(g => g.ClanEmGuerra.Tag)
+            .SelectMany(g => g.ClansEmGuerra.Select(c => c.Tag))
             .Distinct()
             .ToListAsync(cancellationToken);
 
         foreach (var clanTag in clansTags)
         {
             List<Guerra> ultimasCincoGuerras = await _context.Guerras
-                .Include(g => g.ClanEmGuerra)
+                .Include(g => g.ClansEmGuerra)
                     .ThenInclude(a => a.MembrosEmGuerra)
                         .ThenInclude(a => a.Ataques)
-                .Where(g => g.Status == "WarEnded" && g.ClanEmGuerra.Tag == clanTag)
+                .Where(g => g.Status == "WarEnded" && g.ClansEmGuerra.Any(c => c.Tag == clanTag))
                 .OrderByDescending(g => g.FimGuerra)
                 .Take(5)
                 .ToListAsync(cancellationToken);
@@ -51,7 +51,7 @@ public class DetectarMembrosInativosEmGuerrasJob(ClashOfClansContext context) : 
                 .ToListAsync(cancellationToken);
 
             HashSet<string> tagsMembrosQueParticiparam = ultimasCincoGuerras
-                .SelectMany(g => g.ClanEmGuerra.MembrosEmGuerra)
+                .SelectMany(g => g.ClansEmGuerra.SelectMany(c => c.MembrosEmGuerra))
                 .Select(mg => mg.Tag)
                 .Distinct()
                 .ToHashSet();
