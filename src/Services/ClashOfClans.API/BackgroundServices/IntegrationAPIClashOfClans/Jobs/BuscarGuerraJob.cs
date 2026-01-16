@@ -63,19 +63,3 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService, IMediator 
         Console.WriteLine("Finalizando job de buscar guerra");
     }
 }
-public static class BuscarGuerraJobConfiguration
-{
-    public static void AddBuscarGuerraJob(this IServiceCollectionQuartzConfigurator configurator)
-    {
-        JobKey jobKey = new(nameof(BuscarGuerraJob));
-        configurator.AddJob<BuscarGuerraJob>(opts => opts.WithIdentity(jobKey));
-
-        configurator.AddTrigger(opts => opts
-            .ForJob(jobKey)
-            .WithIdentity($"{nameof(BuscarGuerraJob)}-trigger")
-            .StartNow()
-            .WithSimpleSchedule(x => x.WithIntervalInMinutes(10)
-            .RepeatForever())
-            );
-    }
-}
