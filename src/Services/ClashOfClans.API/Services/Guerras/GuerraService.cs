@@ -36,8 +36,8 @@ public class GuerraService
         {
             ClanEmGuerra? clanGuerra = guerraExistente.ClansEmGuerra.FirstOrDefault(c => c.Tag.Equals(clan.Tag));
             if (clanGuerra is null)
-                throw new Exception($"Falha ao obter a guerra com a tag {clan.Tag}");
-
+                clanGuerra = new ClanEmGuerra(clan.Tag, clan.Nome, (TipoClanNaGuerra)clan.Tipo);
+            
             foreach (var membro in clan.Membros)
             {
                 MembroEmGuerra membroEmGuerra = clanGuerra!.AdicionarMembro(membro.Tag, membro.Nome, membro.PosicaoMapa);
