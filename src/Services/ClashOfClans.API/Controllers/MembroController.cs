@@ -1,5 +1,6 @@
 ﻿using ClashOfClans.API.Data;
 using ClashOfClans.API.Model.Clans;
+using ClashOfClans.API.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +13,7 @@ namespace ClashOfClans.API.Controllers
         /// Obtém o resumo de ataque dos membros do clan
         /// </summary>
         /// <response code="200">Retorna o resumo de ataque dos membros</response>
-        [ProducesResponseType(typeof(List<MembroViewModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<MembroResumoViewModel>), StatusCodes.Status200OK)]
         [HttpGet("clanTag/{clanTag}/resumo")]
         public async Task<IActionResult> ObterResumoMembrosPorClanTag(string clanTag)
         {
@@ -25,7 +26,7 @@ namespace ClashOfClans.API.Controllers
                     .ThenByDescending(m => m.GuerrasParticipadasSeq)
                 .ToListAsync();
 
-            List<MembroViewModel> membrosViewModel = membros.Select(m => new MembroViewModel
+            List<MembroResumoViewModel> membrosViewModel = membros.Select(m => new MembroResumoViewModel
             {
                 Nome = m.Nome,
                 Tag = m.MembroTag,
@@ -98,23 +99,5 @@ namespace ClashOfClans.API.Controllers
 
             return Ok(desempenho);
         }
-    }
-
-    public class MembroViewModel
-    {
-        public required string Tag { get; set; }
-        public required string Nome { get; set; }
-        public int GuerrasParticipadasSeq { get; set; }
-        public int QuantidadeAtaques { get; set; }
-    }
-    public class DesempenhoMembroViewModel
-    {
-        public required string MembroTag { get; set; }
-        public required string Nome { get; set; }
-        public int TotalAtaques { get; set; }
-        public int TotalEstrelas { get; set; }
-        public double MediaEstrelas { get; set; }
-        public double MediaDestruicao { get; set; }
-        public int QuantidadeGuerras { get; set; }
     }
 }
