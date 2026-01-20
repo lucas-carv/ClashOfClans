@@ -1,7 +1,7 @@
-﻿using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Jobs;
-using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Jobs.Configurations;
+﻿using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Jobs.Configurations;
 using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Jobs.Guerras;
 using ClashOfClans.API.BackgroundServices.IntegrationAPIClashOfClans.Services;
+using ClashOfClans.API.Core;
 using ClashOfClans.API.Data;
 using ClashOfClans.API.Services.Guerras;
 using Microsoft.EntityFrameworkCore;
@@ -84,9 +84,9 @@ builder.Services.AddQuartzHostedService(o =>
 });
 
 var app = builder.Build();
-
 app.UseCors("Cors");
 
+app.UseProblemDetailsExceptionHandler();
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
