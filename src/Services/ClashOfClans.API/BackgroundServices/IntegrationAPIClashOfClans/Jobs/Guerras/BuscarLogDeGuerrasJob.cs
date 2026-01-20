@@ -78,7 +78,6 @@ public static class AnalisarGuerrasJobConfiguration
             .ForJob(jobKey)
             .WithIdentity($"{nameof(BuscarLogDeGuerrasJob)}-trigger")
             .StartNow()
-            //.StartAt(DateBuilder.FutureDate(1, IntervalUnit.Minute))
             .WithSimpleSchedule(x => x.WithIntervalInHours(10)
             .RepeatForever())
             );

@@ -1,5 +1,4 @@
 ﻿using ClashOfClans.API.Data;
-using ClashOfClans.API.DTOs.Guerras;
 using ClashOfClans.API.Model;
 using ClashOfClans.API.Model.Guerras;
 using Microsoft.EntityFrameworkCore;
