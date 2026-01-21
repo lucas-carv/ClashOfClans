@@ -7,4 +7,6 @@ public class LogGuerraViewModel
     public int EstrelasClan { get; set; }
     public string OponenteNome { get; set; }
     public int EstrelasOponente { get; set; }
+    public DateTime InicioGuerra { get; set; } 
+    public DateTime FimGuerra { get; set; } 
 }
