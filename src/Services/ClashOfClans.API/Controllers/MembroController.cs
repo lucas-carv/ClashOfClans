@@ -43,13 +43,13 @@ namespace ClashOfClans.API.Controllers
         /// <response code="200">Retorna o desempenho dos membros</response>
         [ProducesResponseType(typeof(List<DesempenhoMembroViewModel>), StatusCodes.Status200OK)]
         [HttpGet("clanTag/{clanTag}/desempenho")]
-        public async Task<IActionResult> ObterDesempenhoDeMembros(string clanTag)
+        public async Task<IActionResult> ObterDesempenhoDeMembros(string clanTag, int quantidadeGuerras)
         {
             List<int> ultimasGuerrasIds = await context.Guerras
                 .AsNoTracking()
                 .Where(g => g.ClansEmGuerra.Any(c => c.Tag == clanTag && g.Status == "WarEnded" && g.TipoGuerra == "Normal"))
                 .OrderByDescending(g => g.FimGuerra)
-                .Take(5)
+                .Take(quantidadeGuerras)
                 .Select(g => g.Id)
                 .ToListAsync();
 
