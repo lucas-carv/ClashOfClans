@@ -21,10 +21,10 @@ export const obterResumoDeMembros = async (clanTag) => {
     }
 };
 
-export const obterDesempenhoDeMembros = async (clanTag) => {
+export const obterDesempenhoDeMembros = async (clanTag, quantidadeGuerras) => {
     try {
         const encodedTag = encodeURIComponent(clanTag);
-        const response = await api.get(`/api/v1/membro/clanTag/${encodedTag}/desempenho`);
+        const response = await api.get(`/api/v1/membro/clanTag/${encodedTag}/desempenho?quantidadeGuerras=${quantidadeGuerras}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching member performance:', error);

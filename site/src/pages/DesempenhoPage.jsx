@@ -8,12 +8,13 @@ const PerformancePage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const clanTag = '#2L0UC9R8P';
+    const [quantidadeGuerras, setQuantidadeGuerras] = useState(5);
 
     const fetchPerformance = async () => {
         setLoading(true);
         setError(null);
         try {
-            const data = await obterDesempenhoDeMembros(clanTag);
+            const data = await obterDesempenhoDeMembros(clanTag, quantidadeGuerras);
             const formattedData = data.map(item => {
                 const newItem = {};
 
@@ -55,8 +56,19 @@ const PerformancePage = () => {
 
     return (
         <div className="section-container">
-            <h2>Desempenho dos Membros nas últimas 5 guerras</h2>
-            <button onClick={fetchPerformance}>Buscar</button>
+            <h2>Desempenho dos Membros nas últimas {quantidadeGuerras} guerras</h2>
+            <div className="filters">
+                <label>
+                    Quantidade de guerras:
+                    <input
+                        type="number"
+                        min="1"
+                        value={quantidadeGuerras}
+                        onChange={(e) => setQuantidadeGuerras(Number(e.target.value))}
+                    />
+                </label>
+                <button onClick={fetchPerformance}>Buscar</button>
+            </div>
             {loading && <div className="loading">Carregando desempenho...</div>}
 
             {error && <div className="error">{error}</div>}
