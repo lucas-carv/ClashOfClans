@@ -9,11 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashOfClans.ETL", "src\Ser
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashOfClans.UnitTests", "src\Services\ClashOfClans.UnitTests\ClashOfClans.UnitTests.csproj", "{3CB2C6A5-AB80-7248-2765-AD6390CBC59C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashOfClans", "src\Desktop\ClashOfClans\ClashOfClans.csproj", "{074982A7-4062-DDEE-F1E7-F1E6CD24EF42}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Desktop", "Desktop", "{ED01448B-BCF6-435E-9898-D36A61F5B85F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +29,6 @@ Global
 		{3CB2C6A5-AB80-7248-2765-AD6390CBC59C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CB2C6A5-AB80-7248-2765-AD6390CBC59C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CB2C6A5-AB80-7248-2765-AD6390CBC59C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{074982A7-4062-DDEE-F1E7-F1E6CD24EF42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{074982A7-4062-DDEE-F1E7-F1E6CD24EF42}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{074982A7-4062-DDEE-F1E7-F1E6CD24EF42}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{074982A7-4062-DDEE-F1E7-F1E6CD24EF42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,7 +37,6 @@ Global
 		{BD34D246-6D9E-0BF9-2ADC-1A4BFC1FBB67} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{80993CE9-8B77-0E34-FC91-923EB07E7194} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{3CB2C6A5-AB80-7248-2765-AD6390CBC59C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{074982A7-4062-DDEE-F1E7-F1E6CD24EF42} = {ED01448B-BCF6-435E-9898-D36A61F5B85F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {365CB0F7-11CF-4AF2-BDD8-3F8D884F9801}
