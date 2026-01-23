@@ -46,39 +46,36 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
     [HttpGet("log/clanTag/{clanTag}")]
     public async Task<IActionResult> ObterLogs(string clanTag)
     {
-        //var logs = await context.LogsGuerras
-        //    .Include(a => a.Clan)
-        //    .Include(a => a.Oponente)
-        //    .Where(g => g.Clan.Tag == clanTag)
-        //    .OrderByDescending(g => g.FimGuerra)
-        //    .Join(context.Guerras,
-        //        log => log.FimGuerra.Date,
-        //        guerra => guerra.FimGuerra.Date,
-        //        (l, g) => new { Log = l, Guerra = g })
-        //    .Select(x => new
-        //    {
-        //        ClanNome = x.Log.Clan.Nome,
-        //        EstrelasClan = x.Log.Clan.Estrelas,
-        //        EstrelasOponente = x.Log.Oponente.Estrelas,
-        //        OponenteNome = x.Log.Oponente.Nome,
-        //        Resultado = x.Log.Resultado,
-        //        InicioGuerra = x.Guerra.InicioGuerra,
-        //        FimGuerra = x.Guerra.FimGuerra
-        //    })
-        //    .ToListAsync();
-
-        var logs = await context.LogsGuerras.Include(a => a.Clan).Include(a => a.Oponente)
+        var logs = await context.LogsGuerras
+            .Include(a => a.Clan)
+            .Include(a => a.Oponente)
             .Where(g => g.Clan.Tag == clanTag)
             .OrderByDescending(g => g.FimGuerra)
+            .Join(context.Guerras,
+                log => log.FimGuerra.Date,
+                guerra => guerra.FimGuerra.Date,
+                (l, g) => new { Log = l, Guerra = g })
+            .Select(x => new
+            {
+                ClanNome = x.Log.Clan.Nome,
+                EstrelasClan = x.Log.Clan.Estrelas,
+                EstrelasOponente = x.Log.Oponente.Estrelas,
+                OponenteNome = x.Log.Oponente.Nome,
+                Resultado = x.Log.Resultado,
+                InicioGuerra = x.Guerra.InicioGuerra,
+                FimGuerra = x.Guerra.FimGuerra
+            })
             .ToListAsync();
 
         IEnumerable<LogGuerraViewModel> resultado = logs.Select(l => new LogGuerraViewModel
         {
-            ClanNome = l.Clan.Nome,
-            EstrelasClan = l.Clan.Estrelas,
-            EstrelasOponente = l.Oponente.Estrelas,
-            OponenteNome = l.Oponente.Nome,
-            Resultado = l.Resultado
+            ClanNome = l.ClanNome,
+            EstrelasClan = l.EstrelasClan,
+            EstrelasOponente = l.EstrelasOponente,
+            OponenteNome = l.OponenteNome,
+            Resultado = l.Resultado,
+            FimGuerra = l.FimGuerra,
+            InicioGuerra = l.InicioGuerra
         });
         return Ok(resultado);
     }
