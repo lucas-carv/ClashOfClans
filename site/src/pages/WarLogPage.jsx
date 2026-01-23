@@ -12,8 +12,7 @@ const WarLogPage = () => {
         setError(null);
         try {
             const data = await obterLogsDeGuerra(clanTag);
-            // Ensure data is an array, if API returns a single object wrapper or something else, handle it.
-            // Assuming API returns an array of objects as described.
+            // Ensure data is an array
             setWarLogs(Array.isArray(data) ? data : [data]);
         } catch (err) {
             console.error(err);
@@ -27,6 +26,12 @@ const WarLogPage = () => {
         fetchLogs();
     }, []);
 
+    const formatDate = (dateString) => {
+        if (!dateString) return '01/01/0001';
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+        return new Date(dateString).toLocaleDateString('pt-BR', options);
+    };
+
     // Inline Styles for Premium Look
     const styles = {
         container: {
@@ -37,36 +42,68 @@ const WarLogPage = () => {
             maxWidth: '1200px',
             margin: '0 auto',
         },
-        card: (result) => ({
-            background: 'rgba(22, 27, 34, 0.6)',
-            backdropFilter: 'blur(12px)',
-            borderRadius: '16px',
-            border: `1px solid ${result === 'lose' ? '#ff6b6b' : '#4cc9f0'}`,
-            padding: '1.5rem',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-            position: 'relative',
-            overflow: 'hidden',
-        }),
+        card: (result) => {
+            let borderColor = '#4ade80'; // win (green)
+            if (result === 'lose') borderColor = '#ff6b6b';
+            if (result === 'draw') borderColor = '#a0aec0';
+
+            return {
+                background: 'rgba(22, 27, 34, 0.6)',
+                backdropFilter: 'blur(12px)',
+                borderRadius: '16px',
+                border: `1px solid ${borderColor}`,
+                padding: '1.5rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1rem',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                position: 'relative',
+                overflow: 'hidden',
+            };
+        },
         header: {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             marginBottom: '0.5rem',
         },
-        badge: (result) => ({
-            padding: '0.25rem 0.75rem',
-            borderRadius: '20px',
+        badge: (result) => {
+            let bgColor = 'rgba(74, 222, 128, 0.2)';
+            let color = '#4ade80';
+            let borderColor = '#4ade80';
+
+            if (result === 'lose') {
+                bgColor = 'rgba(255, 107, 107, 0.2)';
+                color = '#ff6b6b';
+                borderColor = '#ff6b6b';
+            } else if (result === 'draw') {
+                bgColor = 'rgba(160, 174, 192, 0.2)';
+                color = '#a0aec0';
+                borderColor = '#a0aec0';
+            }
+
+            return {
+                padding: '0.25rem 0.75rem',
+                borderRadius: '20px',
+                fontSize: '0.75rem',
+                fontWeight: '800',
+                textTransform: 'uppercase',
+                backgroundColor: bgColor,
+                color: color,
+                border: `1px solid ${borderColor}`,
+            };
+        },
+        dateContainer: {
+            display: 'flex',
+            flexDirection: 'column',
             fontSize: '0.75rem',
-            fontWeight: '800',
-            textTransform: 'uppercase',
-            backgroundColor: result === 'lose' ? 'rgba(255, 107, 107, 0.2)' : 'rgba(76, 201, 240, 0.2)',
-            color: result === 'lose' ? '#ff6b6b' : '#4cc9f0',
-            border: `1px solid ${result === 'lose' ? '#ff6b6b' : '#4cc9f0'}`,
-        }),
+            color: 'rgba(255, 255, 255, 0.6)',
+            textAlign: 'right',
+        },
+        dateText: {
+            marginBottom: '0.2rem',
+        },
         versusContainer: {
             display: 'flex',
             alignItems: 'center',
@@ -100,12 +137,6 @@ const WarLogPage = () => {
             fontStyle: 'italic',
             color: 'rgba(255, 255, 255, 0.2)',
         },
-        idLabel: {
-            fontSize: '0.7rem',
-            color: 'rgba(255, 255, 255, 0.4)',
-            marginTop: 'auto',
-            alignSelf: 'flex-end',
-        }
     };
 
     return (
@@ -132,8 +163,16 @@ const WarLogPage = () => {
             {!loading && !error && (
                 <div style={styles.container}>
                     {warLogs.map((log, index) => {
-                        // Normalize result string just in case
-                        const result = log.resultado?.toLowerCase() || 'lose';
+                        let result = log.resultado?.toLowerCase() || 'lose';
+
+                        // Check for draw
+                        if (log.estrelasClan === log.estrelasOponente) {
+                            result = 'draw';
+                        }
+
+                        let resultText = 'Vitória';
+                        if (result === 'lose') resultText = 'Derrota';
+                        if (result === 'draw') resultText = 'Empate';
 
                         return (
                             <div
@@ -150,8 +189,12 @@ const WarLogPage = () => {
                             >
                                 <div style={styles.header}>
                                     <span style={styles.badge(result)}>
-                                        {result === 'win' ? 'Vitória' : 'Derrota'}
+                                        {resultText}
                                     </span>
+                                    <div style={styles.dateContainer}>
+                                        <span>Início: {formatDate(log.inicioGuerra)}</span>
+                                        <span>Fim: {formatDate(log.fimGuerra)}</span>
+                                    </div>
                                 </div>
 
                                 <div style={styles.versusContainer}>
