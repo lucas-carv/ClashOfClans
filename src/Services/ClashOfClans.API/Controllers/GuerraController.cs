@@ -1,5 +1,6 @@
 ﻿using ClashOfClans.API.Application.Commands.Guerras;
 using ClashOfClans.API.Data;
+using ClashOfClans.API.Model.Guerras;
 using ClashOfClans.API.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -83,7 +84,7 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
     [HttpGet("detalhe/clan-tag/{clanTag}/oponente-tag/{oponenteTag}")]
     public async Task<IActionResult> ObterGuerraPorTags(string clanTag, string oponenteTag)
     {
-        var guerra = await context.Guerras.Include(g => g.ClansEmGuerra.Where(c => c.Tag == clanTag && c.Tag == oponenteTag))
+        List<Guerra> guerra = await context.Guerras.Include(g => g.ClansEmGuerra.Where(c => c.Tag == clanTag && c.Tag == oponenteTag))
             .ToListAsync();
 
         return Ok(guerra);
