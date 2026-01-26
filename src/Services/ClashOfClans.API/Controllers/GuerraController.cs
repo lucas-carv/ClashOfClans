@@ -80,6 +80,17 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
         return Ok(resultado);
     }
 
+    [HttpGet("detalhe/clan-tag/{clanTag}/oponente-tag/{oponenteTag}")]
+    public async Task<IActionResult> ObterGuerraPorTags(string clanTag, string oponenteTag)
+    {
+        var guerra = await context.Guerras.Include(g => g.ClansEmGuerra.Where(c => c.Tag == clanTag && c.Tag == oponenteTag))
+            .ToListAsync();
+
+        return Ok(guerra);
+
+    }
+
+
     /// <summary>
     /// Cria ou atualiza uma guerra
     /// </summary>
