@@ -27,72 +27,11 @@ const WarDetailsPage = () => {
         fetchDetails();
     }, [clanTag, oponenteTag]);
 
+    if (loading) return <div className="loading">Carregando detalhes...</div>;
+    if (error) return <div className="error">{error}</div>;
+    if (!warDetails) return <div className="error">Detalhes não encontrados.</div>;
+
     const styles = {
-        container: {
-            padding: '2rem 1rem',
-            maxWidth: '1200px',
-            margin: '0 auto',
-            color: '#fff',
-            paddingBottom: '4rem',
-        },
-        header: {
-            textAlign: 'center',
-            marginBottom: '2rem',
-            background: 'rgba(22, 27, 34, 0.6)',
-            padding: '1.5rem',
-            borderRadius: '16px',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)',
-        },
-        matchup: {
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: '2rem',
-            marginBottom: '1rem',
-            flexWrap: 'wrap',
-        },
-        clanName: {
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
-            color: '#fff',
-        },
-        vs: {
-            fontSize: '2rem',
-            fontWeight: '900',
-            fontStyle: 'italic',
-            color: 'rgba(255,255,255,0.3)',
-        },
-        columns: {
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-            gap: '2rem',
-        },
-        column: {
-            background: 'rgba(22, 27, 34, 0.4)',
-            borderRadius: '16px',
-            padding: '1.5rem',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-        },
-        columnHeader: {
-            textAlign: 'center',
-            marginBottom: '1.5rem',
-            paddingBottom: '1rem',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-            fontSize: '1.2rem',
-            fontWeight: 'bold',
-        },
-        memberList: {
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem',
-        },
-        memberCard: {
-            background: 'rgba(0, 0, 0, 0.3)',
-            borderRadius: '8px',
-            padding: '1rem',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-        },
         memberHeader: {
             display: 'flex',
             justifyContent: 'space-between',
@@ -113,30 +52,19 @@ const WarDetailsPage = () => {
         },
         stars: {
             color: '#fccb44',
-        },
-        backLink: {
-            display: 'inline-block',
-            marginBottom: '2rem',
-            color: '#4cc9f0',
-            textDecoration: 'none',
-            fontSize: '0.9rem',
         }
     };
 
-    if (loading) return <div className="loading">Carregando detalhes...</div>;
-    if (error) return <div className="error">{error}</div>;
-    if (!warDetails) return <div className="error">Detalhes não encontrados.</div>;
-
     return (
-        <div style={styles.container}>
-            <Link to="/logs" style={styles.backLink}>← Voltar para Logs</Link>
+        <div className="war-details-container">
+            <Link to="/logs" className="war-back-link">← Voltar para Logs</Link>
 
-            <div style={styles.header}>
-                <div style={styles.matchup}>
+            <div className="war-header-card">
+                <div className="war-matchup">
                     {warDetails.clansEmGuerra.map((clan, index) => (
                         <React.Fragment key={clan.tag}>
-                            <div style={styles.clanName}>{clan.nome}</div>
-                            {index === 0 && <div style={styles.vs}>VS</div>}
+                            <div className="war-clan-name">{clan.nome}</div>
+                            {index === 0 && <div className="war-vs-badge">VS</div>}
                         </React.Fragment>
                     ))}
                 </div>
@@ -146,13 +74,13 @@ const WarDetailsPage = () => {
                 </div>
             </div>
 
-            <div style={styles.columns}>
+            <div className="war-columns">
                 {warDetails.clansEmGuerra.map(clan => (
-                    <div key={clan.tag} style={styles.column}>
-                        <div style={styles.columnHeader}>{clan.nome}</div>
-                        <div style={styles.memberList}>
+                    <div key={clan.tag} className="war-column">
+                        <div className="war-column-header">{clan.nome}</div>
+                        <div className="war-member-list">
                             {clan.membrosEmGuerra.map(membro => (
-                                <div key={membro.tag} style={styles.memberCard}>
+                                <div key={membro.tag} className="war-member-card">
                                     <div style={styles.memberHeader}>
                                         <span style={{ fontWeight: 'bold' }}>{membro.posicaoMapa}. {membro.nome}</span>
                                         <span style={{ color: 'rgba(255,255,255,0.5)' }}>CV {membro.centroVilaLevel}</span>
