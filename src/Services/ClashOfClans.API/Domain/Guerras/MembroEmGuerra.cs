@@ -19,18 +19,17 @@ public class MembroEmGuerra : Entity
         PosicaoMapa = posicaoMapa;
     }
 
-    public void AdicionarAtaque(string atacanteTag, string defensorTag, int estrelas, decimal percentualDestruicao)
+    public void AdicionarAtaque(string atacanteTag, string defensorTag, int estrelas, decimal percentualDestruicao, int ordemAtaque)
     {
         GuerraMembroAtaque? ataque = Ataques.FirstOrDefault(a => a.AtacanteTag == atacanteTag && a.DefensorTag == defensorTag);
         if (ataque is not null)
         {
             //apagar essa tratativa para testar depois
-            ataque.AtualizarAtaque(estrelas, percentualDestruicao);
+            ataque.AtualizarAtaque(estrelas, percentualDestruicao, ordemAtaque);
             return;
         }
 
-        GuerraMembroAtaque novoAtaque = new(atacanteTag, defensorTag);
-        novoAtaque.AtualizarAtaque(estrelas, percentualDestruicao);
+        GuerraMembroAtaque novoAtaque = new(atacanteTag, defensorTag, estrelas, percentualDestruicao, ordemAtaque);
         Ataques.Add(novoAtaque);
         return;
     }

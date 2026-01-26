@@ -17,7 +17,10 @@ public record ClanWarDTO
 {
     public int ClanLevel { get; set; }
     public required string Tag { get; set; } 
-    public required string Name { get; set; } 
+    public required string Name { get; set; }
+    public int Attacks { get; set; }
+    public int Stars { get; set; }
+    public decimal DestructionPercentage { get; set; }
     public IEnumerable<MembersWarDTO> Members { get; set; } = [];
 }
 
@@ -36,6 +39,7 @@ public record AttacksDTO
     public required string DefenderTag { get; set; }
     public required int Stars { get; set; }
     public required decimal DestructionPercentage { get; set; }
+    public int Order { get; set; }
 }
 public enum StatusGuerra
 {

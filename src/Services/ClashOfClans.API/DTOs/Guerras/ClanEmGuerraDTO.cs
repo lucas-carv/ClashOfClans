@@ -6,10 +6,9 @@ public class ClanEmGuerraDTO
     public int ClanLevel { get; set; }
     public IEnumerable<MembroEmGuerraDTO> Membros { get; set; } = [];
     public TipoClanGuerra Tipo { get; set; }
-    public ClanEmGuerraDTO()
-    {
-
-    }
+    public int QuantidadeAtaques { get; set; }
+    public int Estrelas { get; set; }
+    public decimal PercentualDestruicao { get; set; }
 }
 
 public enum TipoClanGuerra

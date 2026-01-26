@@ -45,6 +45,9 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService, IMediator 
                 Nome = war.Clan.Name,
                 Tag = war.Clan.Tag,
                 Tipo = TipoClanGuerra.Principal,
+                QuantidadeAtaques = war.Clan.Attacks,
+                Estrelas = war.Clan.Stars,
+                PercentualDestruicao = war.Clan.DestructionPercentage,
                 Membros = war.Clan.Members.Select(m => new MembroEmGuerraDTO()
                 {
                     CentroVilaLevel = m.TownhallLevel,
@@ -56,7 +59,8 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService, IMediator 
                         Estrelas = a.Stars,
                         AtacanteTag = a.AttackerTag,
                         DefensorTag = a.DefenderTag,
-                        PercentualDestruicao = a.DestructionPercentage
+                        PercentualDestruicao = a.DestructionPercentage,
+                        OrdemAtaque = a.Order
                     })
                 })
             };
@@ -67,6 +71,9 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService, IMediator 
                 Nome = war.Opponent.Name,
                 Tag = war.Opponent.Tag,
                 Tipo = TipoClanGuerra.Oponente,
+                QuantidadeAtaques = war.Opponent.Attacks,
+                Estrelas = war.Opponent.Stars,
+                PercentualDestruicao = war.Opponent.DestructionPercentage,
                 Membros = war.Opponent.Members.Select(m => new MembroEmGuerraDTO()
                 {
                     CentroVilaLevel = m.TownhallLevel,
@@ -78,7 +85,8 @@ public class BuscarGuerraJob(ClashOfClansService clashOfClansService, IMediator 
                         Estrelas = a.Stars,
                         AtacanteTag = a.AttackerTag,
                         DefensorTag = a.DefenderTag,
-                        PercentualDestruicao = a.DestructionPercentage
+                        PercentualDestruicao = a.DestructionPercentage,
+                        OrdemAtaque = a.Order
                     })
                 })
             };

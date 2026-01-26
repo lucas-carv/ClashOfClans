@@ -12,12 +12,13 @@ public class GuerraService
         foreach (var clan in clans)
         {
             var clanEmGuerra = new ClanEmGuerra(clan.Tag, clan.Nome, (TipoClanNaGuerra)clan.Tipo);
+            clanEmGuerra.AtualizarClan(clan.QuantidadeAtaques, clan.Estrelas, clan.PercentualDestruicao);
             foreach (var membro in clan.Membros)
             {
                 MembroEmGuerra membroEmGuerra = clanEmGuerra.AdicionarMembro(membro.Tag, membro.Nome, membro.PosicaoMapa);
                 foreach (var ataque in membro.Ataques)
                 {
-                    membroEmGuerra.AdicionarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas, ataque.PercentualDestruicao);
+                    membroEmGuerra.AdicionarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas, ataque.PercentualDestruicao, ataque.OrdemAtaque);
                 }
             }
             novaGuerra.AdicionarClan(clanEmGuerra);
@@ -41,13 +42,15 @@ public class GuerraService
                 guerraExistente.AdicionarClan(clanGuerra);
             }
 
+            clanGuerra.AtualizarClan(clan.QuantidadeAtaques, clan.Estrelas, clan.PercentualDestruicao);
+
             foreach (var membro in clan.Membros)
             {
-                MembroEmGuerra membroEmGuerra = clanGuerra!.AdicionarMembro(membro.Tag, membro.Nome, membro.PosicaoMapa);
+                MembroEmGuerra membroEmGuerra = clanGuerra.AdicionarMembro(membro.Tag, membro.Nome, membro.PosicaoMapa);
 
                 foreach (var ataque in membro.Ataques)
                 {
-                    membroEmGuerra.AdicionarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas, ataque.PercentualDestruicao);
+                    membroEmGuerra.AdicionarAtaque(ataque.AtacanteTag, ataque.DefensorTag, ataque.Estrelas, ataque.PercentualDestruicao, ataque.OrdemAtaque);
                 }
             }
         }
