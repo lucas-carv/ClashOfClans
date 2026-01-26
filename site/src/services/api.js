@@ -42,3 +42,15 @@ export const obterLogsDeGuerra = async (clanTag) => {
         throw error;
     }
 };
+
+export const obterDetalhesDaGuerra = async (clanTag, oponenteTag) => {
+    try {
+        const encodedClanTag = encodeURIComponent(clanTag);
+        const encodedOponenteTag = encodeURIComponent(oponenteTag);
+        const response = await api.get(`/api/v1/guerra/detalhe/clan-tag/${encodedClanTag}/oponente-tag/${encodedOponenteTag}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching war details:', error);
+        throw error;
+    }
+};

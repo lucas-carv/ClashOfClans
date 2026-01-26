@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { obterLogsDeGuerra } from '../services/api';
 
 const WarLogPage = () => {
@@ -6,12 +7,14 @@ const WarLogPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const clanTag = '#2L0UC9R8P'; // Default tag
+    const navigate = useNavigate();
 
     const fetchLogs = async () => {
         setLoading(true);
         setError(null);
         try {
             const data = await obterLogsDeGuerra(clanTag);
+            console.log("War Logs Data:", data); // DEBUG: Inspect data structure
             // Ensure data is an array
             setWarLogs(Array.isArray(data) ? data : [data]);
         } catch (err) {
@@ -30,6 +33,25 @@ const WarLogPage = () => {
         if (!dateString) return '01/01/0001';
         const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
         return new Date(dateString).toLocaleDateString('pt-BR', options);
+    };
+
+    const handleCardClick = (log) => {
+        console.log("Clicked Log Entry:", log); // DEBUG: Check what's in the log entry
+
+        // Encode tags to ensure URL safety
+        const encodedClanTag = encodeURIComponent(clanTag);
+
+        // Tentative check for opponent tag property variants
+        const opponentTag = log.oponenteTag || log.oponente?.tag || log.opponentTag;
+
+        if (!opponentTag) {
+            console.error("Opponent Tag not found in log entry!", log);
+            alert("Erro: Tag do oponente não encontrada neste registro de guerra.");
+            return;
+        }
+
+        const encodedOpponentTag = encodeURIComponent(opponentTag);
+        navigate(`/guerra/detalhe/${encodedClanTag}/${encodedOpponentTag}`);
     };
 
     // Inline Styles for Premium Look
@@ -57,9 +79,10 @@ const WarLogPage = () => {
                 flexDirection: 'column',
                 gap: '1rem',
                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                transition: 'transform 0.2s ease, box-shadow 0.2s ease, cursor 0.2s ease',
                 position: 'relative',
                 overflow: 'hidden',
+                cursor: 'pointer', // Indicates playability
             };
         },
         header: {
@@ -164,7 +187,6 @@ const WarLogPage = () => {
                 <div style={styles.container}>
                     {warLogs.map((log, index) => {
                         let result = log.resultado?.toLowerCase() || 'lose';
-
                         // Check for draw
                         if (log.estrelasClan === log.estrelasOponente) {
                             result = 'draw';
@@ -178,6 +200,7 @@ const WarLogPage = () => {
                             <div
                                 key={index}
                                 style={styles.card(result)}
+                                onClick={() => handleCardClick(log)}
                                 onMouseEnter={(e) => {
                                     e.currentTarget.style.transform = 'translateY(-5px)';
                                     e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.5)';
