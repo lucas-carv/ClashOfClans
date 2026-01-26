@@ -69,7 +69,7 @@ const WarDetailsPage = () => {
                     ))}
                 </div>
                 <div style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)' }}>
-                    Início: {new Date(warDetails.inicioGuerra).toLocaleString()} •
+                    Início: {new Date(warDetails.inicioGuerra).toLocaleString()} <br />
                     Fim: {new Date(warDetails.fimGuerra).toLocaleString()}
                 </div>
             </div>
