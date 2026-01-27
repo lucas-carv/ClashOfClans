@@ -47,6 +47,7 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
     [HttpGet("log/clanTag/{clanTag}")]
     public async Task<IActionResult> ObterLogs(string clanTag)
     {
+        // necessário fazer query para popular as tabelas de guerras com os dados de estrelas dos clans
         //var guerras = await context.Guerras
         //  .Where(g => g.ClansEmGuerra.Count.Equals(2))
         //  .Include(g => g.ClansEmGuerra)
