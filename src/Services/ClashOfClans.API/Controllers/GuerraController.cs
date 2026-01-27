@@ -47,6 +47,55 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
     [HttpGet("log/clanTag/{clanTag}")]
     public async Task<IActionResult> ObterLogs(string clanTag)
     {
+        //var guerras = await context.Guerras
+        //  .Where(g => g.ClansEmGuerra.Count.Equals(2))
+        //  .Include(g => g.ClansEmGuerra)
+        //  .Where(g => g.ClansEmGuerra.Select(c => c.Tag).Contains(clanTag))
+        //  .ToListAsync();
+
+        //var result = guerras
+        //    .Select(x => new
+        //    {
+        //        Principal = x.ClansEmGuerra
+        //            .Where(c => c.Tipo.Equals(TipoClanNaGuerra.Principal))
+        //            .Select(c => new
+        //            {
+        //                c.Nome,
+        //                c.Tag,
+        //                c.Estrelas
+        //            })
+        //            .FirstOrDefault(),
+
+        //        Oponente = x.ClansEmGuerra
+        //            .Where(c => c.Tipo.Equals(TipoClanNaGuerra.Oponente))
+        //            .Select(c => new
+        //            {
+        //                c.Nome,
+        //                c.Tag,
+        //                c.Estrelas
+        //            })
+        //            .FirstOrDefault(),
+
+        //        Resultado = x.Status,
+        //        InicioGuerra = x.InicioGuerra,
+        //        FimGuerra = x.FimGuerra
+        //    }).ToList();
+
+
+        //IEnumerable<LogGuerraViewModel> resultado = result.Select(l => new LogGuerraViewModel
+        //{
+        //    ClanNome = l.Principal.Nome,
+        //    EstrelasClan = l.Principal.Estrelas,
+        //    EstrelasOponente = l.Oponente.Estrelas,
+        //    OponenteNome = l.Oponente.Nome,
+        //    Resultado = l.Resultado,
+        //    FimGuerra = l.FimGuerra,
+        //    InicioGuerra = l.InicioGuerra,
+        //    ClanTag = l.Principal.Tag,
+        //    OponenteTag = l.Oponente.Tag
+        //});
+        //return Ok(resultado);
+
         var logs = await context.LogsGuerras
             .Include(a => a.Clan)
             .Include(a => a.Oponente)
