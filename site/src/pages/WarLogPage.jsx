@@ -65,9 +65,11 @@ const WarLogPage = () => {
             margin: '0 auto',
         },
         card: (result) => {
-            let borderColor = '#4ade80'; // win (green)
+            let borderColor = '';
+            if (result === 'preparation' || result === 'inWar') borderColor = '#3b82f6';
             if (result === 'lose') borderColor = '#ff6b6b';
             if (result === 'draw') borderColor = '#a0aec0';
+            if (result === 'win') borderColor = '#4ade80';
 
             return {
                 background: 'rgba(22, 27, 34, 0.6)',
@@ -92,18 +94,32 @@ const WarLogPage = () => {
             marginBottom: '0.5rem',
         },
         badge: (result) => {
-            let bgColor = 'rgba(74, 222, 128, 0.2)';
-            let color = '#4ade80';
-            let borderColor = '#4ade80';
+            let bgColor, color, borderColor;
 
-            if (result === 'lose') {
-                bgColor = 'rgba(255, 107, 107, 0.2)';
-                color = '#ff6b6b';
-                borderColor = '#ff6b6b';
-            } else if (result === 'draw') {
-                bgColor = 'rgba(160, 174, 192, 0.2)';
-                color = '#a0aec0';
-                borderColor = '#a0aec0';
+            switch (result) {
+                case 'win':
+                    bgColor = 'rgba(74, 222, 128, 0.2)';
+                    color = '#4ade80';
+                    borderColor = '#4ade80';
+                    break;
+                case 'lose':
+                    bgColor = 'rgba(255, 107, 107, 0.2)';
+                    color = '#ff6b6b';
+                    borderColor = '#ff6b6b';
+                    break;
+                case 'draw':
+                    bgColor = 'rgba(160, 174, 192, 0.2)';
+                    color = '#a0aec0';
+                    borderColor = '#a0aec0';
+                    break;
+                case 'preparation':
+                case 'inWar':
+                default:
+                    // Default / Preparation: Blue theme
+                    bgColor = 'rgba(59, 130, 246, 0.2)'; // Blue-500 with opacity
+                    color = '#60a5fa'; // Blue-400
+                    borderColor = '#3b82f6'; // Blue-500
+                    break;
             }
 
             return {
@@ -188,11 +204,9 @@ const WarLogPage = () => {
                     {warLogs.map((log, index) => {
                         let result = log.resultado?.toLowerCase() || 'lose';
                         // Check for draw
-                        if (log.estrelasClan === log.estrelasOponente) {
-                            result = 'draw';
-                        }
-
-                        let resultText = 'Vitória';
+                        let resultText = 'Em preparação';
+                        if (result === 'inWar') resultText = 'Em Guerra';
+                        if (result === 'win') resultText = 'Vitória';
                         if (result === 'lose') resultText = 'Derrota';
                         if (result === 'draw') resultText = 'Empate';
 

@@ -48,92 +48,56 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
     public async Task<IActionResult> ObterLogs(string clanTag)
     {
         // necessário fazer query para popular as tabelas de guerras com os dados de estrelas dos clans
-        //var guerras = await context.Guerras
-        //  .Where(g => g.ClansEmGuerra.Count.Equals(2))
-        //  .Include(g => g.ClansEmGuerra)
-        //  .Where(g => g.ClansEmGuerra.Select(c => c.Tag).Contains(clanTag))
-        //  .ToListAsync();
+        var guerras = await context.Guerras
+          .Where(g => g.ClansEmGuerra.Count.Equals(2))
+          .Include(g => g.ClansEmGuerra)
+          .Where(g => g.ClansEmGuerra.Select(c => c.Tag).Contains(clanTag))
+          .ToListAsync();
 
-        //var result = guerras
-        //    .Select(x => new
-        //    {
-        //        Principal = x.ClansEmGuerra
-        //            .Where(c => c.Tipo.Equals(TipoClanNaGuerra.Principal))
-        //            .Select(c => new
-        //            {
-        //                c.Nome,
-        //                c.Tag,
-        //                c.Estrelas
-        //            })
-        //            .FirstOrDefault(),
-
-        //        Oponente = x.ClansEmGuerra
-        //            .Where(c => c.Tipo.Equals(TipoClanNaGuerra.Oponente))
-        //            .Select(c => new
-        //            {
-        //                c.Nome,
-        //                c.Tag,
-        //                c.Estrelas
-        //            })
-        //            .FirstOrDefault(),
-
-        //        Resultado = x.Status,
-        //        InicioGuerra = x.InicioGuerra,
-        //        FimGuerra = x.FimGuerra
-        //    }).ToList();
-
-
-        //IEnumerable<LogGuerraViewModel> resultado = result.Select(l => new LogGuerraViewModel
-        //{
-        //    ClanNome = l.Principal.Nome,
-        //    EstrelasClan = l.Principal.Estrelas,
-        //    EstrelasOponente = l.Oponente.Estrelas,
-        //    OponenteNome = l.Oponente.Nome,
-        //    Resultado = l.Resultado,
-        //    FimGuerra = l.FimGuerra,
-        //    InicioGuerra = l.InicioGuerra,
-        //    ClanTag = l.Principal.Tag,
-        //    OponenteTag = l.Oponente.Tag
-        //});
-        //return Ok(resultado);
-
-        var logs = await context.LogsGuerras
-            .Include(a => a.Clan)
-            .Include(a => a.Oponente)
-            .Where(g => g.Clan.Tag == clanTag)
-            .OrderByDescending(g => g.FimGuerra)
-            .Join(context.Guerras,
-                log => log.FimGuerra.Date,
-                guerra => guerra.FimGuerra.Date,
-                (l, g) => new { Log = l, Guerra = g })
+        var result = guerras
             .Select(x => new
             {
-                ClanNome = x.Log.Clan.Nome,
-                ClanTag = x.Log.Clan.Tag,
-                EstrelasClan = x.Log.Clan.Estrelas,
-                OponenteTag = x.Log.Oponente.Tag,
-                EstrelasOponente = x.Log.Oponente.Estrelas,
-                OponenteNome = x.Log.Oponente.Nome,
-                Resultado = x.Log.Resultado,
-                InicioGuerra = x.Guerra.InicioGuerra,
-                FimGuerra = x.Guerra.FimGuerra
-            })
-            .ToListAsync();
+                Principal = x.ClansEmGuerra
+                    .Where(c => c.Tipo.Equals(TipoClanNaGuerra.Principal))
+                    .Select(c => new
+                    {
+                        c.Nome,
+                        c.Tag,
+                        c.Estrelas
+                    })
+                    .FirstOrDefault(),
 
-        IEnumerable<LogGuerraViewModel> resultado = logs.Select(l => new LogGuerraViewModel
+                Oponente = x.ClansEmGuerra
+                    .Where(c => c.Tipo.Equals(TipoClanNaGuerra.Oponente))
+                    .Select(c => new
+                    {
+                        c.Nome,
+                        c.Tag,
+                        c.Estrelas
+                    })
+                    .FirstOrDefault(),
+
+                Resultado = ObterResultado(x),
+                x.InicioGuerra,
+                x.FimGuerra
+            }).OrderByDescending(f => f.FimGuerra).ToList();
+
+
+        IEnumerable<LogGuerraViewModel> resultado = result.Select(l => new LogGuerraViewModel
         {
-            ClanNome = l.ClanNome,
-            EstrelasClan = l.EstrelasClan,
-            EstrelasOponente = l.EstrelasOponente,
-            OponenteNome = l.OponenteNome,
+            ClanNome = l.Principal.Nome,
+            EstrelasClan = l.Principal.Estrelas,
+            OponenteNome = l.Oponente.Nome,
+            EstrelasOponente = l.Oponente.Estrelas,
             Resultado = l.Resultado,
             FimGuerra = l.FimGuerra,
             InicioGuerra = l.InicioGuerra,
-            ClanTag = l.ClanTag,
-            OponenteTag = l.OponenteTag
+            ClanTag = l.Principal.Tag,
+            OponenteTag = l.Oponente.Tag
         });
         return Ok(resultado);
     }
+
 
     [HttpGet("detalhe/clan-tag/{clanTag}/oponente-tag/{oponenteTag}")]
     public async Task<IActionResult> ObterDetalhamentoGuerraPorClanTags(string clanTag, string oponenteTag)
@@ -172,7 +136,7 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
                         DefensorTag = a.DefensorTag,
                         Estrelas = a.Estrelas,
                         PercentualDestruicao = a.PercentualDestruicao,
-                        NomeDefensor =  membros.Where(m => m.Tag == a.DefensorTag).First().Nome,
+                        NomeDefensor = membros.Where(m => m.Tag == a.DefensorTag).First().Nome,
                         PosicaoMapa = membros.Where(m => m.Tag == a.DefensorTag).First().PosicaoMapa
                     }).OrderBy(m => m.PosicaoMapa).ToList()
                 })
@@ -196,15 +160,37 @@ public class GuerraController(IMediator mediator, ClashOfClansContext context) :
         var resultado = await _mediator.Send(request);
         return resultado.ToActionResult(this);
     }
+
+    //mover isso para o QueryHandler quando criar o processo de CQRS para Queries
+    private static string ObterResultado(Guerra guerra)
+    {
+        if (guerra.Status.Equals("preparation", StringComparison.OrdinalIgnoreCase))
+            return "preparation";
+
+        if (guerra.Status.Equals("inWar", StringComparison.OrdinalIgnoreCase))
+            return "inWar";
+
+        ClanEmGuerra? principal = guerra.ClansEmGuerra.FirstOrDefault(c => c.Tipo == TipoClanNaGuerra.Principal);
+        ClanEmGuerra? oponente = guerra.ClansEmGuerra.FirstOrDefault(c => c.Tipo == TipoClanNaGuerra.Oponente);
+        if (principal is null || oponente is null)
+            return "unknown";
+
+        return principal.Estrelas switch
+        {
+            var estrelas when estrelas > oponente.Estrelas => "win",
+            var estrelas when estrelas < oponente.Estrelas => "lose",
+            _ => "draw"
+        };
+    }
 }
 
 public class DetalhamentoGuerraViewModel
 {
-    public string Status { get; set; } 
+    public string Status { get; set; }
     public DateTime InicioGuerra { get; set; }
-    public DateTime FimGuerra { get;  set; }
+    public DateTime FimGuerra { get; set; }
     public List<ClanEmGuerraViewModel> ClansEmGuerra { get; set; } = [];
-    public string TipoGuerra { get; init; } 
+    public string TipoGuerra { get; init; }
 
 }
 public class ClanEmGuerraViewModel
